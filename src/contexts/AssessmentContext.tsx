@@ -3,9 +3,9 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 interface AssessmentParticipant {
   id: string
   email: string
-  name: string
-  department: string
-  role: string
+  name?: string
+  department?: string
+  role?: string
   accessCode: string
   cohortId: string
   assessmentStatus: 'not_started' | 'in_progress' | 'completed'
@@ -53,16 +53,13 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
     setIsLoading(true)
     
     try {
-      // Demo assessment participants for testing
+      // Demo assessment participants for testing - only email and access code known initially
       const demoParticipants: Record<string, { accessCode: string; participant: AssessmentParticipant }> = {
         'john.smith@company.com': {
           accessCode: 'ASS2024001',
           participant: {
             id: 'emp-001',
             email: 'john.smith@company.com',
-            name: 'John Smith',
-            department: 'Engineering',
-            role: 'Senior Developer',
             accessCode: 'ASS2024001',
             cohortId: 'cohort-q1-2024',
             assessmentStatus: 'not_started',
@@ -74,9 +71,6 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
           participant: {
             id: 'emp-002',
             email: 'sarah.jones@company.com',
-            name: 'Sarah Jones',
-            department: 'Marketing',
-            role: 'Marketing Manager',
             accessCode: 'ASS2024002',
             cohortId: 'cohort-q1-2024',
             assessmentStatus: 'in_progress',
@@ -88,9 +82,6 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
           participant: {
             id: 'emp-003',
             email: 'mike.wilson@company.com',
-            name: 'Mike Wilson',
-            department: 'Finance',
-            role: 'Financial Analyst',
             accessCode: 'ASS2024003',
             cohortId: 'cohort-q1-2024',
             assessmentStatus: 'completed',
@@ -103,9 +94,6 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
           participant: {
             id: 'emp-004',
             email: 'lisa.chen@company.com',
-            name: 'Lisa Chen',
-            department: 'HR',
-            role: 'HR Specialist',
             accessCode: 'ASS2024004',
             cohortId: 'cohort-q1-2024',
             assessmentStatus: 'not_started',

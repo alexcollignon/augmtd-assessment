@@ -49,36 +49,29 @@ export function AssessmentPlaceholder() {
         showAdminButton={true}
         showLogoutButton={true}
         onLogout={logout}
-        subtitle={`${participant.name} - ${participant.department}`}
+        subtitle="Acme Corporation"
       />
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-6 py-6">
         <div className="space-y-6">
-          {/* Participant Info */}
+          {/* Session Info */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <User className="w-5 h-5 mr-2 text-air-blue-600" />
-                Participant Information
+                <User className="w-5 h-5 mr-2 text-blue-600" />
+                Assessment Session
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">Name</label>
-                  <p className="text-lg font-medium text-gray-900">{participant.name}</p>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">Email Address</label>
+                  <p className="text-base font-medium text-gray-900">{participant.email}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">Department</label>
-                  <div className="flex items-center">
-                    <Building2 className="w-4 h-4 text-gray-400 mr-2" />
-                    <p className="text-lg font-medium text-gray-900">{participant.department}</p>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">Role</label>
-                  <p className="text-lg font-medium text-gray-900">{participant.role}</p>
+                  <label className="block text-sm font-medium text-gray-500 mb-1">Access Code</label>
+                  <p className="text-base font-mono text-gray-900">{participant.accessCode}</p>
                 </div>
               </div>
             </CardContent>
@@ -140,7 +133,7 @@ export function AssessmentPlaceholder() {
             </CardContent>
           </Card>
 
-          {/* Session Info */}
+          {/* Technical Session Details */}
           <Card className="bg-gray-50">
             <CardContent className="py-4">
               <div className="flex items-center justify-between text-sm text-gray-600">

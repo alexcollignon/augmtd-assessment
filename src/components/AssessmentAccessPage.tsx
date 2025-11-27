@@ -56,31 +56,19 @@ export function AssessmentAccessPage() {
   const demoParticipants = [
     { 
       email: 'john.smith@company.com', 
-      accessCode: 'ASS2024001', 
-      name: 'John Smith',
-      department: 'Engineering',
-      status: 'Not Started'
+      accessCode: 'ASS2024001'
     },
     { 
       email: 'sarah.jones@company.com', 
-      accessCode: 'ASS2024002',
-      name: 'Sarah Jones', 
-      department: 'Marketing',
-      status: '45% Complete'
+      accessCode: 'ASS2024002'
     },
     { 
       email: 'mike.wilson@company.com', 
-      accessCode: 'ASS2024003',
-      name: 'Mike Wilson',
-      department: 'Finance', 
-      status: 'Completed'
+      accessCode: 'ASS2024003'
     },
     { 
       email: 'lisa.chen@company.com', 
-      accessCode: 'ASS2024004',
-      name: 'Lisa Chen',
-      department: 'HR',
-      status: 'Not Started'
+      accessCode: 'ASS2024004'
     }
   ]
 
@@ -292,9 +280,8 @@ export function AssessmentAccessPage() {
                     className="p-3 bg-gray-50 hover:bg-gray-100 rounded-lg text-left transition-colors"
                     disabled={isLoading}
                   >
-                    <div className="text-xs font-medium text-gray-900">{participant.name}</div>
-                    <div className="text-xs text-gray-600 mt-1">{participant.department}</div>
-                    <div className="text-xs text-air-blue-600 mt-1">{participant.accessCode}</div>
+                    <div className="text-xs font-medium text-gray-900">{participant.email}</div>
+                    <div className="text-xs text-blue-600 mt-1">{participant.accessCode}</div>
                   </button>
                 ))}
               </div>
