@@ -21,6 +21,7 @@ import {
   FileText,
   Award
 } from 'lucide-react'
+import { AssessmentNavBar } from './AssessmentNavBar'
 
 export function AssessmentAccessPage() {
   const [email, setEmail] = useState('')
@@ -84,29 +85,18 @@ export function AssessmentAccessPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* Admin Access Button - Top Right */}
-      <div className="absolute top-6 right-6 z-10">
-        <button
-          onClick={navigateToAdmin}
-          className="flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-white hover:text-gray-900 transition-all shadow-sm"
-        >
-          <Settings className="w-4 h-4 mr-2" />
-          Admin Dashboard
-        </button>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+      <AssessmentNavBar 
+        showAdminButton={true}
+        subtitle="Enterprise AI Due Diligence & Transformation Platform"
+      />
       
-      <div className="flex items-center justify-center min-h-screen p-6">
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] p-6">
         <div className="w-full max-w-5xl">
-          {/* Header */}
-          <div className="text-center mb-10">
-            <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl flex items-center justify-center shadow-xl">
-                <Brain className="w-10 h-10 text-white" />
-              </div>
-            </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-3">AI Readiness Assessment</h1>
-            <p className="text-lg text-gray-600 mb-2">Enterprise AI Due Diligence & Transformation Evaluation</p>
+          {/* Welcome Section */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Your AI Assessment</h1>
+            <p className="text-base text-gray-600 mb-1">Enterprise AI Due Diligence & Transformation Evaluation</p>
             <p className="text-sm text-gray-500 max-w-2xl mx-auto">
               Evaluate your organization's AI maturity, identify opportunities, and receive personalized recommendations
             </p>
@@ -120,8 +110,8 @@ export function AssessmentAccessPage() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Assessment Benefits</h2>
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Target className="w-6 h-6 text-blue-600" />
+                    <div className="w-12 h-12 bg-air-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Target className="w-6 h-6 text-air-blue-600" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-2">Strategic Insights</h3>
@@ -129,8 +119,8 @@ export function AssessmentAccessPage() {
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Lightbulb className="w-6 h-6 text-green-600" />
+                    <div className="w-12 h-12 bg-air-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Lightbulb className="w-6 h-6 text-air-purple-600" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-2">Opportunity Discovery</h3>
@@ -138,8 +128,8 @@ export function AssessmentAccessPage() {
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <BarChart3 className="w-6 h-6 text-purple-600" />
+                    <div className="w-12 h-12 bg-air-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <BarChart3 className="w-6 h-6 text-air-blue-600" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 mb-2">Personalized Results</h3>
@@ -151,18 +141,18 @@ export function AssessmentAccessPage() {
 
               {/* eLearning Access */}
               <Card 
-                className="border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 transition-all cursor-pointer shadow-lg" 
+                className="border-air-purple-200 bg-gradient-to-br from-air-purple-50 to-air-blue-50 hover:from-air-purple-100 hover:to-air-blue-100 transition-all cursor-pointer shadow-lg" 
                 onClick={handleELearningClick}
               >
                 <CardContent className="p-6">
                   <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center flex-shrink-0">
-                      <GraduationCap className="w-8 h-8 text-white" />
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl flex items-center justify-center flex-shrink-0">
+                      <GraduationCap className="w-8 h-8 text-black" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-purple-900 mb-2">AI eLearning Platform</h3>
-                      <p className="text-purple-700 mb-3">Access comprehensive AI training, use cases library, and PowerPrompts collection</p>
-                      <div className="flex items-center text-purple-600">
+                      <h3 className="text-xl font-bold text-air-purple-900 mb-2">AI eLearning Platform</h3>
+                      <p className="text-air-purple-700 mb-3">Access comprehensive AI training, use cases library, and PowerPrompts collection</p>
+                      <div className="flex items-center text-air-purple-600">
                         <span className="font-medium mr-2">Explore Training Resources</span>
                         <ArrowRight className="w-4 h-4" />
                       </div>
@@ -177,8 +167,8 @@ export function AssessmentAccessPage() {
               {/* Access Form */}
               <Card className="shadow-xl border-0 bg-white">
                 <CardHeader className="text-center pb-6">
-                  <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Key className="w-7 h-7 text-blue-600" />
+                  <div className="w-14 h-14 bg-air-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Key className="w-7 h-7 text-air-blue-600" />
                   </div>
                   <CardTitle className="text-2xl font-bold text-gray-900 mb-2">Begin Your Assessment</CardTitle>
                   <p className="text-gray-600">Enter your credentials to access your personalized AI readiness evaluation</p>
@@ -194,7 +184,7 @@ export function AssessmentAccessPage() {
                         id="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-base"
+                        className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-air-purple-500 focus:border-air-purple-500 transition-all text-base"
                         placeholder="your.name@company.com"
                         disabled={isLoading}
                       />
@@ -209,7 +199,7 @@ export function AssessmentAccessPage() {
                         id="accessCode"
                         value={accessCode}
                         onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
-                        className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-base font-mono tracking-wider"
+                        className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-air-purple-500 focus:border-air-purple-500 transition-all text-base font-mono tracking-wider"
                         placeholder="ASS2024XXX"
                         disabled={isLoading}
                       />
@@ -228,7 +218,7 @@ export function AssessmentAccessPage() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-blue-400 disabled:to-blue-500 text-white font-semibold py-4 px-6 rounded-xl transition-all focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-lg text-lg"
+                      className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 disabled:from-purple-300 disabled:to-blue-300 text-white font-semibold py-4 px-6 rounded-xl transition-all focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 shadow-lg text-lg"
                     >
                       {isLoading ? (
                         <div className="flex items-center justify-center">
@@ -247,33 +237,33 @@ export function AssessmentAccessPage() {
               </Card>
 
               {/* What to Expect */}
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+              <div className="bg-air-blue-50 border border-air-blue-200 rounded-xl p-6">
                 <div className="flex items-start space-x-3 mb-6">
-                  <CheckCircle className="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="w-6 h-6 text-air-blue-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <h3 className="text-xl font-bold text-blue-900">What to Expect</h3>
+                    <h3 className="text-xl font-bold text-air-blue-900">What to Expect</h3>
                   </div>
                 </div>
                 <ul className="space-y-4">
                   <li className="flex items-start space-x-3">
-                    <Clock className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <Clock className="w-5 h-5 text-air-blue-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="font-medium text-blue-900">15-20 minutes to complete</div>
-                      <div className="text-sm text-blue-700">Comprehensive evaluation covering all key areas</div>
+                      <div className="font-medium text-air-blue-900">15-20 minutes to complete</div>
+                      <div className="text-sm text-air-blue-700">Comprehensive evaluation covering all key areas</div>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3">
-                    <Shield className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <Shield className="w-5 h-5 text-air-blue-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="font-medium text-blue-900">Confidential & secure</div>
-                      <div className="text-sm text-blue-700">Your responses remain private and anonymous</div>
+                      <div className="font-medium text-air-blue-900">Confidential & secure</div>
+                      <div className="text-sm text-air-blue-700">Your responses remain private and anonymous</div>
                     </div>
                   </li>
                   <li className="flex items-start space-x-3">
-                    <Award className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <Award className="w-5 h-5 text-air-blue-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <div className="font-medium text-blue-900">Personalized insights</div>
-                      <div className="text-sm text-blue-700">Tailored recommendations for your role</div>
+                      <div className="font-medium text-air-blue-900">Personalized insights</div>
+                      <div className="text-sm text-air-blue-700">Tailored recommendations for your role</div>
                     </div>
                   </li>
                 </ul>
@@ -304,7 +294,7 @@ export function AssessmentAccessPage() {
                   >
                     <div className="text-xs font-medium text-gray-900">{participant.name}</div>
                     <div className="text-xs text-gray-600 mt-1">{participant.department}</div>
-                    <div className="text-xs text-blue-600 mt-1">{participant.accessCode}</div>
+                    <div className="text-xs text-air-blue-600 mt-1">{participant.accessCode}</div>
                   </button>
                 ))}
               </div>

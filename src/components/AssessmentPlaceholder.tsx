@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/Card'
 import { useAssessment } from '../contexts/AssessmentContext'
 import { navigateToAdmin } from '../router'
 import { Brain, User, Building2, LogOut, Clock, CheckCircle, AlertCircle, Settings } from 'lucide-react'
+import { AssessmentNavBar } from './AssessmentNavBar'
 
 export function AssessmentPlaceholder() {
   const { participant, logout } = useAssessment()
@@ -43,50 +44,22 @@ export function AssessmentPlaceholder() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Brain className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">AI Readiness Assessment</h1>
-                <p className="text-sm text-gray-600">Enterprise Due Diligence Survey</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={navigateToAdmin}
-                className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Admin Dashboard
-              </button>
-              
-              <button
-                onClick={logout}
-                className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Exit Assessment
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
+      <AssessmentNavBar 
+        showAdminButton={true}
+        showLogoutButton={true}
+        onLogout={logout}
+        subtitle={`${participant.name} - ${participant.department}`}
+      />
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-4xl mx-auto px-6 py-6">
         <div className="space-y-6">
           {/* Participant Info */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <User className="w-5 h-5 mr-2 text-blue-600" />
+                <User className="w-5 h-5 mr-2 text-air-blue-600" />
                 Participant Information
               </CardTitle>
             </CardHeader>
@@ -132,7 +105,7 @@ export function AssessmentPlaceholder() {
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div 
-                      className="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                      className="bg-gradient-to-r from-air-purple-500 to-air-blue-500 h-3 rounded-full transition-all duration-300"
                       style={{ width: `${participant.completionPercentage}%` }}
                     ></div>
                   </div>
@@ -157,8 +130,8 @@ export function AssessmentPlaceholder() {
                   </p>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-lg mx-auto">
-                  <div className="text-sm text-blue-700">
+                <div className="bg-air-blue-50 border border-air-blue-200 rounded-lg p-4 max-w-lg mx-auto">
+                  <div className="text-sm text-air-blue-700">
                     <strong>Coming Soon:</strong> Interactive assessment with sections for AI strategy, 
                     technical knowledge, workflow inefficiencies, and automation opportunities.
                   </div>
