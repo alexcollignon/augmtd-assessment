@@ -90,9 +90,9 @@ export function ExecutiveSummary() {
           <Card className="flex items-center justify-center">
             <CardContent className="text-center py-5">
               <Brain className="w-6 h-6 text-purple-600 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-600 mb-1">Automatable Work</p>
+              <p className="text-sm font-medium text-gray-600 mb-1">Automate Work</p>
               <div className="text-3xl font-bold text-gray-900">32%</div>
-              <p className="text-xs text-gray-500 mt-1">Of processes automated</p>
+              <p className="text-xs text-gray-500 mt-1">Of processes can be automated</p>
             </CardContent>
           </Card>
           <Card className="flex items-center justify-center">

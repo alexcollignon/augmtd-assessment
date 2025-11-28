@@ -13,7 +13,8 @@ import {
   Database,
   Settings,
   CheckCircle,
-  XCircle
+  XCircle,
+  ArrowDown
 } from 'lucide-react'
 
 export function RiskCompliance() {
@@ -86,33 +87,42 @@ export function RiskCompliance() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <Card>
           <CardContent className="text-center py-8">
-            <CircularProgress value={overallRiskScore} size="lg" />
-            <h3 className="text-lg font-semibold text-gray-900 mt-4">AI Risk Score</h3>
-            <p className="text-sm text-gray-600">Overall risk posture</p>
+            <div className="mb-6">
+              <CircularProgress value={overallRiskScore} size="lg" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">AI Risk Score</h2>
+            <p className="text-gray-600 mb-4">Overall ethical AI risk posture</p>
+            <div className="flex items-center justify-center text-gray-400 mt-6 pt-4 border-t border-gray-200">
+              <ArrowDown className="w-4 h-4 mr-1" />
+              <span className="text-xs">Based on 4 metrics below</span>
+            </div>
           </CardContent>
         </Card>
 
-        <MetricCard
-          title="Critical Risks"
-          value={3}
-          subtitle="Require immediate attention"
-          icon={<AlertTriangle className="w-6 h-6 text-danger-600" />}
-        />
-        
-        <MetricCard
-          title="Compliance Score"
-          value={74}
-          valueType="percentage"
-          subtitle="Regulatory alignment"
-          icon={<FileText className="w-6 h-6 text-blue-600" />}
-        />
-        
-        <MetricCard
-          title="Shadow AI Tools"
-          value={5}
-          subtitle="Detected in use"
-          icon={<Eye className="w-6 h-6 text-warning-600" />}
-        />
+        <Card className="flex items-center justify-center">
+          <CardContent className="text-center py-5">
+            <AlertTriangle className="w-6 h-6 text-danger-600 mx-auto mb-2" />
+            <p className="text-sm font-medium text-gray-600 mb-1">High-Risk Areas</p>
+            <div className="text-3xl font-bold text-gray-900">3</div>
+            <p className="text-xs text-gray-500 mt-1">Shadow AI, governance gaps, bias</p>
+          </CardContent>
+        </Card>
+        <Card className="flex items-center justify-center">
+          <CardContent className="text-center py-5">
+            <FileText className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+            <p className="text-sm font-medium text-gray-600 mb-1">Compliance Score</p>
+            <div className="text-3xl font-bold text-gray-900">74%</div>
+            <p className="text-xs text-gray-500 mt-1">Regulatory alignment</p>
+          </CardContent>
+        </Card>
+        <Card className="flex items-center justify-center">
+          <CardContent className="text-center py-5">
+            <Eye className="w-6 h-6 text-warning-600 mx-auto mb-2" />
+            <p className="text-sm font-medium text-gray-600 mb-1">Shadow AI Tools</p>
+            <div className="text-3xl font-bold text-gray-900">5</div>
+            <p className="text-xs text-gray-500 mt-1">Detected in use</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Responsible AI Radar */}
@@ -146,12 +156,12 @@ export function RiskCompliance() {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Security Heatmap */}
+        {/* Risk Heatmap */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
-              <Lock className="w-5 h-5 text-green-600 mr-2" />
-              Security Heatmap by Department
+              <AlertTriangle className="w-5 h-5 text-orange-600 mr-2" />
+              Risk Heatmap by Department
             </CardTitle>
           </CardHeader>
           <CardContent>
