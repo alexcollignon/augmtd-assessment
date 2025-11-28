@@ -79,33 +79,38 @@ export function ExecutiveSummary() {
         </Card>
 
         <div className="lg:col-span-2 grid grid-cols-2 gap-4">
-          <MetricCard
-            title="Employees Assessed"
-            value={1247}
-            subtitle="Across 6 departments"
-            icon={<Users className="w-6 h-6 text-blue-600" />}
-          />
-          <MetricCard
-            title="Automatable Work"
-            value={32}
-            valueType="percentage"
-            subtitle="Of processes can be automated"
-            icon={<Brain className="w-6 h-6 text-purple-600" />}
-          />
-          <MetricCard
-            title="Avg. Skill Level"
-            value={68}
-            valueType="percentage"
-            subtitle="Across all domains"
-            icon={<TrendingUp className="w-6 h-6 text-green-600" />}
-          />
-          <MetricCard
-            title="Risk Exposure"
-            value={18}
-            valueType="percentage"
-            subtitle="Shadow AI & compliance gaps"
-            icon={<AlertTriangle className="w-6 h-6 text-orange-600" />}
-          />
+          <Card className="flex items-center justify-center">
+            <CardContent className="text-center py-5">
+              <Users className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+              <p className="text-sm font-medium text-gray-600 mb-1">Employees Assessed</p>
+              <div className="text-3xl font-bold text-gray-900">1,247</div>
+              <p className="text-xs text-gray-500 mt-1">Across 6 departments</p>
+            </CardContent>
+          </Card>
+          <Card className="flex items-center justify-center">
+            <CardContent className="text-center py-5">
+              <Brain className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+              <p className="text-sm font-medium text-gray-600 mb-1">Automatable Work</p>
+              <div className="text-3xl font-bold text-gray-900">32%</div>
+              <p className="text-xs text-gray-500 mt-1">Of processes automated</p>
+            </CardContent>
+          </Card>
+          <Card className="flex items-center justify-center">
+            <CardContent className="text-center py-5">
+              <TrendingUp className="w-6 h-6 text-green-600 mx-auto mb-2" />
+              <p className="text-sm font-medium text-gray-600 mb-1">Avg. Skill Level</p>
+              <div className="text-3xl font-bold text-gray-900">68%</div>
+              <p className="text-xs text-gray-500 mt-1">Across all domains</p>
+            </CardContent>
+          </Card>
+          <Card className="flex items-center justify-center">
+            <CardContent className="text-center py-5">
+              <AlertTriangle className="w-6 h-6 text-orange-600 mx-auto mb-2" />
+              <p className="text-sm font-medium text-gray-600 mb-1">Risk Exposure</p>
+              <div className="text-3xl font-bold text-orange-600">18%</div>
+              <p className="text-xs text-gray-500 mt-1">Shadow AI & compliance</p>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
