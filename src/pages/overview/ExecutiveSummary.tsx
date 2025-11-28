@@ -11,7 +11,8 @@ import {
   TrendingUp, 
   AlertTriangle,
   CheckCircle,
-  Clock
+  Clock,
+  ArrowDown
 } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 
@@ -21,27 +22,27 @@ export function ExecutiveSummary() {
   const valueLeakage = 127000
   
   const strengths = [
-    'Strong data infrastructure foundation',
-    'Executive leadership commitment to AI',
-    'Robust security and governance framework',
-    'High employee engagement in AI training',
-    'Clear AI strategy and vision'
+    'Customer service team achieving 3x faster response times with AI tools',
+    'Finance department automated 40% of invoice processing, saving 20 hrs/week',
+    'Zero security incidents from AI implementations in past 12 months',
+    '89% of assessed employees actively using approved AI tools',
+    'Data quality score (79%) exceeds industry average by 15 points'
   ]
   
   const risks = [
-    'Limited AI expertise in key departments',
-    'Inadequate change management processes',
-    'Fragmented data across business units',
-    'Unclear AI governance structure',
-    'Insufficient automation capabilities'
+    '127 employees using ungoverned shadow AI tools (18% of workforce)',
+    'Sales & Marketing departments lag with only 45% AI readiness',
+    '68% of workflows remain manual, causing 1,250 hrs/week inefficiency',
+    'Missing AI ethics committee exposes company to bias risks',
+    '3 critical systems lack API integration for automation'
   ]
   
   const opportunities = [
-    { name: 'Customer Service Automation', value: '$2.1M', feasibility: 'High' },
-    { name: 'Financial Reporting Optimization', value: '$890K', feasibility: 'Medium' },
-    { name: 'HR Process Automation', value: '$670K', feasibility: 'High' },
-    { name: 'Supply Chain Intelligence', value: '$1.5M', feasibility: 'Medium' },
-    { name: 'Marketing Campaign Optimization', value: '$540K', feasibility: 'High' }
+    { name: 'Customer Service Chatbot', value: '$2.1M', feasibility: 'High', process: 'Customer Onboarding Process' },
+    { name: 'Invoice Data Extraction & Validation', value: '$890K', feasibility: 'Medium', process: 'Invoice Processing Workflow' },
+    { name: 'Resume Screening & Ranking AI', value: '$670K', feasibility: 'High', process: 'Employee Recruitment Process' },
+    { name: 'Predictive Equipment Maintenance', value: '$1.5M', feasibility: 'Medium', process: 'Operations Maintenance Workflow' },
+    { name: 'Content Generation Assistant', value: '$540K', feasibility: 'High', process: 'Marketing Campaign Creation' }
   ]
 
   return (
@@ -70,6 +71,10 @@ export function ExecutiveSummary() {
               </div>
               <div className="text-gray-500">Developing</div>
             </div>
+            <div className="flex items-center justify-center text-gray-400 mt-6 pt-4 border-t border-gray-200">
+              <ArrowDown className="w-4 h-4 mr-1" />
+              <span className="text-xs">Based on 6 pillars below</span>
+            </div>
           </CardContent>
         </Card>
 
@@ -77,13 +82,14 @@ export function ExecutiveSummary() {
           <MetricCard
             title="Employees Assessed"
             value={1247}
-            subtitle="89% completion rate"
+            subtitle="Across 6 departments"
             icon={<Users className="w-6 h-6 text-blue-600" />}
           />
           <MetricCard
-            title="Workflow Categories"
-            value={24}
-            subtitle="Identified opportunities"
+            title="Automatable Work"
+            value={32}
+            valueType="percentage"
+            subtitle="Of processes can be automated"
             icon={<Brain className="w-6 h-6 text-purple-600" />}
           />
           <MetricCard
@@ -94,11 +100,11 @@ export function ExecutiveSummary() {
             icon={<TrendingUp className="w-6 h-6 text-green-600" />}
           />
           <MetricCard
-            title="Adoption Readiness"
-            value={72}
+            title="Risk Exposure"
+            value={18}
             valueType="percentage"
-            subtitle="Implementation ready"
-            icon={<CheckCircle className="w-6 h-6 text-blue-600" />}
+            subtitle="Shadow AI & compliance gaps"
+            icon={<AlertTriangle className="w-6 h-6 text-orange-600" />}
           />
         </div>
       </div>
@@ -111,12 +117,12 @@ export function ExecutiveSummary() {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {[
-              { name: 'Strategy', score: 82, icon: Brain },
-              { name: 'Cost & Value', score: 71, icon: DollarSign },
-              { name: 'Organization', score: 68, icon: Users },
-              { name: 'Technology', score: 74, icon: TrendingUp },
-              { name: 'Data', score: 79, icon: Brain },
-              { name: 'Security', score: 86, icon: Shield }
+              { name: 'Strategy', score: 82, icon: Brain, description: 'AI vision & roadmap clarity' },
+              { name: 'Cost & Value', score: 71, icon: DollarSign, description: 'ROI tracking & benefits' },
+              { name: 'Organization', score: 68, icon: Users, description: 'Team skills & readiness' },
+              { name: 'Technology', score: 74, icon: TrendingUp, description: 'Infrastructure & tools' },
+              { name: 'Data', score: 79, icon: Brain, description: 'Quality & governance' },
+              { name: 'Security', score: 86, icon: Shield, description: 'Risk & compliance' }
             ].map((pillar) => {
               const Icon = pillar.icon
               return (
@@ -128,6 +134,7 @@ export function ExecutiveSummary() {
                     <CircularProgress value={pillar.score} size="sm" />
                   </div>
                   <p className="text-sm font-medium text-gray-900">{pillar.name}</p>
+                  <p className="text-xs text-gray-500 mt-1">{pillar.description}</p>
                 </div>
               )
             })}
@@ -206,8 +213,8 @@ export function ExecutiveSummary() {
       {/* Top AI Opportunities */}
       <Card>
         <CardHeader>
-          <CardTitle>Top 5 AI Opportunities</CardTitle>
-          <p className="text-sm text-gray-600">Ranked by potential value and feasibility</p>
+          <CardTitle>Top 5 AI Use Case Opportunities</CardTitle>
+          <p className="text-sm text-gray-600">Based on workflow analysis and process automation potential</p>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -219,7 +226,8 @@ export function ExecutiveSummary() {
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-900">{opportunity.name}</h4>
-                    <p className="text-sm text-gray-600">Estimated Annual Value: {opportunity.value}</p>
+                    <p className="text-sm text-gray-600">Process: {opportunity.process}</p>
+                    <p className="text-sm text-gray-500">Estimated Annual Value: {opportunity.value}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">

@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { 
-  MapPin, 
   Filter, 
   Users, 
   DollarSign, 
   Clock, 
   TrendingUp,
   Target,
-  Zap
+  Zap,
+  BarChart3
 } from 'lucide-react'
 
 export function OpportunityMap() {
