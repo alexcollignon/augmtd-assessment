@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts'
+import { MapPin, Target, Zap, Calendar, TrendingUp, Users, Settings, ArrowRight } from 'lucide-react'
 
 export function CompanyMaturity() {
   const [selectedDepartment, setSelectedDepartment] = useState('all')
@@ -244,188 +245,189 @@ export function CompanyMaturity() {
         </Card>
       </div>
 
-      {/* Gap Analysis with Priority */}
+      {/* Path to Industry Leadership */}
       <Card>
         <CardHeader>
-          <CardTitle>Gap Analysis & Action Items</CardTitle>
-          <p className="text-sm text-gray-600">
-            {selectedDepartment === 'all' 
-              ? 'Key gaps and actionable next steps' 
-              : `${selectedDepartment} department improvement areas`}
-          </p>
+          <CardTitle>Path to Industry Leadership</CardTitle>
+          <p className="text-sm text-gray-600">Strategic and capability gaps to reach the Leaders quadrant</p>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {maturityData
-              .map(pillar => {
-                const currentScore = selectedDepartment === 'all' 
-                  ? pillar.current 
-                  : getScoreForDepartment(pillar.pillar, selectedDepartment)
-                const gap = pillar.target - currentScore
-                
-                // Define business-focused insights with productivity impact
-                let assessmentInsights = { 
-                  currentState: '', 
-                  productivityImpact: '', 
-                  timeWasted: '', 
-                  gainPotential: '', 
-                  actions: [] 
-                }
-                
-                switch(pillar.pillar) {
-                  case 'Strategy':
-                    assessmentInsights = currentScore < 75 ? {
-                      currentState: 'Teams using AI tools inconsistently - same tasks done 3 different ways',
-                      productivityImpact: 'Productivity gains vary wildly: 5-40% depending on team approach',
-                      timeWasted: '8-12 hours per employee per week on redundant AI experimentation',
-                      gainPotential: 'Standardization could deliver consistent 25-30% productivity boost across all teams',
-                      actions: ['Standardize AI workflows for top 5 business processes', 'Deploy AI champions to scale best practices', 'Measure and publish team productivity benchmarks']
-                    } : {
-                      currentState: 'Good strategic alignment with minor execution variations between teams',
-                      productivityImpact: 'Consistent 20-25% productivity gains across most functions',
-                      timeWasted: '2-3 hours per week on process optimization',
-                      gainPotential: 'Fine-tuning could push gains to 30-35% with better cross-team collaboration',
-                      actions: ['Optimize high-performing workflows', 'Share advanced techniques across departments']
-                    }
-                    break
-                  case 'Cost & Value':
-                    assessmentInsights = currentScore < 75 ? {
-                      currentState: 'AI investments show positive ROI but value capture is ad-hoc and under-reported',
-                      productivityImpact: 'Documented gains of 15-20% but likely missing 50% of actual value created',
-                      timeWasted: '5-8 hours per week per manager trying to manually calculate AI ROI',
-                      gainPotential: 'Systematic tracking could reveal 35-45% total productivity improvement and enable 2x faster scaling',
-                      actions: ['Deploy automated ROI tracking across all AI tools', 'Create monthly value scorecards by department', 'Link AI performance to team bonuses']
-                    } : {
-                      currentState: 'Strong value measurement with clear ROI demonstration across most initiatives',
-                      productivityImpact: 'Well-documented 25-30% productivity gains with clear attribution',
-                      timeWasted: '1-2 hours per week on value optimization',
-                      gainPotential: 'Advanced analytics could push measured value to 40-45% with predictive insights',
-                      actions: ['Implement predictive value modeling', 'Automate business case generation for new AI initiatives']
-                    }
-                    break
-                  case 'Organization':
-                    assessmentInsights = currentScore < 75 ? {
-                      currentState: 'Skill gaps create 3-tier workforce: 30% power users, 40% basic users, 30% non-users',
-                      productivityImpact: 'Top performers achieve 40-50% gains while others see 5-10% or none',
-                      timeWasted: '12-15 hours per week across team helping struggling users, slowing high performers',
-                      gainPotential: 'Bringing bottom 70% to intermediate level could deliver 25-35% company-wide productivity boost',
-                      actions: ['Intensive 30-day AI boot camp for lagging teams', 'Pair high performers with struggling users', 'Mandate AI proficiency targets with performance reviews']
-                    } : {
-                      currentState: 'Strong AI competency across 80%+ of workforce with clear skill progressions',
-                      productivityImpact: 'Consistent 25-35% productivity gains across most roles and departments',
-                      timeWasted: '2-3 hours per week on advanced skill development',
-                      gainPotential: 'Specialized AI skills training could push top performers to 50-60% productivity gains',
-                      actions: ['Advanced AI certification program', 'Cross-functional AI project teams', 'AI innovation challenges with rewards']
-                    }
-                    break
-                  case 'Technology':
-                    assessmentInsights = currentScore < 75 ? {
-                      currentState: 'Technical friction costs 20-30 minutes per AI task due to slow systems and workarounds',
-                      productivityImpact: 'Infrastructure limitations cap productivity gains at 15-20% vs. potential 30-40%',
-                      timeWasted: '6-10 hours per week per employee on manual data prep and system switching',
-                      gainPotential: 'Infrastructure upgrades could double AI productivity gains and reduce task completion time by 50%',
-                      actions: ['Upgrade to enterprise AI platform with API integrations', 'Deploy single sign-on for all AI tools', 'Automate data pipeline from core systems to AI tools']
-                    } : {
-                      currentState: 'Solid technical foundation enables smooth AI integration with minimal friction',
-                      productivityImpact: 'Technology supports 25-30% productivity gains without significant bottlenecks',
-                      timeWasted: '1-2 hours per week on system optimization',
-                      gainPotential: 'Advanced automation and AI-to-AI integrations could push gains to 40-50%',
-                      actions: ['Implement AI workflow automation', 'Deploy advanced AI tool integrations', 'Optimize system performance for power users']
-                    }
-                    break
-                  case 'Data':
-                    assessmentInsights = currentScore < 75 ? {
-                      currentState: 'Data prep consumes 40-50% of AI project time, bottlenecking productivity gains',
-                      productivityImpact: 'Poor data quality reduces AI accuracy by 20-30%, requiring manual verification',
-                      timeWasted: '10-15 hours per week per team on data cleaning and validation tasks',
-                      gainPotential: 'Automated data pipeline could cut AI task time by 60% and improve accuracy to 95%+',
-                      actions: ['Deploy automated data cleaning for top 10 data sources', 'Create real-time data quality dashboards', 'Establish data SLAs with automatic monitoring']
-                    } : {
-                      currentState: 'Strong data foundation enables reliable AI outputs with minimal manual intervention',
-                      productivityImpact: 'High-quality data supports 25-30% productivity gains with 90%+ AI accuracy',
-                      timeWasted: '2-3 hours per week on data quality monitoring',
-                      gainPotential: 'Advanced data automation could push AI accuracy to 98%+ and enable real-time insights',
-                      actions: ['Implement predictive data quality monitoring', 'Deploy real-time data streaming for AI applications']
-                    }
-                    break
-                  case 'Security':
-                    assessmentInsights = currentScore < 85 ? {
-                      currentState: 'Shadow AI usage puts 15-20% of productivity gains at risk due to compliance violations',
-                      productivityImpact: 'Security restrictions slow AI adoption, reducing potential gains by 25-30%',
-                      timeWasted: '4-6 hours per week on manual security reviews and incident response',
-                      gainPotential: 'Secure-by-design AI platform could unlock full productivity potential while reducing security overhead by 80%',
-                      actions: ['Deploy enterprise AI platform with built-in security', 'Automate compliance monitoring for AI usage', 'Create fast-track approval for secure AI tools']
-                    } : {
-                      currentState: 'Strong security posture enables confident AI adoption without compromising productivity',
-                      productivityImpact: 'Security measures support rather than hinder 25-30% productivity gains',
-                      timeWasted: '1 hour per week on security monitoring and updates',
-                      gainPotential: 'Advanced threat detection could enable more aggressive AI adoption for 35-40% gains',
-                      actions: ['Implement AI-powered security monitoring', 'Expand approved AI tool ecosystem', 'Deploy zero-trust AI access controls']
-                    }
-                    break
-                }
-                
-                return { ...pillar, currentScore, gap, assessmentInsights }
-              })
-              .filter(pillar => pillar.gap > 0) // Only show items with gaps
-              .sort((a, b) => b.gap - a.gap) // Sort by gap size
-              .map((pillar) => (
-                <div key={pillar.pillar} className="border rounded-lg p-4 bg-gray-50">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h4 className="font-semibold text-gray-900">{pillar.pillar}</h4>
-                      <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-sm text-gray-600">{pillar.currentScore}% → {pillar.target}%</span>
-                        <Badge 
-                          variant={pillar.gap > 10 ? 'warning' : 'info'}
-                          size="sm"
-                        >
-                          {pillar.gap} point gap
-                        </Badge>
-                      </div>
+          <div className="space-y-6">
+            
+            {/* Current Position Summary */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-center mb-2">
+                <MapPin className="w-5 h-5 text-blue-600 mr-2" />
+                <h4 className="font-semibold text-blue-900">Your Current Position</h4>
+              </div>
+              <p className="text-sm text-blue-800">
+                You're positioned between <strong>Builders</strong> and <strong>Leaders</strong> - strong technical capabilities (70th percentile) 
+                but strategic alignment needs improvement to reach industry-leading performance.
+              </p>
+            </div>
+
+            {/* Strategy Gap */}
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <div className="mb-3">
+                <div className="flex items-center mb-1">
+                  <Target className="w-5 h-5 text-gray-700 mr-2" />
+                  <h4 className="font-semibold text-gray-900">Strategy Gap</h4>
+                </div>
+                <div className="flex items-center space-x-2 mt-1">
+                  <Badge variant="warning" size="sm">Primary Focus Area</Badge>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex items-center mb-1">
+                      <TrendingUp className="w-4 h-4 text-blue-600 mr-1" />
+                      <span className="text-sm font-medium text-blue-700">Strategic Misalignment:</span>
                     </div>
-                    <Badge variant="default" size="sm">
-                      {pillar.effort}
-                    </Badge>
+                    <p className="text-sm text-gray-600 mt-1">67% of teams lack clear AI success metrics tied to business outcomes, causing 8-12 hours/week of misdirected effort</p>
                   </div>
-                  
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <span className="text-sm font-medium text-blue-700">📊 Current State:</span>
-                        <p className="text-sm text-gray-600 mt-1">{pillar.assessmentInsights.currentState}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm font-medium text-green-700">📈 Productivity Impact:</span>
-                        <p className="text-sm text-gray-600 mt-1">{pillar.assessmentInsights.productivityImpact}</p>
-                      </div>
+                  <div>
+                    <div className="flex items-center mb-1">
+                      <Target className="w-4 h-4 text-green-600 mr-1" />
+                      <span className="text-sm font-medium text-green-700">Leadership Advantage:</span>
                     </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <span className="text-sm font-medium text-red-700">⏱️ Time Wasted:</span>
-                        <p className="text-sm text-gray-600 mt-1">{pillar.assessmentInsights.timeWasted}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm font-medium text-purple-700">🚀 Gain Potential:</span>
-                        <p className="text-sm text-gray-600 mt-1">{pillar.assessmentInsights.gainPotential}</p>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <span className="text-sm font-medium text-gray-700">🎯 Actions to Capture Gains:</span>
-                      <ul className="mt-2 space-y-1">
-                        {pillar.assessmentInsights.actions.map((action, index) => (
-                          <li key={index} className="text-sm text-gray-600 flex items-start">
-                            <span className="text-blue-600 mr-2">•</span>
-                            {action}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    <p className="text-sm text-gray-600 mt-1">Industry leaders achieve 40-50% productivity gains through unified AI strategy execution vs. your current 20-25%</p>
                   </div>
                 </div>
-              ))}
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex items-center mb-1">
+                      <Calendar className="w-4 h-4 text-red-600 mr-1" />
+                      <span className="text-sm font-medium text-red-700">Strategic Overhead:</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">Teams spend 15-20% of AI project time on unclear requirements and changing priorities</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center mb-1">
+                      <ArrowRight className="w-4 h-4 text-purple-600 mr-1" />
+                      <span className="text-sm font-medium text-purple-700">Improvement Potential:</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">Strategic clarity could boost overall AI ROI by 60% and reduce project delivery time by 40%</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="flex items-center mb-2">
+                    <Settings className="w-4 h-4 text-gray-600 mr-1" />
+                    <span className="text-sm font-medium text-gray-700">Strategic Actions:</span>
+                  </div>
+                  <ul className="mt-2 space-y-1">
+                    <li className="text-sm text-gray-600 flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      Establish AI-first business KPIs linked to revenue and cost reduction targets
+                    </li>
+                    <li className="text-sm text-gray-600 flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      Create quarterly AI strategy alignment sessions with all department heads
+                    </li>
+                    <li className="text-sm text-gray-600 flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      Deploy AI success metrics dashboard visible to all teams in real-time
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Capability Gap */}
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <div className="mb-3">
+                <div className="flex items-center mb-1">
+                  <Zap className="w-5 h-5 text-gray-700 mr-2" />
+                  <h4 className="font-semibold text-gray-900">Capability Gap</h4>
+                </div>
+                <div className="flex items-center space-x-2 mt-1">
+                  <Badge variant="info" size="sm">Secondary Focus Area</Badge>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex items-center mb-1">
+                      <Users className="w-4 h-4 text-blue-600 mr-1" />
+                      <span className="text-sm font-medium text-blue-700">Execution Bottlenecks:</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">30% of workforce are non-users, creating capability gaps that slow down cross-team AI initiatives</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center mb-1">
+                      <Target className="w-4 h-4 text-green-600 mr-1" />
+                      <span className="text-sm font-medium text-green-700">Leadership Standard:</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">Industry leaders have 85%+ workforce AI-capable with advanced automation reducing manual work by 60%</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex items-center mb-1">
+                      <Calendar className="w-4 h-4 text-red-600 mr-1" />
+                      <span className="text-sm font-medium text-red-700">Capability Tax:</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">Technical limitations force 6-10 hours/week of manual workarounds per employee</p>
+                  </div>
+                  <div>
+                    <div className="flex items-center mb-1">
+                      <ArrowRight className="w-4 h-4 text-purple-600 mr-1" />
+                      <span className="text-sm font-medium text-purple-700">Acceleration Opportunity:</span>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1">Infrastructure upgrades could double current productivity gains and enable advanced AI use cases</p>
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="flex items-center mb-2">
+                    <Settings className="w-4 h-4 text-gray-600 mr-1" />
+                    <span className="text-sm font-medium text-gray-700">Capability Actions:</span>
+                  </div>
+                  <ul className="mt-2 space-y-1">
+                    <li className="text-sm text-gray-600 flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      Launch 30-day AI intensive training for bottom 30% of performers
+                    </li>
+                    <li className="text-sm text-gray-600 flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      Upgrade to enterprise AI platform with automated data pipelines
+                    </li>
+                    <li className="text-sm text-gray-600 flex items-start">
+                      <span className="text-blue-600 mr-2">•</span>
+                      Deploy AI-to-AI integrations for seamless workflow automation
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Success Timeline */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center mb-2">
+                <Target className="w-5 h-5 text-green-600 mr-2" />
+                <h4 className="font-semibold text-green-900">Path to Leaders Quadrant</h4>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-green-700">Months 1-3:</span>
+                  <p className="text-green-800">Focus on capability improvements - fastest wins with infrastructure and training</p>
+                </div>
+                <div>
+                  <span className="font-medium text-green-700">Months 4-6:</span>
+                  <p className="text-green-800">Strategic alignment initiatives - KPIs, governance, cross-team coordination</p>
+                </div>
+                <div>
+                  <span className="font-medium text-green-700">Months 7-9:</span>
+                  <p className="text-green-800">Optimization phase - reach Leaders quadrant with 40-50% productivity gains</p>
+                </div>
+              </div>
+            </div>
+
           </div>
         </CardContent>
       </Card>
