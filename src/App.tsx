@@ -13,6 +13,7 @@ import { AIReadiness } from './pages/AIReadiness'
 import { RiskCompliance } from './pages/overview/RiskCompliance'
 import { AutomationPipeline } from './pages/AutomationPipeline'
 
+import { AIUseCases } from './pages/AIUseCases'
 import { PeopleSkills } from './pages/PeopleSkills'
 import { ProcessInsights } from './pages/ProcessInsights'
 import { AssessmentData } from './pages/AssessmentData'
@@ -26,6 +27,8 @@ function Dashboard() {
         return <ExecutiveSummary />
       case 'ai-readiness':
         return <AIReadiness />
+      case 'ai-use-cases':
+        return <AIUseCases />
       case 'risk-compliance':
         return <RiskCompliance />
       case 'process-insights':

@@ -14,7 +14,9 @@ import {
   BarChart3,
   ArrowRight,
   FileText,
-  Workflow
+  Workflow,
+  Filter,
+  MapPin as MatrixIcon
 } from 'lucide-react'
 
 export function AutomationPipeline() {
@@ -117,6 +119,93 @@ export function AutomationPipeline() {
       timeline: '8-10 weeks'
     }
   ]
+
+  // Value vs Effort Matrix Data  
+  const matrixOpportunities = [
+    {
+      id: 'op-001',
+      name: 'Email Classification',
+      department: 'Sales',
+      value: 85,
+      effort: 25,
+      employeesImpacted: 35,
+      timeToImplement: '3-4 weeks',
+      annualSavings: 95000,
+      description: 'Automatic email categorization and routing'
+    },
+    {
+      id: 'op-002',
+      name: 'Meeting Summaries',
+      department: 'All',
+      value: 80,
+      effort: 20,
+      employeesImpacted: 156,
+      timeToImplement: '2-3 weeks',
+      annualSavings: 180000,
+      description: 'AI-generated meeting notes and action items'
+    },
+    {
+      id: 'op-003',
+      name: 'Invoice Processing',
+      department: 'Finance',
+      value: 90,
+      effort: 35,
+      employeesImpacted: 12,
+      timeToImplement: '6-8 weeks',
+      annualSavings: 125000,
+      description: 'Automated invoice data extraction and validation'
+    },
+    {
+      id: 'op-004',
+      name: 'Resume Screening',
+      department: 'HR',
+      value: 75,
+      effort: 45,
+      employeesImpacted: 8,
+      timeToImplement: '10-12 weeks',
+      annualSavings: 90000,
+      description: 'AI-powered candidate filtering and ranking'
+    },
+    {
+      id: 'op-005',
+      name: 'Expense Automation',
+      department: 'All',
+      value: 60,
+      effort: 30,
+      employeesImpacted: 89,
+      timeToImplement: '6-8 weeks',
+      annualSavings: 65000,
+      description: 'Photo-to-expense entry with auto-categorization'
+    },
+    {
+      id: 'op-006',
+      name: 'Document Templates',
+      department: 'Legal',
+      value: 70,
+      effort: 50,
+      employeesImpacted: 15,
+      timeToImplement: '8-10 weeks',
+      annualSavings: 120000,
+      description: 'AI-assisted contract and proposal creation'
+    }
+  ]
+
+  const getQuadrant = (value: number, effort: number) => {
+    if (value >= 75 && effort <= 35) return 'quick-wins'
+    if (value >= 75 && effort > 35) return 'major-projects'
+    if (value < 75 && effort <= 35) return 'fill-ins'
+    return 'low-priority'
+  }
+
+  const getQuadrantColor = (quadrant: string) => {
+    switch (quadrant) {
+      case 'quick-wins': return '#22c55e'
+      case 'major-projects': return '#3b82f6'
+      case 'fill-ins': return '#f59e0b'
+      case 'low-priority': return '#6b7280'
+      default: return '#6b7280'
+    }
+  }
 
   // Implementation roadmap prioritized by employee impact
   const implementationPhases = [
@@ -329,6 +418,161 @@ export function AutomationPipeline() {
         </CardContent>
       </Card>
 
+      {/* Opportunity Prioritization Matrix */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <MatrixIcon className="w-5 h-5 text-purple-600 mr-2" />
+            Opportunity Prioritization Matrix
+          </CardTitle>
+          <p className="text-sm text-gray-600">Value vs Effort analysis for strategic prioritization (bubble size = employee impact)</p>
+        </CardHeader>
+        <CardContent>
+          <div className="relative w-full h-96 bg-gray-50 rounded-lg overflow-hidden mb-6">
+            {/* Grid lines and labels */}
+            <div className="absolute inset-0">
+              {/* Y-axis label */}
+              <div className="absolute left-2 top-1/2 -translate-y-1/2 -rotate-90 text-sm font-medium text-gray-600">
+                Business Value →
+              </div>
+              {/* X-axis label */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm font-medium text-gray-600">
+                Implementation Effort →
+              </div>
+              
+              {/* Quadrant lines */}
+              <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-300" />
+              <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-300" />
+              
+              {/* Quadrant labels */}
+              <div className="absolute top-4 left-4 text-xs font-semibold text-green-600">
+                Quick Wins<br/>
+                <span className="font-normal text-gray-500">High Value, Low Effort</span>
+              </div>
+              <div className="absolute top-4 right-4 text-xs font-semibold text-blue-600">
+                Major Projects<br/>
+                <span className="font-normal text-gray-500">High Value, High Effort</span>
+              </div>
+              <div className="absolute bottom-16 left-4 text-xs font-semibold text-yellow-600">
+                Fill-ins<br/>
+                <span className="font-normal text-gray-500">Low Value, Low Effort</span>
+              </div>
+              <div className="absolute bottom-16 right-4 text-xs font-semibold text-gray-600">
+                Questionable<br/>
+                <span className="font-normal text-gray-500">Low Value, High Effort</span>
+              </div>
+            </div>
+
+            {/* Opportunity bubbles */}
+            <div className="absolute inset-8">
+              {matrixOpportunities.map((opportunity) => {
+                const x = (opportunity.effort / 100) * 100
+                const y = ((100 - opportunity.value) / 100) * 100
+                const size = Math.max(12, Math.min(40, opportunity.employeesImpacted / 4))
+                const quadrant = getQuadrant(opportunity.value, opportunity.effort)
+                
+                return (
+                  <div
+                    key={opportunity.id}
+                    className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer hover:scale-110 transition-transform"
+                    style={{
+                      left: `${x}%`,
+                      top: `${y}%`,
+                      width: `${size}px`,
+                      height: `${size}px`,
+                    }}
+                    title={`${opportunity.name}\nValue: ${opportunity.value}% | Effort: ${opportunity.effort}%\n${opportunity.employeesImpacted} employees impacted\n$${opportunity.annualSavings.toLocaleString()} annual savings`}
+                  >
+                    <div 
+                      className="w-full h-full rounded-full flex items-center justify-center text-xs font-medium text-white shadow-lg border-2 border-white"
+                      style={{ backgroundColor: getQuadrantColor(quadrant) }}
+                    >
+                      {opportunity.name.substring(0, 2)}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Quick Wins and Major Projects Details */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Quick Wins */}
+            <div>
+              <h4 className="font-semibold text-green-600 mb-3 flex items-center">
+                <Target className="w-4 h-4 mr-2" />
+                Quick Wins (Implement First)
+              </h4>
+              <div className="space-y-3">
+                {matrixOpportunities
+                  .filter(op => getQuadrant(op.value, op.effort) === 'quick-wins')
+                  .map((opportunity) => (
+                    <div key={opportunity.id} className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <h5 className="font-medium text-gray-900">{opportunity.name}</h5>
+                        <Badge variant="success" size="sm">{opportunity.timeToImplement}</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">{opportunity.description}</p>
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div>
+                          <span className="text-gray-500">Value</span>
+                          <div className="font-medium text-green-600">{opportunity.value}%</div>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Savings</span>
+                          <div className="font-medium text-gray-900">
+                            ${(opportunity.annualSavings / 1000).toFixed(0)}K
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Impact</span>
+                          <div className="font-medium text-gray-900">{opportunity.employeesImpacted} people</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
+            {/* Major Projects */}
+            <div>
+              <h4 className="font-semibold text-blue-600 mb-3 flex items-center">
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Major Projects (Plan for Later)
+              </h4>
+              <div className="space-y-3">
+                {matrixOpportunities
+                  .filter(op => getQuadrant(op.value, op.effort) === 'major-projects')
+                  .map((opportunity) => (
+                    <div key={opportunity.id} className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <h5 className="font-medium text-gray-900">{opportunity.name}</h5>
+                        <Badge variant="info" size="sm">{opportunity.timeToImplement}</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">{opportunity.description}</p>
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div>
+                          <span className="text-gray-500">Value</span>
+                          <div className="font-medium text-blue-600">{opportunity.value}%</div>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Savings</span>
+                          <div className="font-medium text-gray-900">
+                            ${(opportunity.annualSavings / 1000).toFixed(0)}K
+                          </div>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Impact</span>
+                          <div className="font-medium text-gray-900">{opportunity.employeesImpacted} people</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Expected Outcomes Based on Employee Feedback */}
       <Card>

@@ -144,6 +144,83 @@ export function AssessmentData() {
         </p>
       </div>
 
+      {/* Assessment Progress Dashboard */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <TrendingUp className="w-5 h-5 text-blue-600 mr-2" />
+            Assessment Progress Dashboard
+          </CardTitle>
+          <p className="text-sm text-gray-600">Overall progress since assessment launch</p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600 mb-1">88%</div>
+              <p className="text-sm text-gray-600 mb-2">Overall Completion Rate</p>
+              <div className="text-xs text-green-600">+12% from last month</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-600 mb-1">74%</div>
+              <p className="text-sm text-gray-600 mb-2">Average AI Readiness Score</p>
+              <div className="text-xs text-blue-600">+8% since Q1 2024</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-1">1,276</div>
+              <p className="text-sm text-gray-600 mb-2">Completed Assessments</p>
+              <div className="text-xs text-purple-600">156 this week</div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-medium text-gray-900 mb-3">Progress Timeline</h4>
+              <div className="space-y-3">
+                {[
+                  { date: 'Week 1', completed: 234, target: 250, rate: 94 },
+                  { date: 'Week 2', completed: 289, target: 300, rate: 96 },
+                  { date: 'Week 3', completed: 312, target: 320, rate: 98 },
+                  { date: 'Week 4', completed: 441, target: 400, rate: 110 }
+                ].map((week, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <div className="font-medium text-gray-900">{week.date}</div>
+                      <div className="text-sm text-gray-600">{week.completed} completed</div>
+                    </div>
+                    <div className="text-right">
+                      <div className={`font-bold ${week.rate >= 100 ? 'text-green-600' : week.rate >= 90 ? 'text-blue-600' : 'text-orange-600'}`}>
+                        {week.rate}%
+                      </div>
+                      <div className="text-xs text-gray-500">of target</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-medium text-gray-900 mb-3">Key Milestones Achieved</h4>
+              <div className="space-y-3">
+                {[
+                  { milestone: '50% of workforce assessed', date: 'April 15', impact: 'Baseline established' },
+                  { milestone: 'All department heads completed', date: 'April 28', impact: 'Leadership alignment' },
+                  { milestone: '80% completion rate achieved', date: 'May 10', impact: 'High participation' },
+                  { milestone: 'Assessment data analysis complete', date: 'May 18', impact: 'Insights ready' }
+                ].map((milestone, index) => (
+                  <div key={index} className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
+                    <CheckCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <div>
+                      <div className="font-medium text-gray-900">{milestone.milestone}</div>
+                      <div className="text-sm text-gray-600">{milestone.date} • {milestone.impact}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Summary Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
