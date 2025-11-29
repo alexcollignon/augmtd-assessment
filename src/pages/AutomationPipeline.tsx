@@ -17,7 +17,7 @@ import {
   Workflow
 } from 'lucide-react'
 
-export function Roadmap() {
+export function AutomationPipeline() {
   // Employee-reported pain points from assessments
   const processPainPoints = [
     {
@@ -185,7 +185,7 @@ export function Roadmap() {
   return (
     <div className="p-8 space-y-8">
       <div className="border-b border-gray-200 pb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Automation Roadmap</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Automation Pipeline</h1>
         <p className="text-gray-600 mt-2">
           AI implementation plan based on employee assessment responses and workflow analysis
         </p>
@@ -371,6 +371,199 @@ export function Roadmap() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Implementation Roadmap */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Target className="w-5 h-5 text-green-600 mr-2" />
+            Implementation Roadmap
+          </CardTitle>
+          <p className="text-sm text-gray-600">Employee-prioritized automation timeline with quick wins first</p>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-8">
+            {implementationPhases.map((phase, index) => (
+              <div key={index} className="relative">
+                {/* Phase Header */}
+                <div className="flex items-center mb-4">
+                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm mr-4">
+                    {index + 1}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">{phase.phase}</h3>
+                    <p className="text-sm text-gray-600">{phase.focus}</p>
+                  </div>
+                </div>
+
+                {/* Initiatives */}
+                <div className="ml-12 space-y-4">
+                  {phase.initiatives.map((initiative, idx) => (
+                    <div key={idx} className="p-4 bg-gray-50 border-l-4 border-green-400 rounded-r-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-gray-900">{initiative.name}</h4>
+                        <div className="flex space-x-2">
+                          <Badge variant={
+                            initiative.effort === 'Low' ? 'success' : 
+                            initiative.effort === 'Medium' ? 'warning' : 'danger'
+                          } size="sm">
+                            {initiative.effort} Effort
+                          </Badge>
+                          <Badge variant="info" size="sm">{initiative.timeline}</Badge>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-6 text-sm text-gray-600">
+                        <span className="flex items-center">
+                          <Users className="w-4 h-4 mr-1" />
+                          {initiative.employees} employees affected
+                        </span>
+                        <span className="flex items-center">
+                          <Workflow className="w-4 h-4 mr-1" />
+                          {initiative.departments} departments
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Connecting Line */}
+                {index < implementationPhases.length - 1 && (
+                  <div className="absolute left-4 top-16 w-px h-8 bg-gray-300"></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Investment & Economics */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <BarChart3 className="w-5 h-5 text-blue-600 mr-2" />
+              Investment Requirements
+            </CardTitle>
+            <p className="text-sm text-gray-600">Resource allocation for automation pipeline</p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {[
+                {
+                  category: 'Technology & Tools',
+                  amount: 125000,
+                  breakdown: ['AI platform licenses ($45K)', 'Integration tools ($35K)', 'Training platforms ($25K)', 'Infrastructure ($20K)'],
+                  timeline: 'Months 1-3'
+                },
+                {
+                  category: 'Professional Services',
+                  amount: 180000,
+                  breakdown: ['Implementation consultants ($90K)', 'Training & change management ($50K)', 'System integration ($40K)'],
+                  timeline: 'Months 1-6'
+                },
+                {
+                  category: 'Internal Resources',
+                  amount: 95000,
+                  breakdown: ['Project management (0.5 FTE)', 'Technical lead (0.3 FTE)', 'Change champions (0.2 FTE)'],
+                  timeline: 'Months 1-9'
+                }
+              ].map((investment, index) => (
+                <div key={index} className="p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-900">{investment.category}</h4>
+                    <div className="text-lg font-bold text-blue-600">${investment.amount.toLocaleString()}</div>
+                  </div>
+                  <div className="text-sm text-gray-600 mb-2">
+                    <strong>Timeline:</strong> {investment.timeline}
+                  </div>
+                  <div className="space-y-1">
+                    {investment.breakdown.map((item, idx) => (
+                      <div key={idx} className="text-xs text-gray-500 flex items-start">
+                        <span className="text-blue-500 mr-2">•</span>
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <TrendingUp className="w-5 h-5 text-green-600 mr-2" />
+              ROI Analysis
+            </CardTitle>
+            <p className="text-sm text-gray-600">Return on investment projections</p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* ROI Summary */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">$850K</div>
+                  <p className="text-sm text-gray-600">Annual Savings</p>
+                </div>
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">18 months</div>
+                  <p className="text-sm text-gray-600">Payback Period</p>
+                </div>
+              </div>
+
+              {/* Year-by-Year Breakdown */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-gray-900 mb-3">3-Year Financial Impact</h4>
+                {[
+                  { year: 'Year 1', investment: 400000, savings: 340000, netValue: -60000, cumulative: -60000 },
+                  { year: 'Year 2', investment: 150000, savings: 680000, netValue: 530000, cumulative: 470000 },
+                  { year: 'Year 3', investment: 75000, savings: 850000, netValue: 775000, cumulative: 1245000 }
+                ].map((year, index) => (
+                  <div key={index} className="p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-medium text-gray-900">{year.year}</span>
+                      <span className={`font-bold ${year.netValue >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        ${year.cumulative.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs text-gray-600">
+                      <div>
+                        Investment: ${year.investment.toLocaleString()}
+                      </div>
+                      <div>
+                        Savings: ${year.savings.toLocaleString()}
+                      </div>
+                      <div className={year.netValue >= 0 ? 'text-green-600' : 'text-red-600'}>
+                        Net: ${year.netValue.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Risk Mitigation */}
+              <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <h4 className="font-medium text-yellow-900 mb-2">Risk Mitigation</h4>
+                <ul className="text-sm text-yellow-800 space-y-1">
+                  <li className="flex items-start">
+                    <span className="text-yellow-600 mr-2">•</span>
+                    Phased approach reduces implementation risk
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-yellow-600 mr-2">•</span>
+                    Quick wins in Phase 1 build momentum and confidence
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-yellow-600 mr-2">•</span>
+                    Employee-driven priorities ensure adoption success
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

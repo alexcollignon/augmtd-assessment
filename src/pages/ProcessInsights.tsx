@@ -10,10 +10,15 @@ import {
   AlertCircle,
   CheckCircle,
   XCircle,
-  BarChart3
+  BarChart3,
+  DollarSign,
+  TrendingUp,
+  Calendar,
+  Target,
+  Zap
 } from 'lucide-react'
 
-export function WorkflowInsights() {
+export function ProcessInsights() {
   const workflows = [
     {
       id: 'wf-001',
@@ -111,9 +116,9 @@ export function WorkflowInsights() {
   return (
     <div className="p-8 space-y-8">
       <div className="border-b border-gray-200 pb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Workflow Insights</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Process Insights</h1>
         <p className="text-gray-600 mt-2">
-          Inferred workflows and process analysis across departments
+          Comprehensive workflow analysis, inefficiencies, and cost optimization opportunities
         </p>
       </div>
 
@@ -296,6 +301,225 @@ export function WorkflowInsights() {
                 </div>
               </div>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Time & Cost Savings Analysis */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <DollarSign className="w-5 h-5 text-green-600 mr-2" />
+              Cost Optimization Opportunities
+            </CardTitle>
+            <p className="text-sm text-gray-600">Potential savings from process automation</p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {[
+                {
+                  category: 'Customer Onboarding',
+                  currentCost: 145000,
+                  potentialSavings: 87000,
+                  savingsPercent: 60,
+                  timeframe: '6 months',
+                  confidence: 'High'
+                },
+                {
+                  category: 'Invoice Processing', 
+                  currentCost: 68000,
+                  potentialSavings: 34000,
+                  savingsPercent: 50,
+                  timeframe: '3 months',
+                  confidence: 'High'
+                },
+                {
+                  category: 'Employee Recruitment',
+                  currentCost: 234000,
+                  potentialSavings: 117000,
+                  savingsPercent: 50,
+                  timeframe: '9 months',
+                  confidence: 'Medium'
+                },
+                {
+                  category: 'Support Ticket Resolution',
+                  currentCost: 98000,
+                  potentialSavings: 39000,
+                  savingsPercent: 40,
+                  timeframe: '4 months',
+                  confidence: 'High'
+                }
+              ].map((item, index) => (
+                <div key={index} className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-900">{item.category}</h4>
+                    <Badge variant={item.confidence === 'High' ? 'success' : 'warning'} size="sm">
+                      {item.confidence} Confidence
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-600">Current Annual Cost</span>
+                      <div className="font-semibold text-gray-900">${item.currentCost.toLocaleString()}</div>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Potential Savings</span>
+                      <div className="font-semibold text-green-600">${item.potentialSavings.toLocaleString()}</div>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Savings Percentage</span>
+                      <div className="font-semibold text-green-600">{item.savingsPercent}%</div>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Implementation</span>
+                      <div className="font-semibold text-gray-900">{item.timeframe}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Clock className="w-5 h-5 text-blue-600 mr-2" />
+              Time Savings Impact
+            </CardTitle>
+            <p className="text-sm text-gray-600">Hours saved per week across departments</p>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {[
+                {
+                  department: 'Sales',
+                  currentHours: 480,
+                  potentialSavings: 288,
+                  processes: ['Lead qualification', 'Proposal generation', 'Follow-up automation'],
+                  impact: 'High'
+                },
+                {
+                  department: 'Finance',
+                  currentHours: 320,
+                  potentialSavings: 160,
+                  processes: ['Invoice processing', 'Expense categorization', 'Report generation'],
+                  impact: 'High'
+                },
+                {
+                  department: 'HR',
+                  currentHours: 420,
+                  potentialSavings: 210,
+                  processes: ['Resume screening', 'Interview scheduling', 'Onboarding docs'],
+                  impact: 'Medium'
+                },
+                {
+                  department: 'Marketing',
+                  currentHours: 360,
+                  potentialSavings: 144,
+                  processes: ['Content creation', 'Social media management', 'Campaign analysis'],
+                  impact: 'Medium'
+                }
+              ].map((dept, index) => (
+                <div key={index} className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-gray-900">{dept.department} Department</h4>
+                    <Badge variant={dept.impact === 'High' ? 'success' : 'warning'} size="sm">
+                      {dept.impact} Impact
+                    </Badge>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <div>
+                      <span className="text-sm text-gray-600">Current hrs/week</span>
+                      <div className="text-lg font-semibold text-gray-900">{dept.currentHours}</div>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">Potential savings</span>
+                      <div className="text-lg font-semibold text-blue-600">{dept.potentialSavings} hrs</div>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-xs text-gray-600 font-medium">Key Automation Areas:</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {dept.processes.map((process, idx) => (
+                        <span key={idx} className="text-xs bg-white px-2 py-1 rounded border">
+                          {process}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* ROI Summary */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Target className="w-5 h-5 text-purple-600 mr-2" />
+            Process Optimization ROI Summary
+          </CardTitle>
+          <p className="text-sm text-gray-600">Financial impact of identified automation opportunities</p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-600">$277K</div>
+              <p className="text-sm text-gray-600 mt-1">Annual Savings Potential</p>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-600">802</div>
+              <p className="text-sm text-gray-600 mt-1">Hours Saved/Week</p>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-600">52%</div>
+              <p className="text-sm text-gray-600 mt-1">Average Efficiency Gain</p>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-orange-600">8.5x</div>
+              <p className="text-sm text-gray-600 mt-1">Projected ROI</p>
+            </div>
+          </div>
+          
+          <div className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-lg border">
+            <div className="flex items-start space-x-4">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-green-600" />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-900 mb-2">Implementation Timeline & Impact</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div className="bg-white p-3 rounded border">
+                    <div className="flex items-center mb-1">
+                      <Calendar className="w-4 h-4 text-blue-600 mr-1" />
+                      <span className="font-medium">Months 1-3</span>
+                    </div>
+                    <p className="text-gray-600">Quick wins: Invoice processing & support tickets</p>
+                    <p className="text-green-600 font-medium mt-1">$73K savings</p>
+                  </div>
+                  <div className="bg-white p-3 rounded border">
+                    <div className="flex items-center mb-1">
+                      <Calendar className="w-4 h-4 text-purple-600 mr-1" />
+                      <span className="font-medium">Months 4-6</span>
+                    </div>
+                    <p className="text-gray-600">Medium complexity: Customer onboarding automation</p>
+                    <p className="text-green-600 font-medium mt-1">$87K additional</p>
+                  </div>
+                  <div className="bg-white p-3 rounded border">
+                    <div className="flex items-center mb-1">
+                      <Calendar className="w-4 h-4 text-orange-600 mr-1" />
+                      <span className="font-medium">Months 7-9</span>
+                    </div>
+                    <p className="text-gray-600">Complex workflows: Recruitment & marketing</p>
+                    <p className="text-green-600 font-medium mt-1">$117K additional</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

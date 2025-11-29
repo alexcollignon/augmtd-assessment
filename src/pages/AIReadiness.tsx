@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts'
 import { MapPin, Target, Zap, Calendar, TrendingUp, Users, Settings, ArrowRight, MessageCircle, CheckCircle, Building2 } from 'lucide-react'
 
-export function CompanyMaturity() {
+export function AIReadiness() {
   const [viewType, setViewType] = useState<'organizational' | 'skills'>('organizational')
   const [selectedDepartment, setSelectedDepartment] = useState('all')
   const [showDepartments, setShowDepartments] = useState(false)
@@ -244,7 +244,7 @@ export function CompanyMaturity() {
       <div className="border-b border-gray-200 pb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Company Maturity</h1>
+            <h1 className="text-3xl font-bold text-gray-900">AI Readiness</h1>
             <p className="text-gray-600 mt-2">
               {viewType === 'organizational' 
                 ? 'AI maturity assessment across the six-pillar framework'

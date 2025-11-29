@@ -6,86 +6,36 @@ import { AssessmentPlaceholder } from './components/AssessmentPlaceholder'
 import { AuthProvider } from './contexts/AuthContext'
 import { AssessmentProvider } from './contexts/AssessmentContext'
 import { getAppMode, handleNavigation, AppMode } from './router'
-import { NavigationCategory } from './types'
 
 // Page Components
 import { ExecutiveSummary } from './pages/overview/ExecutiveSummary'
-import { CompanyMaturity } from './pages/overview/CompanyMaturity'
+import { AIReadiness } from './pages/AIReadiness'
 import { RiskCompliance } from './pages/overview/RiskCompliance'
-import { Roadmap } from './pages/overview/Roadmap'
+import { AutomationPipeline } from './pages/AutomationPipeline'
 
-import { AIPillars } from './pages/capabilities/AIPillars'
-import { SkillsProficiency } from './pages/capabilities/SkillsProficiency'
-import { DepartmentMaturity } from './pages/capabilities/DepartmentMaturity'
-import { PersonaInsights } from './pages/capabilities/PersonaInsights'
-import { ProgressTime } from './pages/capabilities/ProgressTime'
-
-import { WorkflowInsights } from './pages/operations/WorkflowInsights'
-import { InefficiencyHeatmap } from './pages/operations/InefficiencyHeatmap'
-import { AutomationOpportunities } from './pages/operations/AutomationOpportunities'
-import { OpportunityMap } from './pages/operations/OpportunityMap'
-import { TimeCostSavings } from './pages/operations/TimeCostSavings'
-import { AdoptionPatterns } from './pages/operations/AdoptionPatterns'
-import { InvestmentEconomics } from './pages/operations/InvestmentEconomics'
-
-import { CohortOverview } from './pages/assessments/CohortOverview'
-import { AssessmentExplorer } from './pages/assessments/AssessmentExplorer'
-import { IndividualResponses } from './pages/assessments/IndividualResponses'
-import { Exports } from './pages/assessments/Exports'
+import { PeopleSkills } from './pages/PeopleSkills'
+import { ProcessInsights } from './pages/ProcessInsights'
+import { AssessmentData } from './pages/AssessmentData'
 
 function Dashboard() {
-  const [currentCategory, setCurrentCategory] = useState<NavigationCategory>('overview')
-  const [currentTab, setCurrentTab] = useState('executive-summary')
+  const [currentPage, setCurrentPage] = useState('executive-summary')
 
   const renderContent = () => {
-    switch (currentTab) {
-      // Overview
+    switch (currentPage) {
       case 'executive-summary':
         return <ExecutiveSummary />
-      case 'company-maturity':
-        return <CompanyMaturity />
+      case 'ai-readiness':
+        return <AIReadiness />
       case 'risk-compliance':
         return <RiskCompliance />
-      case 'roadmap':
-        return <Roadmap />
-      
-      // Capabilities
-      case 'ai-pillars':
-        return <AIPillars />
-      case 'skills-proficiency':
-        return <SkillsProficiency />
-      case 'department-maturity':
-        return <DepartmentMaturity />
-      case 'persona-insights':
-        return <PersonaInsights />
-      case 'progress-time':
-        return <ProgressTime />
-      
-      // Operations
-      case 'workflow-insights':
-        return <WorkflowInsights />
-      case 'inefficiency-heatmap':
-        return <InefficiencyHeatmap />
-      case 'automation-opportunities':
-        return <AutomationOpportunities />
-      case 'opportunity-map':
-        return <OpportunityMap />
-      case 'time-cost-savings':
-        return <TimeCostSavings />
-      case 'adoption-patterns':
-        return <AdoptionPatterns />
-      case 'investment-economics':
-        return <InvestmentEconomics />
-      
-      // Assessments
-      case 'cohort-overview':
-        return <CohortOverview />
-      case 'assessment-explorer':
-        return <AssessmentExplorer />
-      case 'individual-responses':
-        return <IndividualResponses />
-      case 'exports':
-        return <Exports />
+      case 'process-insights':
+        return <ProcessInsights />
+      case 'automation-pipeline':
+        return <AutomationPipeline />
+      case 'people-skills':
+        return <PeopleSkills />
+      case 'assessment-data':
+        return <AssessmentData />
       
       default:
         return <ExecutiveSummary />
@@ -95,10 +45,8 @@ function Dashboard() {
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar
-        currentCategory={currentCategory}
-        currentTab={currentTab}
-        onCategoryChange={setCurrentCategory}
-        onTabChange={setCurrentTab}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
       />
       
       <main className="flex-1 overflow-auto">

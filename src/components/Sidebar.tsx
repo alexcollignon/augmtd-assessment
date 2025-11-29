@@ -23,64 +23,24 @@ import {
   LogOut
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { NavigationCategory } from '@/types'
 import { useAuth } from '@/contexts/AuthContext'
 
 interface SidebarProps {
-  currentCategory: NavigationCategory
-  currentTab: string
-  onCategoryChange: (category: NavigationCategory) => void
-  onTabChange: (tab: string) => void
+  currentPage: string
+  onPageChange: (page: string) => void
 }
 
-const navigationStructure = {
-  overview: {
-    label: 'OVERVIEW',
-    icon: BarChart3,
-    tabs: [
-      { id: 'executive-summary', label: 'Executive Summary', icon: Target },
-      { id: 'company-maturity', label: 'AI Maturity', icon: Building2 },
-      { id: 'risk-compliance', label: 'Risk & Compliance', icon: ShieldCheck },
-      { id: 'roadmap', label: 'Automation Roadmap', icon: Map },
-    ]
-  },
-  capabilities: {
-    label: 'CAPABILITIES',
-    icon: Brain,
-    tabs: [
-      { id: 'ai-pillars', label: 'AI Pillars', icon: Brain },
-      { id: 'skills-proficiency', label: 'Skills & Proficiency', icon: Users },
-      { id: 'department-maturity', label: 'Department Maturity', icon: Building2 },
-      { id: 'persona-insights', label: 'Persona Insights', icon: User },
-      { id: 'progress-time', label: 'Progress Over Time', icon: TrendingUp },
-    ]
-  },
-  operations: {
-    label: 'OPERATIONS',
-    icon: Workflow,
-    tabs: [
-      { id: 'workflow-insights', label: 'Workflow Insights', icon: Workflow },
-      { id: 'inefficiency-heatmap', label: 'Inefficiency Heatmap', icon: Flame },
-      { id: 'automation-opportunities', label: 'Automation Opportunities', icon: Zap },
-      { id: 'opportunity-map', label: 'Opportunity Map', icon: MapPin },
-      { id: 'time-cost-savings', label: 'Time & Cost Savings', icon: Clock },
-      { id: 'adoption-patterns', label: 'Adoption Patterns', icon: UserCheck },
-      { id: 'investment-economics', label: 'Investment & Economics', icon: DollarSign },
-    ]
-  },
-  assessments: {
-    label: 'ASSESSMENTS',
-    icon: FileText,
-    tabs: [
-      { id: 'cohort-overview', label: 'Cohort Overview', icon: Users },
-      { id: 'assessment-explorer', label: 'Assessment Explorer', icon: Search },
-      { id: 'individual-responses', label: 'Individual Responses', icon: UserCircle },
-      { id: 'exports', label: 'Exports', icon: Download },
-    ]
-  }
-}
+const navigationPages = [
+  { id: 'executive-summary', label: 'Overview', icon: Target },
+  { id: 'ai-readiness', label: 'AI Readiness', icon: Brain },
+  { id: 'risk-compliance', label: 'Risk & Compliance', icon: ShieldCheck },
+  { id: 'process-insights', label: 'Process Insights', icon: Workflow },
+  { id: 'automation-pipeline', label: 'Automation Pipeline', icon: Zap },
+  { id: 'people-skills', label: 'People & Skills', icon: Users },
+  { id: 'assessment-data', label: 'Assessment Data', icon: FileText },
+]
 
-export function Sidebar({ currentCategory, currentTab, onCategoryChange, onTabChange }: SidebarProps) {
+export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
   const { user, logout } = useAuth()
   
   return (
@@ -90,49 +50,25 @@ export function Sidebar({ currentCategory, currentTab, onCategoryChange, onTabCh
         <p className="text-navy-300 text-sm mt-1">AI Readiness & Due Diligence</p>
       </div>
       
-      <nav className="flex-1 overflow-y-auto">
-        {Object.entries(navigationStructure).map(([categoryKey, category]) => {
-          const CategoryIcon = category.icon
-          const isActiveCategory = currentCategory === categoryKey
+      <nav className="flex-1 overflow-y-auto py-4">
+        {navigationPages.map((page) => {
+          const PageIcon = page.icon
+          const isActivePage = currentPage === page.id
           
           return (
-            <div key={categoryKey} className="mb-6">
-              <button
-                onClick={() => onCategoryChange(categoryKey as NavigationCategory)}
-                className={cn(
-                  'w-full flex items-center px-6 py-3 text-left font-semibold text-xs uppercase tracking-wider transition-colors',
-                  isActiveCategory ? 'bg-navy-800 text-white' : 'text-navy-300 hover:text-white hover:bg-navy-800'
-                )}
-              >
-                <CategoryIcon className="w-4 h-4 mr-3" />
-                {category.label}
-              </button>
-              
-              {isActiveCategory && (
-                <div className="bg-navy-800">
-                  {category.tabs.map((tab) => {
-                    const TabIcon = tab.icon
-                    const isActiveTab = currentTab === tab.id
-                    
-                    return (
-                      <button
-                        key={tab.id}
-                        onClick={() => onTabChange(tab.id)}
-                        className={cn(
-                          'w-full flex items-center px-8 py-2.5 text-left text-sm transition-colors',
-                          isActiveTab 
-                            ? 'bg-blue-600 text-white border-r-2 border-blue-400' 
-                            : 'text-navy-300 hover:text-white hover:bg-navy-700'
-                        )}
-                      >
-                        <TabIcon className="w-4 h-4 mr-3" />
-                        {tab.label}
-                      </button>
-                    )
-                  })}
-                </div>
+            <button
+              key={page.id}
+              onClick={() => onPageChange(page.id)}
+              className={cn(
+                'w-full flex items-center px-6 py-3 text-left text-sm transition-colors mb-1',
+                isActivePage 
+                  ? 'bg-blue-600 text-white border-r-4 border-blue-400' 
+                  : 'text-navy-300 hover:text-white hover:bg-navy-800'
               )}
-            </div>
+            >
+              <PageIcon className="w-5 h-5 mr-3" />
+              {page.label}
+            </button>
           )
         })}
       </nav>
