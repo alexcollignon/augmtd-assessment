@@ -55,14 +55,52 @@ export function ExecutiveSummary() {
         </p>
       </div>
 
-      {/* AI Health Score Hero */}
+      {/* Top Metrics Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <Card className="flex items-center justify-center">
+          <CardContent className="text-center py-5">
+            <Users className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+            <p className="text-sm font-medium text-gray-600 mb-1">Employees Assessed</p>
+            <div className="text-3xl font-bold text-gray-900">1,247</div>
+            <p className="text-xs text-gray-500 mt-1">Across 6 departments</p>
+          </CardContent>
+        </Card>
+        <Card className="flex items-center justify-center">
+          <CardContent className="text-center py-5">
+            <TrendingUp className="w-6 h-6 text-green-600 mx-auto mb-2" />
+            <p className="text-sm font-medium text-gray-600 mb-1">Avg. Skill Level</p>
+            <div className="text-3xl font-bold text-gray-900">68%</div>
+            <p className="text-xs text-gray-500 mt-1">Across all domains</p>
+          </CardContent>
+        </Card>
+        <Card className="flex items-center justify-center">
+          <CardContent className="text-center py-5">
+            <Brain className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+            <p className="text-sm font-medium text-gray-600 mb-1">Automatable Work</p>
+            <div className="text-3xl font-bold text-gray-900">32%</div>
+            <p className="text-xs text-gray-500 mt-1">Of processes can be automated</p>
+          </CardContent>
+        </Card>
+        <Card className="flex items-center justify-center">
+          <CardContent className="text-center py-5">
+            <AlertTriangle className="w-6 h-6 text-orange-600 mx-auto mb-2" />
+            <p className="text-sm font-medium text-gray-600 mb-1">Risk Exposure</p>
+            <div className="text-3xl font-bold text-orange-600">18%</div>
+            <p className="text-xs text-gray-500 mt-1">Shadow AI & compliance</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* AI Health Score and Pillars */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="lg:col-span-1">
+          <CardHeader>
+            <CardTitle>AI Health Score</CardTitle>
+          </CardHeader>
           <CardContent className="text-center py-8">
             <div className="mb-6">
               <CircularProgress value={aiHealthScore} size="xl" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">AI Health Score</h2>
             <p className="text-gray-600 mb-4">Overall organizational readiness</p>
             <div className="flex justify-center items-center space-x-4 text-sm">
               <div className="flex items-center">
@@ -71,81 +109,44 @@ export function ExecutiveSummary() {
               </div>
               <div className="text-gray-500">Developing</div>
             </div>
-            <div className="flex items-center justify-center text-gray-400 mt-6 pt-4 border-t border-gray-200">
-              <ArrowDown className="w-4 h-4 mr-1" />
-              <span className="text-xs">Based on 6 pillars below</span>
-            </div>
           </CardContent>
         </Card>
 
-        <div className="lg:col-span-2 grid grid-cols-2 gap-4">
-          <Card className="flex items-center justify-center">
-            <CardContent className="text-center py-5">
-              <Users className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-600 mb-1">Employees Assessed</p>
-              <div className="text-3xl font-bold text-gray-900">1,247</div>
-              <p className="text-xs text-gray-500 mt-1">Across 6 departments</p>
-            </CardContent>
-          </Card>
-          <Card className="flex items-center justify-center">
-            <CardContent className="text-center py-5">
-              <Brain className="w-6 h-6 text-purple-600 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-600 mb-1">Automatable Work</p>
-              <div className="text-3xl font-bold text-gray-900">32%</div>
-              <p className="text-xs text-gray-500 mt-1">Of processes can be automated</p>
-            </CardContent>
-          </Card>
-          <Card className="flex items-center justify-center">
-            <CardContent className="text-center py-5">
-              <TrendingUp className="w-6 h-6 text-green-600 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-600 mb-1">Avg. Skill Level</p>
-              <div className="text-3xl font-bold text-gray-900">68%</div>
-              <p className="text-xs text-gray-500 mt-1">Across all domains</p>
-            </CardContent>
-          </Card>
-          <Card className="flex items-center justify-center">
-            <CardContent className="text-center py-5">
-              <AlertTriangle className="w-6 h-6 text-orange-600 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-600 mb-1">Risk Exposure</p>
-              <div className="text-3xl font-bold text-orange-600">18%</div>
-              <p className="text-xs text-gray-500 mt-1">Shadow AI & compliance</p>
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>AI Maturity Pillars</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                {[
+                  { name: 'Strategy', score: 82, icon: Brain, description: 'AI vision & roadmap clarity' },
+                  { name: 'Cost & Value', score: 71, icon: DollarSign, description: 'ROI tracking & benefits' },
+                  { name: 'Organization', score: 68, icon: Users, description: 'Team skills & readiness' },
+                  { name: 'Technology', score: 74, icon: TrendingUp, description: 'Infrastructure & tools' },
+                  { name: 'Data', score: 79, icon: Brain, description: 'Quality & governance' },
+                  { name: 'Security', score: 86, icon: Shield, description: 'Risk & compliance' }
+                ].map((pillar) => {
+                  const Icon = pillar.icon
+                  return (
+                    <div key={pillar.name} className="text-center">
+                      <div className="flex justify-center mb-3">
+                        <Icon className="w-8 h-8 text-gray-600" />
+                      </div>
+                      <div className="mb-2">
+                        <CircularProgress value={pillar.score} size="sm" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-900">{pillar.name}</p>
+                      <p className="text-xs text-gray-500 mt-1">{pillar.description}</p>
+                    </div>
+                  )
+                })}
+              </div>
             </CardContent>
           </Card>
         </div>
       </div>
 
-      {/* Pillar Indicators */}
-      <Card>
-        <CardHeader>
-          <CardTitle>AI Maturity Pillars</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {[
-              { name: 'Strategy', score: 82, icon: Brain, description: 'AI vision & roadmap clarity' },
-              { name: 'Cost & Value', score: 71, icon: DollarSign, description: 'ROI tracking & benefits' },
-              { name: 'Organization', score: 68, icon: Users, description: 'Team skills & readiness' },
-              { name: 'Technology', score: 74, icon: TrendingUp, description: 'Infrastructure & tools' },
-              { name: 'Data', score: 79, icon: Brain, description: 'Quality & governance' },
-              { name: 'Security', score: 86, icon: Shield, description: 'Risk & compliance' }
-            ].map((pillar) => {
-              const Icon = pillar.icon
-              return (
-                <div key={pillar.name} className="text-center">
-                  <div className="flex justify-center mb-3">
-                    <Icon className="w-8 h-8 text-gray-600" />
-                  </div>
-                  <div className="mb-2">
-                    <CircularProgress value={pillar.score} size="sm" />
-                  </div>
-                  <p className="text-sm font-medium text-gray-900">{pillar.name}</p>
-                  <p className="text-xs text-gray-500 mt-1">{pillar.description}</p>
-                </div>
-              )
-            })}
-          </div>
-        </CardContent>
-      </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Top Strengths */}
