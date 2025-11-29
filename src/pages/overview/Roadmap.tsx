@@ -1,218 +1,274 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { CircularProgress } from '@/components/ui/CircularProgress'
 import { 
+  MessageCircle, 
   Clock, 
-  CheckCircle, 
-  ArrowRight, 
-  Target, 
-  Settings, 
   Users, 
-  Database, 
-  Shield,
-  TrendingUp,
-  AlertCircle
+  TrendingUp, 
+  AlertTriangle,
+  CheckCircle,
+  Target,
+  Zap,
+  BarChart3,
+  ArrowRight,
+  FileText,
+  Workflow
 } from 'lucide-react'
 
 export function Roadmap() {
-  const quickWins = [
+  // Employee-reported pain points from assessments
+  const processPainPoints = [
     {
-      title: 'AI Ethics Committee Formation',
-      description: 'Establish cross-functional AI governance team',
-      timeline: '2 weeks',
-      impact: 'High',
-      effort: 'Low',
-      owner: 'Chief Data Officer'
+      process: 'Customer Onboarding',
+      department: 'Sales',
+      employeesReporting: 23,
+      totalEmployees: 45,
+      avgTimeSpent: '4.5 hrs/week',
+      topComplaints: [
+        'Manual data entry across 5 different systems (18 employees)',
+        'Waiting for approvals - process gets stuck (15 employees)',
+        'Duplicate information entry in CRM and billing (12 employees)'
+      ],
+      impactScore: 85
     },
     {
-      title: 'Shadow AI Tool Audit',
-      description: 'Complete inventory of unauthorized AI tools in use',
-      timeline: '3 weeks', 
-      impact: 'Medium',
-      effort: 'Low',
-      owner: 'IT Security'
+      process: 'Invoice Processing',
+      department: 'Finance', 
+      employeesReporting: 8,
+      totalEmployees: 12,
+      avgTimeSpent: '6.2 hrs/week',
+      topComplaints: [
+        'Manual PDF data extraction takes forever (8 employees)',
+        'Chasing approvals via email and Slack (6 employees)',
+        'Excel copy-paste errors requiring rework (5 employees)'
+      ],
+      impactScore: 92
     },
     {
-      title: 'Customer Service Bot Pilot',
-      description: 'Deploy AI chatbot for common customer queries',
-      timeline: '4 weeks',
-      impact: 'High',
-      effort: 'Medium',
-      owner: 'Customer Success'
+      process: 'Resume Screening',
+      department: 'HR',
+      employeesReporting: 4,
+      totalEmployees: 8,
+      avgTimeSpent: '8.5 hrs/week',
+      topComplaints: [
+        'Reading through hundreds of similar resumes (4 employees)',
+        'Manual scoring in spreadsheets is inconsistent (3 employees)',
+        'Difficulty identifying qualified candidates quickly (4 employees)'
+      ],
+      impactScore: 78
     },
     {
-      title: 'Data Quality Assessment',
-      description: 'Baseline data quality metrics across systems',
-      timeline: '6 weeks',
-      impact: 'High',
-      effort: 'Medium',
-      owner: 'Data Engineering'
+      process: 'IT Support Tickets',
+      department: 'IT',
+      employeesReporting: 12,
+      totalEmployees: 18,
+      avgTimeSpent: '3.2 hrs/week',
+      topComplaints: [
+        'Same questions asked repeatedly via different channels (10 employees)',
+        'Manual ticket categorization and routing (8 employees)',
+        'Knowledge base search is ineffective (7 employees)'
+      ],
+      impactScore: 71
     }
   ]
 
-  const ninetyDayPlan = [
+  // Employee-suggested automation opportunities
+  const employeeSuggestions = [
     {
-      week: 'Week 1-2',
-      initiatives: [
-        'Form AI Ethics Committee',
-        'Launch AI awareness training',
-        'Begin shadow AI audit'
-      ]
+      opportunity: 'Automated Email Classification',
+      suggestedBy: 28,
+      departments: ['Sales', 'Customer Success', 'Marketing'],
+      description: 'Auto-sort and route emails to right person/queue',
+      employeeQuote: '"I spend 1+ hour daily just sorting and forwarding emails to the right team"',
+      estimatedSavings: '2-3 hrs/week per person',
+      feasibility: 'High',
+      timeline: '4-6 weeks'
     },
     {
-      week: 'Week 3-6',
-      initiatives: [
-        'Complete data quality assessment',
-        'Deploy customer service pilot',
-        'Establish model monitoring framework'
-      ]
+      opportunity: 'Meeting Summary Generation',
+      suggestedBy: 34,
+      departments: ['All'],
+      description: 'AI-generated meeting notes and action items',
+      employeeQuote: '"Taking notes during meetings means I miss half the conversation"',
+      estimatedSavings: '1-2 hrs/week per person',
+      feasibility: 'High', 
+      timeline: '3-4 weeks'
     },
     {
-      week: 'Week 7-10',
-      initiatives: [
-        'Implement bias detection tools',
-        'Develop AI governance policies',
-        'Begin HR automation pilot'
-      ]
+      opportunity: 'Expense Report Automation',
+      suggestedBy: 19,
+      departments: ['All'],
+      description: 'Photo-to-expense entry with auto-categorization',
+      employeeQuote: '"Monthly expense reports take me 2+ hours of tedious data entry"',
+      estimatedSavings: '2 hrs/month per person',
+      feasibility: 'Medium',
+      timeline: '6-8 weeks'
     },
     {
-      week: 'Week 11-12',
-      initiatives: [
-        'Evaluate pilot results',
-        'Plan next phase rollout',
-        'Update risk assessments'
-      ]
+      opportunity: 'Document Template Generation',
+      suggestedBy: 15,
+      departments: ['Legal', 'Sales', 'HR'],
+      description: 'AI-assisted contract and proposal creation',
+      employeeQuote: '"Creating proposals from scratch is 80% copy-paste from old ones"',
+      estimatedSavings: '4-5 hrs/week per person',
+      feasibility: 'Medium',
+      timeline: '8-10 weeks'
     }
   ]
 
-  const roadmapItems = [
+  // Implementation roadmap prioritized by employee impact
+  const implementationPhases = [
     {
-      quarter: 'Q1 2024',
-      focus: 'Foundation & Governance',
-      items: [
-        'AI governance framework',
-        'Data infrastructure audit',
-        'Initial automation pilots'
+      phase: 'Phase 1: Quick Wins (Next 30 days)',
+      focus: 'High employee demand, easy implementation',
+      initiatives: [
+        {
+          name: 'Meeting Summary Tool',
+          employees: 34,
+          departments: 6,
+          timeline: '3-4 weeks',
+          effort: 'Low'
+        },
+        {
+          name: 'Email Classification',
+          employees: 28,
+          departments: 3, 
+          timeline: '4-6 weeks',
+          effort: 'Low'
+        }
       ]
     },
     {
-      quarter: 'Q2 2024',
-      focus: 'Pilot Expansion',
-      items: [
-        'Scale successful pilots',
-        'Advanced analytics platform',
-        'Employee AI training program'
+      phase: 'Phase 2: Process Automation (30-90 days)',
+      focus: 'Address highest pain point processes',
+      initiatives: [
+        {
+          name: 'Invoice Processing Automation',
+          employees: 8,
+          departments: 1,
+          timeline: '6-8 weeks',
+          effort: 'Medium'
+        },
+        {
+          name: 'Customer Onboarding Workflow',
+          employees: 23,
+          departments: 2,
+          timeline: '8-10 weeks',
+          effort: 'Medium'
+        }
       ]
     },
     {
-      quarter: 'Q3 2024',
-      focus: 'Department Integration',
-      items: [
-        'Department-specific AI solutions',
-        'Process automation at scale',
-        'Performance measurement system'
-      ]
-    },
-    {
-      quarter: 'Q4 2024',
-      focus: 'Optimization & Innovation',
-      items: [
-        'AI-driven decision systems',
-        'Advanced ML capabilities',
-        'Innovation lab establishment'
+      phase: 'Phase 3: Advanced Solutions (90+ days)',
+      focus: 'Complex but high-value automation',
+      initiatives: [
+        {
+          name: 'Resume Screening AI',
+          employees: 4,
+          departments: 1,
+          timeline: '10-12 weeks',
+          effort: 'High'
+        },
+        {
+          name: 'Document Generation Suite',
+          employees: 15,
+          departments: 3,
+          timeline: '12-16 weeks',
+          effort: 'High'
+        }
       ]
     }
-  ]
-
-  const requiredIntegrations = [
-    { system: 'Salesforce CRM', priority: 'High', complexity: 'Medium', timeline: '6-8 weeks' },
-    { system: 'SAP ERP', priority: 'High', complexity: 'High', timeline: '12-16 weeks' },
-    { system: 'Microsoft 365', priority: 'Medium', complexity: 'Low', timeline: '3-4 weeks' },
-    { system: 'Slack/Teams', priority: 'Medium', complexity: 'Low', timeline: '2-3 weeks' },
-    { system: 'Tableau/PowerBI', priority: 'High', complexity: 'Medium', timeline: '4-6 weeks' },
-    { system: 'AWS/Azure ML', priority: 'High', complexity: 'High', timeline: '8-12 weeks' }
-  ]
-
-  const governanceChanges = [
-    'Establish AI Center of Excellence (COE)',
-    'Update data governance policies for AI',
-    'Implement AI risk management framework',
-    'Create AI vendor assessment process',
-    'Develop AI incident response procedures'
   ]
 
   return (
     <div className="p-8 space-y-8">
       <div className="border-b border-gray-200 pb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Roadmap & Recommendations</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Automation Roadmap</h1>
         <p className="text-gray-600 mt-2">
-          Strategic implementation plan and key milestones for AI transformation
+          AI implementation plan based on employee assessment responses and workflow analysis
         </p>
+        <div className="flex items-center mt-3 text-sm text-blue-600">
+          <FileText className="w-4 h-4 mr-1" />
+          Based on 1,247 employee assessment responses across 6 departments
+        </div>
       </div>
 
-      {/* 30-Day Quick Wins */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Target className="w-5 h-5 text-green-600 mr-2" />
-            30-Day Quick Wins
-          </CardTitle>
-          <p className="text-sm text-gray-600">High-impact initiatives to start immediately</p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {quickWins.map((win, index) => (
-              <div key={index} className="p-4 border-2 border-green-200 bg-green-50 rounded-lg">
-                <div className="flex justify-between items-start mb-3">
-                  <h3 className="font-semibold text-gray-900">{win.title}</h3>
-                  <Badge variant="success" size="sm">{win.timeline}</Badge>
-                </div>
-                <p className="text-sm text-gray-700 mb-3">{win.description}</p>
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex space-x-2">
-                    <Badge variant={win.impact === 'High' ? 'success' : 'warning'} size="sm">
-                      {win.impact} Impact
-                    </Badge>
-                    <Badge variant={win.effort === 'Low' ? 'success' : 'warning'} size="sm">
-                      {win.effort} Effort
-                    </Badge>
-                  </div>
-                  <span className="text-gray-500">{win.owner}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Assessment Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardContent className="text-center py-6">
+            <MessageCircle className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-gray-900">47</div>
+            <p className="text-sm text-gray-600">Processes Identified</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="text-center py-6">
+            <AlertTriangle className="w-8 h-8 text-orange-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-gray-900">823</div>
+            <p className="text-sm text-gray-600">Pain Points Reported</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="text-center py-6">
+            <Users className="w-8 h-8 text-green-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-gray-900">156</div>
+            <p className="text-sm text-gray-600">Automation Suggestions</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="text-center py-6">
+            <Clock className="w-8 h-8 text-purple-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-gray-900">1,250</div>
+            <p className="text-sm text-gray-600">Hrs/Week Can Be Saved</p>
+          </CardContent>
+        </Card>
+      </div>
 
-      {/* 90-Day Plan */}
+      {/* Top Process Pain Points from Employee Feedback */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Clock className="w-5 h-5 text-blue-600 mr-2" />
-            90-Day Implementation Plan
+            <AlertTriangle className="w-5 h-5 text-orange-600 mr-2" />
+            Biggest Process Pain Points
           </CardTitle>
-          <p className="text-sm text-gray-600">Detailed timeline for the first quarter</p>
+          <p className="text-sm text-gray-600">Based on employee assessment responses and time tracking</p>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {ninetyDayPlan.map((phase, index) => (
-              <div key={index} className="flex">
-                <div className="flex flex-col items-center mr-6">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="text-sm font-semibold text-blue-600">{index + 1}</span>
+            {processPainPoints.map((painPoint, index) => (
+              <div key={index} className="p-6 border-2 border-orange-200 bg-orange-50 rounded-lg">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-gray-900">{painPoint.process}</h3>
+                      <div className="flex items-center space-x-4">
+                        <Badge variant="warning">{painPoint.department}</Badge>
+                        <Badge variant="danger">Impact: {painPoint.impactScore}%</Badge>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-6 text-sm text-gray-600 mb-3">
+                      <span><Users className="w-4 h-4 inline mr-1" />{painPoint.employeesReporting} of {painPoint.totalEmployees} employees reporting issues</span>
+                      <span><Clock className="w-4 h-4 inline mr-1" />Avg. {painPoint.avgTimeSpent} per person</span>
+                    </div>
                   </div>
-                  {index < ninetyDayPlan.length - 1 && (
-                    <div className="w-0.5 h-16 bg-gray-300 mt-2"></div>
-                  )}
+                  <div className="ml-4">
+                    <CircularProgress 
+                      value={Math.round((painPoint.employeesReporting / painPoint.totalEmployees) * 100)} 
+                      size="sm" 
+                    />
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 mb-2">{phase.week}</h3>
+                
+                <div>
+                  <h4 className="font-medium text-gray-800 mb-2">Top Employee Complaints:</h4>
                   <div className="space-y-2">
-                    {phase.initiatives.map((initiative, idx) => (
-                      <div key={idx} className="flex items-center text-sm text-gray-700">
-                        <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                        {initiative}
+                    {painPoint.topComplaints.map((complaint, idx) => (
+                      <div key={idx} className="flex items-start text-sm">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <span className="text-gray-700">{complaint}</span>
                       </div>
                     ))}
                   </div>
@@ -223,121 +279,95 @@ export function Roadmap() {
         </CardContent>
       </Card>
 
-      {/* 12-Month Roadmap */}
+      {/* Employee-Suggested Automation Opportunities */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <TrendingUp className="w-5 h-5 text-purple-600 mr-2" />
-            12-Month Strategic Roadmap
+            <Zap className="w-5 h-5 text-blue-600 mr-2" />
+            Employee-Suggested Automation Opportunities
           </CardTitle>
-          <p className="text-sm text-gray-600">High-level quarterly milestones and focus areas</p>
+          <p className="text-sm text-gray-600">Most requested automation ideas from assessment responses</p>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {roadmapItems.map((quarter, index) => (
-              <Card key={index} className="border-2 border-gray-200">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-gray-900">{quarter.quarter}</h3>
-                    {index < roadmapItems.length - 1 && (
-                      <ArrowRight className="w-4 h-4 text-gray-400" />
-                    )}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {employeeSuggestions.map((suggestion, index) => (
+              <div key={index} className="p-5 border border-blue-200 bg-blue-50 rounded-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-gray-900">{suggestion.opportunity}</h3>
+                  <div className="flex space-x-2">
+                    <Badge variant={suggestion.feasibility === 'High' ? 'success' : 'warning'} size="sm">
+                      {suggestion.feasibility}
+                    </Badge>
+                    <Badge variant="info" size="sm">{suggestion.timeline}</Badge>
                   </div>
-                  <p className="text-sm font-medium text-purple-600">{quarter.focus}</p>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-2">
-                    {quarter.items.map((item, idx) => (
-                      <div key={idx} className="flex items-start text-sm">
-                        <div className="w-2 h-2 bg-purple-400 rounded-full mt-1.5 mr-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">{item}</span>
-                      </div>
-                    ))}
+                </div>
+                
+                <p className="text-sm text-gray-700 mb-3">{suggestion.description}</p>
+                
+                <div className="mb-3 p-3 bg-white border-l-4 border-blue-400 rounded">
+                  <p className="text-sm italic text-gray-600">{suggestion.employeeQuote}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-500">Suggested by</span>
+                    <div className="font-medium text-blue-600">{suggestion.suggestedBy} employees</div>
                   </div>
-                </CardContent>
-              </Card>
+                  <div>
+                    <span className="text-gray-500">Est. Savings</span>
+                    <div className="font-medium text-green-600">{suggestion.estimatedSavings}</div>
+                  </div>
+                </div>
+                
+                <div className="mt-2">
+                  <span className="text-gray-500 text-sm">Departments: </span>
+                  <span className="text-sm text-gray-700">{suggestion.departments.join(', ')}</span>
+                </div>
+              </div>
             ))}
           </div>
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Required Integrations */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Database className="w-5 h-5 text-blue-600 mr-2" />
-              Required Integrations
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {requiredIntegrations.map((integration, index) => (
-                <div key={index} className="p-3 border rounded-lg">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="font-medium text-gray-900">{integration.system}</h4>
-                    <Badge 
-                      variant={integration.priority === 'High' ? 'danger' : 'warning'}
-                      size="sm"
-                    >
-                      {integration.priority}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-sm text-gray-600">
-                    <span>Complexity: {integration.complexity}</span>
-                    <span>{integration.timeline}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Required Governance Changes */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Settings className="w-5 h-5 text-orange-600 mr-2" />
-              Required Governance Changes
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {governanceChanges.map((change, index) => (
-                <div key={index} className="flex items-start p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                  <AlertCircle className="w-5 h-5 text-orange-600 mr-3 mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-gray-700">{change}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Success Metrics */}
+      {/* Expected Outcomes Based on Employee Feedback */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <CheckCircle className="w-5 h-5 text-success-600 mr-2" />
-            Success Metrics & KPIs
+            <BarChart3 className="w-5 h-5 text-purple-600 mr-2" />
+            Expected Outcomes
           </CardTitle>
-          <p className="text-sm text-gray-600">Key indicators to track progress and impact</p>
+          <p className="text-sm text-gray-600">Projected impact based on employee time estimates and pain point severity</p>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { metric: 'AI Maturity Score', target: '85%', current: '74%' },
-              { metric: 'Process Automation', target: '40%', current: '15%' },
-              { metric: 'Employee AI Adoption', target: '80%', current: '42%' },
-              { metric: 'Cost Savings Realized', target: '$2.5M', current: '$380K' },
-            ].map((kpi, index) => (
-              <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-medium text-gray-900 mb-2">{kpi.metric}</h4>
-                <div className="text-2xl font-bold text-green-600 mb-1">{kpi.target}</div>
-                <div className="text-sm text-gray-600">Target</div>
-                <div className="text-sm text-gray-500 mt-1">Current: {kpi.current}</div>
-              </div>
-            ))}
+            <div className="text-center p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
+              <TrendingUp className="w-8 h-8 text-green-600 mx-auto mb-3" />
+              <div className="text-2xl font-bold text-gray-900">40%</div>
+              <p className="text-sm text-gray-600">Time Savings</p>
+              <p className="text-xs text-gray-500 mt-1">From employee estimates</p>
+            </div>
+            
+            <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+              <Users className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+              <div className="text-2xl font-bold text-gray-900">278</div>
+              <p className="text-sm text-gray-600">Employees Impacted</p>
+              <p className="text-xs text-gray-500 mt-1">Across all phases</p>
+            </div>
+            
+            <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-orange-50 rounded-lg">
+              <Workflow className="w-8 h-8 text-purple-600 mx-auto mb-3" />
+              <div className="text-2xl font-bold text-gray-900">8</div>
+              <p className="text-sm text-gray-600">Processes Automated</p>
+              <p className="text-xs text-gray-500 mt-1">Top pain points addressed</p>
+            </div>
+            
+            <div className="text-center p-4 bg-gradient-to-r from-orange-50 to-green-50 rounded-lg">
+              <CheckCircle className="w-8 h-8 text-orange-600 mx-auto mb-3" />
+              <div className="text-2xl font-bold text-gray-900">85%</div>
+              <p className="text-sm text-gray-600">Employee Satisfaction</p>
+              <p className="text-xs text-gray-500 mt-1">Expected improvement</p>
+            </div>
           </div>
         </CardContent>
       </Card>

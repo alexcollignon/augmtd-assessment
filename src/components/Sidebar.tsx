@@ -39,9 +39,9 @@ const navigationStructure = {
     icon: BarChart3,
     tabs: [
       { id: 'executive-summary', label: 'Executive Summary', icon: Target },
-      { id: 'company-maturity', label: 'Company Maturity', icon: Building2 },
+      { id: 'company-maturity', label: 'AI Maturity', icon: Building2 },
       { id: 'risk-compliance', label: 'Risk & Compliance', icon: ShieldCheck },
-      { id: 'roadmap', label: 'Roadmap & Recommendations', icon: Map },
+      { id: 'roadmap', label: 'Automation Roadmap', icon: Map },
     ]
   },
   capabilities: {
