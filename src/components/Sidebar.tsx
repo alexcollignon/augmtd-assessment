@@ -32,11 +32,9 @@ interface SidebarProps {
 
 const navigationPages = [
   { id: 'executive-summary', label: 'Overview', icon: Target },
-  { id: 'ai-readiness', label: 'AI Readiness', icon: Brain },
-  { id: 'ai-use-cases', label: 'AI Use Cases', icon: Zap },
+  { id: 'ai-readiness', label: 'Company Maturity', icon: Brain },
+  { id: 'ai-transformation', label: 'AI Transformation', icon: Zap },
   { id: 'risk-compliance', label: 'Risk & Compliance', icon: ShieldCheck },
-  { id: 'process-insights', label: 'Process Insights', icon: Workflow },
-  { id: 'automation-pipeline', label: 'Automation Pipeline', icon: MapPin },
   { id: 'people-skills', label: 'People & Skills', icon: Users },
   { id: 'assessment-data', label: 'Assessment Data', icon: FileText },
 ]

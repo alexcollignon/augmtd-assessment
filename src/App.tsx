@@ -11,11 +11,8 @@ import { getAppMode, handleNavigation, AppMode } from './router'
 import { ExecutiveSummary } from './pages/overview/ExecutiveSummary'
 import { AIReadiness } from './pages/AIReadiness'
 import { RiskCompliance } from './pages/overview/RiskCompliance'
-import { AutomationPipeline } from './pages/AutomationPipeline'
-
-import { AIUseCases } from './pages/AIUseCases'
+import { AITransformationPipeline } from './pages/AITransformationPipeline'
 import { PeopleSkills } from './pages/PeopleSkills'
-import { ProcessInsights } from './pages/ProcessInsights'
 import { AssessmentData } from './pages/AssessmentData'
 
 function Dashboard() {
@@ -27,14 +24,10 @@ function Dashboard() {
         return <ExecutiveSummary />
       case 'ai-readiness':
         return <AIReadiness />
-      case 'ai-use-cases':
-        return <AIUseCases />
+      case 'ai-transformation':
+        return <AITransformationPipeline />
       case 'risk-compliance':
         return <RiskCompliance />
-      case 'process-insights':
-        return <ProcessInsights />
-      case 'automation-pipeline':
-        return <AutomationPipeline />
       case 'people-skills':
         return <PeopleSkills />
       case 'assessment-data':
