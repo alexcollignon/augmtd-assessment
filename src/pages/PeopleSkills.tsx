@@ -26,62 +26,54 @@ export function PeopleSkills() {
   const [selectedDistributionDept, setSelectedDistributionDept] = useState('Engineering')
   
   const roleData = {
-    'Software Engineer': { count: 45, avgSkill: 89, topSkills: ['AI Tool Proficiency', 'Process Automation', 'Data Analysis'] },
-    'Marketing Specialist': { count: 28, avgSkill: 84, topSkills: ['Creative Applications', 'Prompt Engineering', 'AI Tool Proficiency'] },
-    'Sales Representative': { count: 32, avgSkill: 71, topSkills: ['AI Tool Proficiency', 'Creative Applications', 'Prompt Engineering'] },
-    'Financial Analyst': { count: 18, avgSkill: 79, topSkills: ['Data Analysis', 'Process Automation', 'AI Tool Proficiency'] },
-    'Project Manager': { count: 24, avgSkill: 73, topSkills: ['Process Automation', 'AI Tool Proficiency', 'Data Analysis'] },
-    'HR Specialist': { count: 16, avgSkill: 68, topSkills: ['AI Ethics & Bias', 'AI Tool Proficiency', 'Process Automation'] }
+    'Software Engineer': { count: 45, avgSkill: 89, topSkills: ['Tools', 'Data', 'Co-Intelligence'] },
+    'Marketing Specialist': { count: 28, avgSkill: 84, topSkills: ['Prompting', 'Tools', 'Co-Intelligence'] },
+    'Sales Representative': { count: 32, avgSkill: 71, topSkills: ['Prompting', 'Tools', 'Co-Intelligence'] },
+    'Financial Analyst': { count: 18, avgSkill: 79, topSkills: ['Data', 'Tools', 'Responsible Use'] },
+    'Project Manager': { count: 24, avgSkill: 73, topSkills: ['Co-Intelligence', 'Tools', 'Data'] },
+    'HR Specialist': { count: 16, avgSkill: 68, topSkills: ['Responsible Use', 'Tools', 'Co-Intelligence'] }
   }
 
   const skillCategories = [
     {
-      category: 'AI Tool Proficiency',
-      avgScore: 78,
-      trend: '+12%',
-      topPerformers: 23,
-      strugglers: 18,
-      description: 'Basic to advanced usage of AI tools like ChatGPT, Copilot, etc.'
-    },
-    {
-      category: 'Prompt Engineering', 
+      category: 'Prompting',
       avgScore: 74,
       trend: '+8%',
       topPerformers: 19,
       strugglers: 23,
-      description: 'Crafting effective prompts for optimal AI responses'
+      description: 'Crafting effective prompts and conversing with AI systems'
     },
     {
-      category: 'Data Analysis with AI',
-      avgScore: 72,
-      trend: '+15%', 
-      topPerformers: 15,
-      strugglers: 22,
-      description: 'Using AI for data processing, visualization, and insights'
+      category: 'Tools',
+      avgScore: 78,
+      trend: '+12%',
+      topPerformers: 23,
+      strugglers: 18,
+      description: 'Proficiency with AI platforms, applications, and integrations'
     },
     {
-      category: 'Process Automation',
-      avgScore: 69,
-      trend: '+6%',
-      topPerformers: 12,
-      strugglers: 35,
-      description: 'Identifying and implementing workflow automation opportunities'
-    },
-    {
-      category: 'AI Ethics & Bias',
+      category: 'Responsible Use',
       avgScore: 80,
       trend: '+3%',
       topPerformers: 34,
       strugglers: 13,
-      description: 'Understanding responsible AI use and bias detection'
+      description: 'Understanding AI ethics, bias awareness, and governance'
     },
     {
-      category: 'Creative Applications',
-      avgScore: 77,
-      trend: '+18%',
-      topPerformers: 21,
+      category: 'Data',
+      avgScore: 72,
+      trend: '+15%', 
+      topPerformers: 15,
       strugglers: 22,
-      description: 'Using AI for creative tasks like content generation, design'
+      description: 'Data literacy, quality assessment, and AI-driven analysis'
+    },
+    {
+      category: 'Co-Intelligence',
+      avgScore: 69,
+      trend: '+6%',
+      topPerformers: 12,
+      strugglers: 35,
+      description: 'Human-AI collaboration and augmented decision-making'
     }
   ]
 
@@ -143,63 +135,57 @@ export function PeopleSkills() {
 
   // Department-specific skill scores for heatmap
   const departmentSkillScores = {
-    Engineering: { toolProficiency: 89, promptEngineering: 85, dataAnalysis: 92, processAutomation: 88, aiEthics: 76, creativeApplications: 82 },
-    Sales: { toolProficiency: 72, promptEngineering: 68, dataAnalysis: 58, processAutomation: 64, aiEthics: 71, creativeApplications: 79 },
-    Marketing: { toolProficiency: 84, promptEngineering: 91, dataAnalysis: 67, processAutomation: 59, aiEthics: 78, creativeApplications: 95 },
-    Finance: { toolProficiency: 76, promptEngineering: 71, dataAnalysis: 88, processAutomation: 82, aiEthics: 89, creativeApplications: 62 },
-    HR: { toolProficiency: 69, promptEngineering: 74, dataAnalysis: 61, processAutomation: 58, aiEthics: 85, creativeApplications: 71 },
-    Operations: { toolProficiency: 81, promptEngineering: 73, dataAnalysis: 79, processAutomation: 91, aiEthics: 82, creativeApplications: 68 },
+    Engineering: { prompting: 85, tools: 89, responsibleUse: 76, data: 92, coIntelligence: 88 },
+    Sales: { prompting: 68, tools: 72, responsibleUse: 71, data: 58, coIntelligence: 64 },
+    Marketing: { prompting: 91, tools: 84, responsibleUse: 78, data: 67, coIntelligence: 79 },
+    Finance: { prompting: 71, tools: 76, responsibleUse: 89, data: 88, coIntelligence: 82 },
+    HR: { prompting: 74, tools: 69, responsibleUse: 85, data: 61, coIntelligence: 68 },
+    Operations: { prompting: 73, tools: 81, responsibleUse: 82, data: 79, coIntelligence: 91 },
   }
 
   // Department-specific skill distribution (Advanced/Intermediate/Basic/Beginner percentages)
   const departmentSkillDistribution = {
     Engineering: {
-      'AI Tool Proficiency': { advanced: 45, intermediate: 35, basic: 15, beginner: 5 },
-      'Prompt Engineering': { advanced: 38, intermediate: 30, basic: 22, beginner: 10 },
-      'Data Analysis with AI': { advanced: 52, intermediate: 28, basic: 15, beginner: 5 },
-      'Process Automation': { advanced: 42, intermediate: 35, basic: 18, beginner: 5 },
-      'AI Ethics & Bias': { advanced: 25, intermediate: 35, basic: 30, beginner: 10 },
-      'Creative Applications': { advanced: 28, intermediate: 32, basic: 25, beginner: 15 }
+      'Prompting': { advanced: 38, intermediate: 30, basic: 22, beginner: 10 },
+      'Tools': { advanced: 45, intermediate: 35, basic: 15, beginner: 5 },
+      'Responsible Use': { advanced: 25, intermediate: 35, basic: 30, beginner: 10 },
+      'Data': { advanced: 52, intermediate: 28, basic: 15, beginner: 5 },
+      'Co-Intelligence': { advanced: 42, intermediate: 35, basic: 18, beginner: 5 }
     },
     Sales: {
-      'AI Tool Proficiency': { advanced: 8, intermediate: 25, basic: 35, beginner: 32 },
-      'Prompt Engineering': { advanced: 5, intermediate: 18, basic: 38, beginner: 39 },
-      'Data Analysis with AI': { advanced: 3, intermediate: 15, basic: 32, beginner: 50 },
-      'Process Automation': { advanced: 5, intermediate: 12, basic: 28, beginner: 55 },
-      'AI Ethics & Bias': { advanced: 18, intermediate: 28, basic: 32, beginner: 22 },
-      'Creative Applications': { advanced: 22, intermediate: 28, basic: 30, beginner: 20 }
+      'Prompting': { advanced: 5, intermediate: 18, basic: 38, beginner: 39 },
+      'Tools': { advanced: 8, intermediate: 25, basic: 35, beginner: 32 },
+      'Responsible Use': { advanced: 18, intermediate: 28, basic: 32, beginner: 22 },
+      'Data': { advanced: 3, intermediate: 15, basic: 32, beginner: 50 },
+      'Co-Intelligence': { advanced: 5, intermediate: 12, basic: 28, beginner: 55 }
     },
     Marketing: {
-      'AI Tool Proficiency': { advanced: 35, intermediate: 32, basic: 22, beginner: 11 },
-      'Prompt Engineering': { advanced: 48, intermediate: 30, basic: 15, beginner: 7 },
-      'Data Analysis with AI': { advanced: 18, intermediate: 28, basic: 35, beginner: 19 },
-      'Process Automation': { advanced: 8, intermediate: 22, basic: 35, beginner: 35 },
-      'AI Ethics & Bias': { advanced: 28, intermediate: 32, basic: 25, beginner: 15 },
-      'Creative Applications': { advanced: 58, intermediate: 25, basic: 12, beginner: 5 }
+      'Prompting': { advanced: 48, intermediate: 30, basic: 15, beginner: 7 },
+      'Tools': { advanced: 35, intermediate: 32, basic: 22, beginner: 11 },
+      'Responsible Use': { advanced: 28, intermediate: 32, basic: 25, beginner: 15 },
+      'Data': { advanced: 18, intermediate: 28, basic: 35, beginner: 19 },
+      'Co-Intelligence': { advanced: 22, intermediate: 35, basic: 28, beginner: 15 }
     },
     Finance: {
-      'AI Tool Proficiency': { advanced: 22, intermediate: 35, basic: 28, beginner: 15 },
-      'Prompt Engineering': { advanced: 15, intermediate: 28, basic: 35, beginner: 22 },
-      'Data Analysis with AI': { advanced: 42, intermediate: 32, basic: 18, beginner: 8 },
-      'Process Automation': { advanced: 32, intermediate: 28, basic: 25, beginner: 15 },
-      'AI Ethics & Bias': { advanced: 45, intermediate: 30, basic: 18, beginner: 7 },
-      'Creative Applications': { advanced: 12, intermediate: 25, basic: 38, beginner: 25 }
+      'Prompting': { advanced: 15, intermediate: 28, basic: 35, beginner: 22 },
+      'Tools': { advanced: 22, intermediate: 35, basic: 28, beginner: 15 },
+      'Responsible Use': { advanced: 45, intermediate: 30, basic: 18, beginner: 7 },
+      'Data': { advanced: 42, intermediate: 32, basic: 18, beginner: 8 },
+      'Co-Intelligence': { advanced: 32, intermediate: 28, basic: 25, beginner: 15 }
     },
     HR: {
-      'AI Tool Proficiency': { advanced: 15, intermediate: 28, basic: 32, beginner: 25 },
-      'Prompt Engineering': { advanced: 18, intermediate: 25, basic: 32, beginner: 25 },
-      'Data Analysis with AI': { advanced: 8, intermediate: 22, basic: 38, beginner: 32 },
-      'Process Automation': { advanced: 5, intermediate: 18, basic: 32, beginner: 45 },
-      'AI Ethics & Bias': { advanced: 38, intermediate: 35, basic: 20, beginner: 7 },
-      'Creative Applications': { advanced: 18, intermediate: 28, basic: 32, beginner: 22 }
+      'Prompting': { advanced: 18, intermediate: 25, basic: 32, beginner: 25 },
+      'Tools': { advanced: 15, intermediate: 28, basic: 32, beginner: 25 },
+      'Responsible Use': { advanced: 38, intermediate: 35, basic: 20, beginner: 7 },
+      'Data': { advanced: 8, intermediate: 22, basic: 38, beginner: 32 },
+      'Co-Intelligence': { advanced: 12, intermediate: 25, basic: 35, beginner: 28 }
     },
     Operations: {
-      'AI Tool Proficiency': { advanced: 28, intermediate: 32, basic: 25, beginner: 15 },
-      'Prompt Engineering': { advanced: 20, intermediate: 28, basic: 32, beginner: 20 },
-      'Data Analysis with AI': { advanced: 25, intermediate: 35, basic: 28, beginner: 12 },
-      'Process Automation': { advanced: 48, intermediate: 30, basic: 15, beginner: 7 },
-      'AI Ethics & Bias': { advanced: 32, intermediate: 28, basic: 25, beginner: 15 },
-      'Creative Applications': { advanced: 15, intermediate: 25, basic: 35, beginner: 25 }
+      'Prompting': { advanced: 20, intermediate: 28, basic: 32, beginner: 20 },
+      'Tools': { advanced: 28, intermediate: 32, basic: 25, beginner: 15 },
+      'Responsible Use': { advanced: 32, intermediate: 28, basic: 25, beginner: 15 },
+      'Data': { advanced: 25, intermediate: 35, basic: 28, beginner: 12 },
+      'Co-Intelligence': { advanced: 48, intermediate: 30, basic: 15, beginner: 7 }
     }
   }
 
@@ -219,24 +205,22 @@ export function PeopleSkills() {
   }
 
   const skillNames = [
-    'AI Tool Proficiency',
-    'Prompt Engineering', 
-    'Data Analysis with AI',
-    'Process Automation',
-    'AI Ethics & Bias',
-    'Creative Applications'
+    'Prompting',
+    'Tools',
+    'Responsible Use',
+    'Data',
+    'Co-Intelligence'
   ]
 
   const departmentNames = ['Engineering', 'Sales', 'Marketing', 'Finance', 'HR', 'Operations']
 
   const getPillarKey = (skill: string) => {
     switch (skill.toLowerCase()) {
-      case 'ai tool proficiency': return 'toolProficiency'
-      case 'prompt engineering': return 'promptEngineering'
-      case 'data analysis with ai': return 'dataAnalysis'
-      case 'process automation': return 'processAutomation'
-      case 'ai ethics & bias': return 'aiEthics'
-      case 'creative applications': return 'creativeApplications'
+      case 'prompting': return 'prompting'
+      case 'tools': return 'tools'
+      case 'responsible use': return 'responsibleUse'
+      case 'data': return 'data'
+      case 'co-intelligence': return 'coIntelligence'
       default: return skill.toLowerCase()
     }
   }
@@ -289,7 +273,7 @@ export function PeopleSkills() {
             <Target className="w-5 h-5 text-blue-600 mr-2" />
             AI Skills Performance by Category
           </CardTitle>
-          <p className="text-sm text-gray-600">Average proficiency across six key AI skill areas</p>
+          <p className="text-sm text-gray-600">Average proficiency across five key AI skill pillars</p>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -378,7 +362,7 @@ export function PeopleSkills() {
               <div className="overflow-x-auto">
                 <div className="min-w-full">
                   {/* Headers */}
-                  <div className="grid grid-cols-7 gap-2 mb-2">
+                  <div className="grid grid-cols-6 gap-2 mb-2">
                     <div className="text-xs font-medium text-gray-500 p-2"></div>
                     {skillNames.map((skill) => (
                       <div key={skill} className="text-xs font-medium text-gray-700 p-2 text-center">
@@ -391,7 +375,7 @@ export function PeopleSkills() {
                   
                   {/* Heatmap Grid */}
                   {departmentNames.map((dept) => (
-                    <div key={dept} className="grid grid-cols-7 gap-2 mb-2">
+                    <div key={dept} className="grid grid-cols-6 gap-2 mb-2">
                       <div className="text-sm font-medium text-gray-900 p-2 flex items-center">
                         {dept}
                       </div>
@@ -442,9 +426,9 @@ export function PeopleSkills() {
                       <span className="font-medium text-gray-900">Departmental Strengths:</span>
                     </div>
                     <ul className="space-y-1 text-gray-700">
-                      <li>• <strong>Engineering:</strong> Data Analysis (92%), Process Automation (88%)</li>
-                      <li>• <strong>Marketing:</strong> Creative Applications (95%), Prompt Engineering (91%)</li>
-                      <li>• <strong>Operations:</strong> Process Automation (91%), AI Ethics (82%)</li>
+                      <li>• <strong>Engineering:</strong> Data (92%), Tools (89%)</li>
+                      <li>• <strong>Marketing:</strong> Prompting (91%), Tools (84%)</li>
+                      <li>• <strong>Operations:</strong> Co-Intelligence (91%), Responsible Use (82%)</li>
                     </ul>
                   </div>
                   <div>
@@ -453,9 +437,9 @@ export function PeopleSkills() {
                       <span className="font-medium text-gray-900">Areas for Improvement:</span>
                     </div>
                     <ul className="space-y-1 text-gray-700">
-                      <li>• <strong>Sales:</strong> Needs foundational support across all skills</li>
-                      <li>• <strong>HR:</strong> Process Automation (58%) - automation training needed</li>
-                      <li>• <strong>All Depts:</strong> Consistent gap in Process Automation vs other skills</li>
+                      <li>• <strong>Sales:</strong> Needs foundational support across all pillars</li>
+                      <li>• <strong>HR:</strong> Data literacy (61%) and Co-Intelligence (68%) need development</li>
+                      <li>• <strong>All Depts:</strong> Co-Intelligence shows lowest average scores</li>
                     </ul>
                   </div>
                 </div>
@@ -531,32 +515,32 @@ export function PeopleSkills() {
                 <div className="text-sm text-gray-700">
                   {selectedDistributionDept === 'Engineering' && (
                     <div>
-                      <strong>Strong technical foundation</strong> - 52% advanced in Data Analysis, 42% in Process Automation. Focus on business application training and AI ethics awareness.
+                      <strong>Technical excellence</strong> - 52% advanced in Data, 45% in Tools. Strong foundation but need support in Responsible Use (25%) and human-AI collaboration skills.
                     </div>
                   )}
                   {selectedDistributionDept === 'Marketing' && (
                     <div>
-                      <strong>Creative AI leaders</strong> - 58% advanced in Creative Applications, 48% in Prompt Engineering. Could mentor other departments in content creation and prompting techniques.
+                      <strong>Prompting leaders</strong> - 48% advanced in Prompting, 35% in Tools. Natural mentors for AI communication but need Data literacy development.
                     </div>
                   )}
                   {selectedDistributionDept === 'Sales' && (
                     <div>
-                      <strong>Biggest opportunity</strong> - Needs foundational training across all areas. Only 8% advanced in Tool Proficiency. Prioritize basic AI literacy and CRM integration.
+                      <strong>Foundation building needed</strong> - Low proficiency across all pillars. Only 8% advanced in Tools. Prioritize basic AI literacy and conversational AI skills.
                     </div>
                   )}
                   {selectedDistributionDept === 'Finance' && (
                     <div>
-                      <strong>Data-focused strengths</strong> - 42% advanced in Data Analysis, 45% in AI Ethics. Excellent candidates for AI-powered analytics and compliance oversight.
+                      <strong>Compliance and data strengths</strong> - 45% advanced in Responsible Use, 42% in Data. Excellent candidates for AI governance and analytical applications.
                     </div>
                   )}
                   {selectedDistributionDept === 'HR' && (
                     <div>
-                      <strong>Ethics champions</strong> - 38% advanced in AI Ethics & Bias. Natural leaders for responsible AI governance but need practical application training.
+                      <strong>Responsible AI champions</strong> - 38% advanced in Responsible Use. Natural leaders for AI governance but need practical Tools and Data skills.
                     </div>
                   )}
                   {selectedDistributionDept === 'Operations' && (
                     <div>
-                      <strong>Process automation ready</strong> - 48% advanced in Process Automation. Perfect candidates for workflow optimization and efficiency improvements.
+                      <strong>Co-Intelligence leaders</strong> - 48% advanced in Co-Intelligence. Perfect candidates for human-AI workflow optimization and collaborative AI implementation.
                     </div>
                   )}
                 </div>
@@ -796,45 +780,38 @@ export function PeopleSkills() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {[
               {
-                skill: 'AI Tool Proficiency',
-                quotes: [
-                  { quote: "I use ChatGPT daily but struggle with complex tasks", role: "Marketing Specialist", dept: "Marketing" },
-                  { quote: "Need training on GitHub Copilot features beyond autocomplete", role: "Software Engineer", dept: "Engineering" }
-                ]
-              },
-              {
-                skill: 'Prompt Engineering', 
+                skill: 'Prompting',
                 quotes: [
                   { quote: "My prompts are too generic, I get mediocre results", role: "Sales Manager", dept: "Sales" },
                   { quote: "I know advanced techniques but my team doesn't", role: "Content Manager", dept: "Marketing" }
                 ]
               },
               {
-                skill: 'Data Analysis with AI',
+                skill: 'Tools', 
                 quotes: [
-                  { quote: "I want to use AI for Excel analysis but don't know how", role: "Financial Analyst", dept: "Finance" },
-                  { quote: "AI helps with basic charts, but I need advanced analytics training", role: "Operations Manager", dept: "Operations" }
+                  { quote: "I use ChatGPT daily but struggle with complex workflows", role: "Marketing Specialist", dept: "Marketing" },
+                  { quote: "Need training on GitHub Copilot features beyond autocomplete", role: "Software Engineer", dept: "Engineering" }
                 ]
               },
               {
-                skill: 'Process Automation',
-                quotes: [
-                  { quote: "I see automation opportunities everywhere but lack technical skills", role: "HR Coordinator", dept: "HR" },
-                  { quote: "Built one workflow automation, want to do more", role: "Operations Specialist", dept: "Operations" }
-                ]
-              },
-              {
-                skill: 'AI Ethics & Bias',
+                skill: 'Responsible Use',
                 quotes: [
                   { quote: "We need clear guidelines on what's acceptable AI use", role: "HR Director", dept: "HR" },
                   { quote: "Concerned about bias in our AI-generated content", role: "Content Strategist", dept: "Marketing" }
                 ]
               },
               {
-                skill: 'Creative Applications',
+                skill: 'Data',
                 quotes: [
-                  { quote: "AI transformed how we create campaign concepts", role: "Creative Director", dept: "Marketing" },
-                  { quote: "Want to use AI for presentations but need design training", role: "Account Manager", dept: "Sales" }
+                  { quote: "I want to use AI for Excel analysis but don't know how", role: "Financial Analyst", dept: "Finance" },
+                  { quote: "AI helps with basic charts, but I need advanced analytics training", role: "Operations Manager", dept: "Operations" }
+                ]
+              },
+              {
+                skill: 'Co-Intelligence',
+                quotes: [
+                  { quote: "I see collaboration opportunities but don't know how to structure them", role: "HR Coordinator", dept: "HR" },
+                  { quote: "Want to work with AI as a partner, not just a tool", role: "Operations Specialist", dept: "Operations" }
                 ]
               }
             ].map((skillFeedback, index) => (

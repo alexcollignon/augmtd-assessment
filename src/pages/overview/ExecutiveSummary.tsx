@@ -12,17 +12,19 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
-  ArrowDown
+  ArrowDown,
+  MessageSquare,
+  Wrench,
+  Database
 } from 'lucide-react'
-import { formatCurrency } from '@/lib/utils'
 
 interface ExecutiveSummaryProps {
   onNavigate?: (page: string) => void
 }
 
 export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
-  const aiHealthScore = 74
-  const maturityLevel = 3
+  const aiHealthScore = 36
+  const maturityLevel = 2
   
   
   const opportunities = [
@@ -116,7 +118,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
             <p className="text-gray-600 mb-4">Overall organizational readiness</p>
             <div className="flex justify-center items-center space-x-4 text-sm">
               <div className="flex items-center">
-                <div className="w-3 h-3 bg-success-500 rounded-full mr-2"></div>
+                <div className="w-3 h-3 bg-danger-500 rounded-full mr-2"></div>
                 Level {maturityLevel}
               </div>
               <div className="text-gray-500">Developing</div>
@@ -138,29 +140,69 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {[
-                  { name: 'Strategy', score: 82, icon: Brain, description: 'AI vision & roadmap clarity' },
-                  { name: 'Cost & Value', score: 71, icon: DollarSign, description: 'ROI tracking & benefits' },
-                  { name: 'Organization', score: 68, icon: Users, description: 'Team skills & readiness' },
-                  { name: 'Technology', score: 74, icon: TrendingUp, description: 'Infrastructure & tools' },
-                  { name: 'Data', score: 79, icon: Brain, description: 'Quality & governance' },
-                  { name: 'Security', score: 86, icon: Shield, description: 'Risk & compliance' }
-                ].map((pillar) => {
-                  const Icon = pillar.icon
-                  return (
-                    <div key={pillar.name} className="text-center">
+              <div className="space-y-6">
+                {/* Top row - 3 pillars */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <div className="text-center">
+                    <div className="flex justify-center mb-3">
+                      <MessageSquare className="w-8 h-8 text-gray-600" />
+                    </div>
+                    <div className="mb-2">
+                      <CircularProgress value={34} size="sm" />
+                    </div>
+                    <p className="text-sm font-medium text-gray-900">Prompting</p>
+                    <p className="text-xs text-gray-500 mt-1">AI conversation & prompt skills</p>
+                  </div>
+                  
+                  <div className="text-center">
+                    <div className="flex justify-center mb-3">
+                      <Wrench className="w-8 h-8 text-gray-600" />
+                    </div>
+                    <div className="mb-2">
+                      <CircularProgress value={40} size="sm" />
+                    </div>
+                    <p className="text-sm font-medium text-gray-900">Tools</p>
+                    <p className="text-xs text-gray-500 mt-1">AI platform proficiency</p>
+                  </div>
+                  
+                  <div className="text-center col-span-2 md:col-span-1">
+                    <div className="flex justify-center mb-3">
+                      <Shield className="w-8 h-8 text-gray-600" />
+                    </div>
+                    <div className="mb-2">
+                      <CircularProgress value={37} size="sm" />
+                    </div>
+                    <p className="text-sm font-medium text-gray-900">Responsible Use</p>
+                    <p className="text-xs text-gray-500 mt-1">Ethics & governance</p>
+                  </div>
+                </div>
+                
+                {/* Bottom row - 2 pillars centered */}
+                <div className="flex justify-center">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
+                    <div className="text-center">
                       <div className="flex justify-center mb-3">
-                        <Icon className="w-8 h-8 text-gray-600" />
+                        <Database className="w-8 h-8 text-gray-600" />
                       </div>
                       <div className="mb-2">
-                        <CircularProgress value={pillar.score} size="sm" />
+                        <CircularProgress value={33} size="sm" />
                       </div>
-                      <p className="text-sm font-medium text-gray-900">{pillar.name}</p>
-                      <p className="text-xs text-gray-500 mt-1">{pillar.description}</p>
+                      <p className="text-sm font-medium text-gray-900">Data</p>
+                      <p className="text-xs text-gray-500 mt-1">Data literacy & analysis</p>
                     </div>
-                  )
-                })}
+                    
+                    <div className="text-center">
+                      <div className="flex justify-center mb-3">
+                        <Users className="w-8 h-8 text-gray-600" />
+                      </div>
+                      <div className="mb-2">
+                        <CircularProgress value={35} size="sm" />
+                      </div>
+                      <p className="text-sm font-medium text-gray-900">Co-Intelligence</p>
+                      <p className="text-xs text-gray-500 mt-1">Human-AI collaboration</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

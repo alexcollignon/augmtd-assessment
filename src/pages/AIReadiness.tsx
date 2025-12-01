@@ -1,92 +1,80 @@
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts'
-import { MapPin, Target, Zap, Calendar, TrendingUp, Users, Settings, ArrowRight } from 'lucide-react'
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts'
 
 export function AIReadiness() {
   const [selectedDepartment, setSelectedDepartment] = useState('all')
   const [showDepartments, setShowDepartments] = useState(false)
   
   const departments = ['Engineering', 'Sales', 'Marketing', 'Finance', 'HR', 'Operations']
-  // Department-specific scores
+  // Department-specific scores (realistic for beginner-level company)
   const departmentScores = {
-    Engineering: { strategy: 88, costValue: 76, organization: 82, technology: 91, data: 85, security: 92 },
-    Sales: { strategy: 75, costValue: 82, organization: 58, technology: 62, data: 68, security: 74 },
-    Marketing: { strategy: 79, costValue: 68, organization: 65, technology: 70, data: 72, security: 78 },
-    Finance: { strategy: 91, costValue: 88, organization: 74, technology: 78, data: 86, security: 94 },
-    HR: { strategy: 72, costValue: 65, organization: 78, technology: 58, data: 64, security: 82 },
-    Operations: { strategy: 84, costValue: 70, organization: 62, technology: 72, data: 80, security: 86 },
+    Engineering: { prompting: 45, tools: 52, responsibleUse: 38, data: 48, coIntelligence: 41 },
+    Sales: { prompting: 28, tools: 35, responsibleUse: 25, data: 22, coIntelligence: 30 },
+    Marketing: { prompting: 38, tools: 42, responsibleUse: 35, data: 28, coIntelligence: 33 },
+    Finance: { prompting: 32, tools: 38, responsibleUse: 45, data: 40, coIntelligence: 35 },
+    HR: { prompting: 25, tools: 30, responsibleUse: 42, data: 28, coIntelligence: 26 },
+    Operations: { prompting: 35, tools: 40, responsibleUse: 38, data: 32, coIntelligence: 44 },
   }
 
 
   const getPillarKey = (pillar: string) => {
-    // Organizational pillars
+    // AI skill pillars
     switch (pillar.toLowerCase()) {
-      case 'strategy': return 'strategy'
-      case 'cost & value': return 'costValue'
-      case 'organization': return 'organization'
-      case 'technology': return 'technology'
+      case 'prompting': return 'prompting'
+      case 'tools': return 'tools'
+      case 'responsible use': return 'responsibleUse'
       case 'data': return 'data'
-      case 'security': return 'security'
+      case 'co-intelligence': return 'coIntelligence'
       default: return pillar.toLowerCase()
     }
   }
 
   const maturityData = [
     { 
-      pillar: 'Strategy', 
-      current: 82, 
-      target: 90,
-      gap: 8,
-      impact: 'Misaligned AI initiatives waste 15-20 hrs/week',
+      pillar: 'Prompting', 
+      current: 34, 
+      target: 60,
+      gap: 26,
+      impact: 'Basic prompts limit AI output quality and effectiveness',
       effort: 'Medium (2-3 months)',
-      priority: 3
-    },
-    { 
-      pillar: 'Cost & Value', 
-      current: 71, 
-      target: 85,
-      gap: 14,
-      impact: 'ROI tracking gaps delay decisions by 2-3 weeks',
-      effort: 'Low (1-2 months)',
       priority: 2
     },
     { 
-      pillar: 'Organization', 
-      current: 68, 
-      target: 80,
-      gap: 12,
-      impact: 'Skills gaps slow AI adoption by 40%',
-      effort: 'High (4-6 months)',
+      pillar: 'Tools', 
+      current: 40, 
+      target: 65,
+      gap: 25,
+      impact: 'Limited tool adoption slows productivity gains',
+      effort: 'Low (1-2 months)',
       priority: 1
     },
     { 
-      pillar: 'Technology', 
-      current: 74, 
-      target: 88,
-      gap: 14,
-      impact: 'Legacy systems add 30% overhead to projects',
-      effort: 'High (6-9 months)',
-      priority: 4
-    },
-    { 
-      pillar: 'Data', 
-      current: 79, 
-      target: 85,
-      gap: 6,
-      impact: 'Data quality issues affect 25% of AI models',
-      effort: 'Medium (3-4 months)',
+      pillar: 'Responsible Use', 
+      current: 37, 
+      target: 70,
+      gap: 33,
+      impact: 'Lack of governance creates compliance and risk exposure',
+      effort: 'High (4-6 months)',
       priority: 5
     },
     { 
-      pillar: 'Security', 
-      current: 86, 
-      target: 90,
-      gap: 4,
-      impact: 'Compliance reviews add 1-2 weeks per project',
-      effort: 'Low (1 month)',
-      priority: 6
+      pillar: 'Data', 
+      current: 33, 
+      target: 55,
+      gap: 22,
+      impact: 'Poor data literacy limits AI implementation success',
+      effort: 'High (4-5 months)',
+      priority: 4
+    },
+    { 
+      pillar: 'Co-Intelligence', 
+      current: 35, 
+      target: 60,
+      gap: 25,
+      impact: 'Inefficient human-AI workflows reduce potential benefits',
+      effort: 'Medium (3-4 months)',
+      priority: 3
     },
   ]
 
@@ -140,7 +128,7 @@ export function AIReadiness() {
       <div className="border-b border-gray-200 pb-6">
         <h1 className="text-3xl font-bold text-gray-900">Company Maturity</h1>
         <p className="text-gray-600 mt-2">
-          AI maturity assessment across the six-pillar framework
+          AI maturity assessment across the five core skill pillars
         </p>
       </div>
 
@@ -271,8 +259,8 @@ export function AIReadiness() {
               <div 
                 className="absolute w-12 h-12 -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
                 style={{
-                  left: '70%', // Based on implementation speed
-                  top: '30%'   // Based on maturity score (74% inverted for Y axis)
+                  left: '25%', // Low implementation speed (beginner quadrant)
+                  top: '75%'   // Low maturity score (beginner quadrant)
                 }}
               >
                 <div className="w-full h-full bg-blue-600 rounded-full border-3 border-white shadow-lg flex items-center justify-center">
@@ -305,21 +293,7 @@ export function AIReadiness() {
                 )
               })}
               
-              {/* Industry Peers */}
-              <div 
-                className="absolute w-10 h-10 -translate-x-1/2 -translate-y-1/2"
-                style={{ left: '75%', top: '20%' }}
-                title="Industry Leader A"
-              >
-                <div className="w-full h-full bg-green-500 rounded-full border-2 border-white shadow-md opacity-60" />
-              </div>
-              <div 
-                className="absolute w-10 h-10 -translate-x-1/2 -translate-y-1/2"
-                style={{ left: '85%', top: '25%' }}
-                title="Industry Leader B"
-              >
-                <div className="w-full h-full bg-green-500 rounded-full border-2 border-white shadow-md opacity-60" />
-              </div>
+              {/* Industry Average */}
               <div 
                 className="absolute w-10 h-10 -translate-x-1/2 -translate-y-1/2"
                 style={{ left: '55%', top: '45%' }}
@@ -343,200 +317,9 @@ export function AIReadiness() {
               </div>
             )}
             <div className="flex items-center">
-              <div className="w-4 h-4 bg-green-500 rounded-full mr-2 opacity-60" />
-              <span>Industry Leaders</span>
-            </div>
-            <div className="flex items-center">
               <div className="w-4 h-4 bg-gray-400 rounded-full mr-2 opacity-60" />
               <span>Industry Average</span>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-      
-      {/* Path to Industry Leadership */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Path to Industry Leadership</CardTitle>
-          <p className="text-sm text-gray-600">Strategic and capability gaps to reach the Leaders quadrant</p>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            
-            {/* Current Position Summary */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center mb-2">
-                <MapPin className="w-5 h-5 text-blue-600 mr-2" />
-                <h4 className="font-semibold text-blue-900">Your Current Position</h4>
-              </div>
-              <p className="text-sm text-blue-800">
-                You're positioned between <strong>Builders</strong> and <strong>Leaders</strong> - strong technical capabilities (70th percentile) 
-                but strategic alignment needs improvement to reach industry-leading performance.
-              </p>
-            </div>
-
-            {/* Strategy Gap */}
-            <div className="border rounded-lg p-4 bg-gray-50">
-              <div className="mb-3">
-                <div className="flex items-center mb-1">
-                  <Target className="w-5 h-5 text-gray-700 mr-2" />
-                  <h4 className="font-semibold text-gray-900">Strategy Gap</h4>
-                </div>
-                <div className="flex items-center space-x-2 mt-1">
-                  <Badge variant="warning" size="sm">Primary Focus Area</Badge>
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <div className="flex items-center mb-1">
-                      <TrendingUp className="w-4 h-4 text-blue-600 mr-1" />
-                      <span className="text-sm font-medium text-blue-700">Strategic Misalignment:</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">67% of teams lack clear AI success metrics tied to business outcomes, causing 8-12 hours/week of misdirected effort</p>
-                  </div>
-                  <div>
-                    <div className="flex items-center mb-1">
-                      <Target className="w-4 h-4 text-green-600 mr-1" />
-                      <span className="text-sm font-medium text-green-700">Leadership Advantage:</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">Industry leaders achieve 40-50% productivity gains through unified AI strategy execution vs. your current 20-25%</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <div className="flex items-center mb-1">
-                      <Calendar className="w-4 h-4 text-red-600 mr-1" />
-                      <span className="text-sm font-medium text-red-700">Strategic Overhead:</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">Teams spend 15-20% of AI project time on unclear requirements and changing priorities</p>
-                  </div>
-                  <div>
-                    <div className="flex items-center mb-1">
-                      <ArrowRight className="w-4 h-4 text-purple-600 mr-1" />
-                      <span className="text-sm font-medium text-purple-700">Improvement Potential:</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">Strategic clarity could boost overall AI ROI by 60% and reduce project delivery time by 40%</p>
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="flex items-center mb-2">
-                    <Settings className="w-4 h-4 text-gray-600 mr-1" />
-                    <span className="text-sm font-medium text-gray-700">Strategic Actions:</span>
-                  </div>
-                  <ul className="mt-2 space-y-1">
-                    <li className="text-sm text-gray-600 flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
-                      Establish AI-first business KPIs linked to revenue and cost reduction targets
-                    </li>
-                    <li className="text-sm text-gray-600 flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
-                      Create quarterly AI strategy alignment sessions with all department heads
-                    </li>
-                    <li className="text-sm text-gray-600 flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
-                      Deploy AI success metrics dashboard visible to all teams in real-time
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Capability Gap */}
-            <div className="border rounded-lg p-4 bg-gray-50">
-              <div className="mb-3">
-                <div className="flex items-center mb-1">
-                  <Zap className="w-5 h-5 text-gray-700 mr-2" />
-                  <h4 className="font-semibold text-gray-900">Capability Gap</h4>
-                </div>
-                <div className="flex items-center space-x-2 mt-1">
-                  <Badge variant="info" size="sm">Secondary Focus Area</Badge>
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <div className="flex items-center mb-1">
-                      <Users className="w-4 h-4 text-blue-600 mr-1" />
-                      <span className="text-sm font-medium text-blue-700">Execution Bottlenecks:</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">30% of workforce are non-users, creating capability gaps that slow down cross-team AI initiatives</p>
-                  </div>
-                  <div>
-                    <div className="flex items-center mb-1">
-                      <Target className="w-4 h-4 text-green-600 mr-1" />
-                      <span className="text-sm font-medium text-green-700">Leadership Standard:</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">Industry leaders have 85%+ workforce AI-capable with advanced automation reducing manual work by 60%</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <div className="flex items-center mb-1">
-                      <Calendar className="w-4 h-4 text-red-600 mr-1" />
-                      <span className="text-sm font-medium text-red-700">Capability Tax:</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">Technical limitations force 6-10 hours/week of manual workarounds per employee</p>
-                  </div>
-                  <div>
-                    <div className="flex items-center mb-1">
-                      <ArrowRight className="w-4 h-4 text-purple-600 mr-1" />
-                      <span className="text-sm font-medium text-purple-700">Acceleration Opportunity:</span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-1">Infrastructure upgrades could double current productivity gains and enable advanced AI use cases</p>
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="flex items-center mb-2">
-                    <Settings className="w-4 h-4 text-gray-600 mr-1" />
-                    <span className="text-sm font-medium text-gray-700">Capability Actions:</span>
-                  </div>
-                  <ul className="mt-2 space-y-1">
-                    <li className="text-sm text-gray-600 flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
-                      Launch 30-day AI intensive training for bottom 30% of performers
-                    </li>
-                    <li className="text-sm text-gray-600 flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
-                      Upgrade to enterprise AI platform with automated data pipelines
-                    </li>
-                    <li className="text-sm text-gray-600 flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
-                      Deploy AI-to-AI integrations for seamless workflow automation
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Success Timeline */}
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <div className="flex items-center mb-2">
-                <Target className="w-5 h-5 text-green-600 mr-2" />
-                <h4 className="font-semibold text-green-900">Path to Leaders Quadrant</h4>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div>
-                  <span className="font-medium text-green-700">Months 1-3:</span>
-                  <p className="text-green-800">Focus on capability improvements - fastest wins with infrastructure and training</p>
-                </div>
-                <div>
-                  <span className="font-medium text-green-700">Months 4-6:</span>
-                  <p className="text-green-800">Strategic alignment initiatives - KPIs, governance, cross-team coordination</p>
-                </div>
-                <div>
-                  <span className="font-medium text-green-700">Months 7-9:</span>
-                  <p className="text-green-800">Optimization phase - reach Leaders quadrant with 40-50% productivity gains</p>
-                </div>
-              </div>
-            </div>
-
           </div>
         </CardContent>
       </Card>
