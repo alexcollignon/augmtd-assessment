@@ -21,7 +21,7 @@ function Dashboard() {
   const renderContent = () => {
     switch (currentPage) {
       case 'executive-summary':
-        return <ExecutiveSummary />
+        return <ExecutiveSummary onNavigate={setCurrentPage} />
       case 'ai-readiness':
         return <AIReadiness />
       case 'ai-transformation':

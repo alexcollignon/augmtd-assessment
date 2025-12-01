@@ -16,33 +16,21 @@ import {
 } from 'lucide-react'
 import { formatCurrency } from '@/lib/utils'
 
-export function ExecutiveSummary() {
+interface ExecutiveSummaryProps {
+  onNavigate?: (page: string) => void
+}
+
+export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
   const aiHealthScore = 74
   const maturityLevel = 3
-  const valueLeakage = 127000
   
-  const strengths = [
-    'Customer service team achieving 3x faster response times with AI tools',
-    'Finance department automated 40% of invoice processing, saving 20 hrs/week',
-    'Zero security incidents from AI implementations in past 12 months',
-    '89% of assessed employees actively using approved AI tools',
-    'Data quality score (79%) exceeds industry average by 15 points'
-  ]
-  
-  const risks = [
-    '127 employees using ungoverned shadow AI tools (18% of workforce)',
-    'Sales & Marketing departments lag with only 45% AI readiness',
-    '68% of workflows remain manual, causing 1,250 hrs/week inefficiency',
-    'Missing AI ethics committee exposes company to bias risks',
-    '3 critical systems lack API integration for automation'
-  ]
   
   const opportunities = [
-    { name: 'Customer Service Chatbot', value: '$2.1M', feasibility: 'High', process: 'Customer Onboarding Process' },
-    { name: 'Invoice Data Extraction & Validation', value: '$890K', feasibility: 'Medium', process: 'Invoice Processing Workflow' },
-    { name: 'Resume Screening & Ranking AI', value: '$670K', feasibility: 'High', process: 'Employee Recruitment Process' },
-    { name: 'Predictive Equipment Maintenance', value: '$1.5M', feasibility: 'Medium', process: 'Operations Maintenance Workflow' },
-    { name: 'Content Generation Assistant', value: '$540K', feasibility: 'High', process: 'Marketing Campaign Creation' }
+    { name: 'Customer Service Chatbot', productivityGain: '75% faster response times', feasibility: 'High', process: 'Customer Onboarding Process' },
+    { name: 'Invoice Data Extraction & Validation', productivityGain: '70% processing acceleration', feasibility: 'Medium', process: 'Invoice Processing Workflow' },
+    { name: 'Resume Screening & Ranking AI', productivityGain: '80% screening efficiency', feasibility: 'High', process: 'Employee Recruitment Process' },
+    { name: 'Predictive Equipment Maintenance', productivityGain: '60% downtime reduction', feasibility: 'Medium', process: 'Operations Maintenance Workflow' },
+    { name: 'Content Generation Assistant', productivityGain: '65% content creation speed', feasibility: 'High', process: 'Marketing Campaign Creation' }
   ]
 
   return (
@@ -57,36 +45,60 @@ export function ExecutiveSummary() {
 
       {/* Top Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card className="flex items-center justify-center">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
           <CardContent className="text-center py-5">
             <Users className="w-6 h-6 text-blue-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">Employees Assessed</p>
             <div className="text-3xl font-bold text-gray-900">1,247</div>
             <p className="text-xs text-gray-500 mt-1">Across 6 departments</p>
+            <button 
+              onClick={() => onNavigate?.('assessment-data')}
+              className="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            >
+              Show Details →
+            </button>
           </CardContent>
         </Card>
-        <Card className="flex items-center justify-center">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
           <CardContent className="text-center py-5">
             <TrendingUp className="w-6 h-6 text-green-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">Avg. Skill Level</p>
             <div className="text-3xl font-bold text-gray-900">68%</div>
             <p className="text-xs text-gray-500 mt-1">Across all domains</p>
+            <button 
+              onClick={() => onNavigate?.('people-skills')}
+              className="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            >
+              Show Details →
+            </button>
           </CardContent>
         </Card>
-        <Card className="flex items-center justify-center">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
           <CardContent className="text-center py-5">
             <Brain className="w-6 h-6 text-purple-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">Automatable Work</p>
             <div className="text-3xl font-bold text-gray-900">32%</div>
             <p className="text-xs text-gray-500 mt-1">Of processes can be automated</p>
+            <button 
+              onClick={() => onNavigate?.('ai-transformation')}
+              className="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            >
+              Show Details →
+            </button>
           </CardContent>
         </Card>
-        <Card className="flex items-center justify-center">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer group">
           <CardContent className="text-center py-5">
             <AlertTriangle className="w-6 h-6 text-orange-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">Risk Exposure</p>
             <div className="text-3xl font-bold text-orange-600">18%</div>
             <p className="text-xs text-gray-500 mt-1">Shadow AI & compliance</p>
+            <button 
+              onClick={() => onNavigate?.('risk-compliance')}
+              className="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            >
+              Show Details →
+            </button>
           </CardContent>
         </Card>
       </div>
@@ -115,7 +127,15 @@ export function ExecutiveSummary() {
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>AI Maturity Pillars</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>AI Maturity Pillars</CardTitle>
+                <button 
+                  onClick={() => onNavigate?.('ai-readiness')}
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                >
+                  Show Details →
+                </button>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
@@ -148,73 +168,6 @@ export function ExecutiveSummary() {
       </div>
 
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Top Strengths */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <CheckCircle className="w-5 h-5 text-success-600 mr-2" />
-              Top 5 Strengths
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {strengths.map((strength, index) => (
-                <div key={index} className="flex items-start">
-                  <div className="w-2 h-2 bg-success-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <p className="text-sm text-gray-700">{strength}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Top Risks */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <AlertTriangle className="w-5 h-5 text-danger-600 mr-2" />
-              Top 5 Risks
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {risks.map((risk, index) => (
-                <div key={index} className="flex items-start">
-                  <div className="w-2 h-2 bg-danger-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <p className="text-sm text-gray-700">{risk}</p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Value Leakage */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="w-12 h-12 bg-danger-100 rounded-lg flex items-center justify-center mr-4">
-                <DollarSign className="w-6 h-6 text-danger-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Value Leakage Estimate</h3>
-                <p className="text-sm text-gray-600">Monthly cost of operational inefficiencies</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-danger-600">
-                {formatCurrency(valueLeakage)}/mo
-              </div>
-              <div className="text-sm text-gray-500 flex items-center">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                12% increase from last quarter
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Top AI Opportunities */}
       <Card>
@@ -233,7 +186,7 @@ export function ExecutiveSummary() {
                   <div>
                     <h4 className="font-medium text-gray-900">{opportunity.name}</h4>
                     <p className="text-sm text-gray-600">Process: {opportunity.process}</p>
-                    <p className="text-sm text-gray-500">Estimated Annual Value: {opportunity.value}</p>
+                    <p className="text-sm text-gray-500">Estimated Productivity Gains: {opportunity.productivityGain}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
