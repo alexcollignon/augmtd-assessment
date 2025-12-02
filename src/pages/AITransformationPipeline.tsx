@@ -236,7 +236,7 @@ export function AITransformationPipeline() {
   return (
     <div className="p-8 space-y-8">
       <div className="border-b border-gray-200 pb-6">
-        <h1 className="text-3xl font-bold text-gray-900">AI Transformation</h1>
+        <h1 className="text-3xl font-bold text-gray-900">AI Use Cases</h1>
         <p className="text-gray-600 mt-2">
           Detailed breakdown of work processes showing automation potential identified through employee assessments
         </p>

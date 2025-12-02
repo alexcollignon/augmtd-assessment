@@ -14,6 +14,7 @@ import { RiskCompliance } from './pages/overview/RiskCompliance'
 import { AITransformationPipeline } from './pages/AITransformationPipeline'
 import { PeopleSkills } from './pages/PeopleSkills'
 import { AssessmentData } from './pages/AssessmentData'
+import { Settings } from './pages/Settings'
 
 function Dashboard() {
   const [currentPage, setCurrentPage] = useState('executive-summary')
@@ -27,11 +28,13 @@ function Dashboard() {
       case 'ai-transformation':
         return <AITransformationPipeline />
       case 'risk-compliance':
-        return <RiskCompliance />
+        return <RiskCompliance onNavigate={setCurrentPage} />
       case 'people-skills':
         return <PeopleSkills />
       case 'assessment-data':
         return <AssessmentData />
+      case 'settings':
+        return <Settings />
       
       default:
         return <ExecutiveSummary />

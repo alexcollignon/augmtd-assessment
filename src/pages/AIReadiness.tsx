@@ -9,12 +9,12 @@ export function AIReadiness() {
   const departments = ['Engineering', 'Sales', 'Marketing', 'Finance', 'HR', 'Operations']
   // Department-specific scores (realistic for beginner-level company)
   const departmentScores = {
-    Engineering: { prompting: 45, tools: 52, responsibleUse: 38, data: 48, coIntelligence: 41 },
-    Sales: { prompting: 28, tools: 35, responsibleUse: 25, data: 22, coIntelligence: 30 },
-    Marketing: { prompting: 38, tools: 42, responsibleUse: 35, data: 28, coIntelligence: 33 },
-    Finance: { prompting: 32, tools: 38, responsibleUse: 45, data: 40, coIntelligence: 35 },
-    HR: { prompting: 25, tools: 30, responsibleUse: 42, data: 28, coIntelligence: 26 },
-    Operations: { prompting: 35, tools: 40, responsibleUse: 38, data: 32, coIntelligence: 44 },
+    Engineering: { prompting: 45, tools: 52, responsibleUse: 38, aiThinking: 48, coIntelligence: 41 },
+    Sales: { prompting: 28, tools: 35, responsibleUse: 25, aiThinking: 22, coIntelligence: 30 },
+    Marketing: { prompting: 38, tools: 42, responsibleUse: 35, aiThinking: 28, coIntelligence: 33 },
+    Finance: { prompting: 32, tools: 38, responsibleUse: 45, aiThinking: 40, coIntelligence: 35 },
+    HR: { prompting: 25, tools: 30, responsibleUse: 42, aiThinking: 28, coIntelligence: 26 },
+    Operations: { prompting: 35, tools: 40, responsibleUse: 38, aiThinking: 32, coIntelligence: 44 },
   }
 
 
@@ -24,7 +24,7 @@ export function AIReadiness() {
       case 'prompting': return 'prompting'
       case 'tools': return 'tools'
       case 'responsible use': return 'responsibleUse'
-      case 'data': return 'data'
+      case 'ai thinking': return 'aiThinking'
       case 'co-intelligence': return 'coIntelligence'
       default: return pillar.toLowerCase()
     }
@@ -32,47 +32,47 @@ export function AIReadiness() {
 
   const maturityData = [
     { 
-      pillar: 'Prompting', 
-      current: 34, 
-      target: 60,
-      gap: 26,
-      impact: 'Basic prompts limit AI output quality and effectiveness',
+      pillar: 'Strategy Alignment', 
+      current: 55, 
+      target: 75,
+      gap: 20,
+      impact: 'Misaligned AI initiatives reduce strategic impact',
       effort: 'Medium (2-3 months)',
-      priority: 2
-    },
-    { 
-      pillar: 'Tools', 
-      current: 40, 
-      target: 65,
-      gap: 25,
-      impact: 'Limited tool adoption slows productivity gains',
-      effort: 'Low (1-2 months)',
       priority: 1
     },
     { 
-      pillar: 'Responsible Use', 
-      current: 37, 
-      target: 70,
-      gap: 33,
-      impact: 'Lack of governance creates compliance and risk exposure',
+      pillar: 'Team Ownership', 
+      current: 60, 
+      target: 80,
+      gap: 20,
+      impact: 'Limited ownership slows AI adoption and accountability',
+      effort: 'Low (1-2 months)',
+      priority: 2
+    },
+    { 
+      pillar: 'Infrastructure', 
+      current: 65, 
+      target: 85,
+      gap: 20,
+      impact: 'Weak infrastructure limits AI implementation scale',
       effort: 'High (4-6 months)',
       priority: 5
     },
     { 
-      pillar: 'Data', 
-      current: 33, 
-      target: 55,
-      gap: 22,
-      impact: 'Poor data literacy limits AI implementation success',
+      pillar: 'Culture', 
+      current: 60, 
+      target: 80,
+      gap: 20,
+      impact: 'Poor AI culture creates resistance and adoption barriers',
       effort: 'High (4-5 months)',
       priority: 4
     },
     { 
-      pillar: 'Co-Intelligence', 
-      current: 35, 
-      target: 60,
+      pillar: 'Task Automation', 
+      current: 45, 
+      target: 70,
       gap: 25,
-      impact: 'Inefficient human-AI workflows reduce potential benefits',
+      impact: 'Limited automation reduces productivity potential',
       effort: 'Medium (3-4 months)',
       priority: 3
     },
@@ -168,27 +168,30 @@ export function AIReadiness() {
           </CardContent>
         </Card>
 
-        {/* Pillar Scorecards */}
+        {/* Top Priority Themes */}
         <Card>
           <CardHeader>
-            <CardTitle>Pillar Performance</CardTitle>
+            <CardTitle>Top Priority Themes</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-80 flex flex-col justify-center">
               <div className="space-y-6">
-                {maturityData.map((pillar) => (
-                  <div key={pillar.pillar}>
+                {[
+                  { theme: 'Data Analysis', current: 43, color: 'bg-blue-600' },
+                  { theme: 'Automation', current: 40, color: 'bg-green-600' },
+                  { theme: 'Content Creation', current: 40, color: 'bg-purple-600' },
+                  { theme: 'Communication', current: 26, color: 'bg-orange-600' },
+                  { theme: 'Innovation', current: 35, color: 'bg-red-600' }
+                ].map((item) => (
+                  <div key={item.theme}>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-900">{pillar.pillar}</span>
-                      <div className="flex items-center space-x-3">
-                        <span className="text-sm font-semibold text-gray-700">{pillar.current}%</span>
-                        <span className="text-xs text-gray-500">→ {pillar.target}%</span>
-                      </div>
+                      <span className="text-sm font-medium text-gray-900">{item.theme}</span>
+                      <span className="text-sm font-semibold text-gray-700">{item.current}%</span>
                     </div>
                     <div className="bg-gray-200 rounded-full h-3">
                       <div 
-                        className="bg-blue-600 h-3 rounded-full transition-all duration-300"
-                        style={{ width: `${pillar.current}%` }}
+                        className={`${item.color} h-3 rounded-full transition-all duration-300`}
+                        style={{ width: `${item.current}%` }}
                       />
                     </div>
                   </div>
@@ -323,6 +326,7 @@ export function AIReadiness() {
           </div>
         </CardContent>
       </Card>
+
     </div>
   )
 }

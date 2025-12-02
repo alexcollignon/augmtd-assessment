@@ -73,7 +73,7 @@ export function AssessmentData() {
       completionDate: '2024-05-15',
       score: 84,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 92, tools: 85, responsibleUse: 78, data: 81, coIntelligence: 86 }
+      skillScores: { prompting: 92, tools: 85, responsibleUse: 78, aiThinking: 81, coIntelligence: 86 }
     },
     {
       name: 'Mike Chen',
@@ -83,7 +83,7 @@ export function AssessmentData() {
       completionDate: '2024-05-12',
       score: 92,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 89, tools: 96, responsibleUse: 85, data: 94, coIntelligence: 91 }
+      skillScores: { prompting: 89, tools: 96, responsibleUse: 85, aiThinking: 94, coIntelligence: 91 }
     },
     {
       name: 'Jennifer Walsh',
@@ -93,7 +93,7 @@ export function AssessmentData() {
       completionDate: '2024-05-18',
       score: 76,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 74, tools: 69, responsibleUse: 88, data: 71, coIntelligence: 78 }
+      skillScores: { prompting: 74, tools: 69, responsibleUse: 88, aiThinking: 71, coIntelligence: 78 }
     },
     {
       name: 'Alex Rodriguez',
@@ -103,7 +103,7 @@ export function AssessmentData() {
       completionDate: '2024-05-14',
       score: 88,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 85, tools: 93, responsibleUse: 82, data: 90, coIntelligence: 87 }
+      skillScores: { prompting: 85, tools: 93, responsibleUse: 82, aiThinking: 90, coIntelligence: 87 }
     },
     {
       name: 'Emma Wilson',
@@ -113,7 +113,7 @@ export function AssessmentData() {
       completionDate: '2024-05-16',
       score: 79,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 88, tools: 76, responsibleUse: 75, data: 72, coIntelligence: 84 }
+      skillScores: { prompting: 88, tools: 76, responsibleUse: 75, aiThinking: 72, coIntelligence: 84 }
     },
     {
       name: 'Robert Johnson',
@@ -123,7 +123,7 @@ export function AssessmentData() {
       completionDate: '2024-05-13',
       score: 82,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 78, tools: 81, responsibleUse: 91, data: 87, coIntelligence: 83 }
+      skillScores: { prompting: 78, tools: 81, responsibleUse: 91, aiThinking: 87, coIntelligence: 83 }
     },
     {
       name: 'Maria Garcia',
@@ -133,7 +133,7 @@ export function AssessmentData() {
       completionDate: '2024-05-17',
       score: 73,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 71, tools: 75, responsibleUse: 76, data: 68, coIntelligence: 75 }
+      skillScores: { prompting: 71, tools: 75, responsibleUse: 76, aiThinking: 68, coIntelligence: 75 }
     },
     {
       name: 'James Miller',
@@ -143,7 +143,7 @@ export function AssessmentData() {
       completionDate: '2024-05-11',
       score: 71,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 68, tools: 72, responsibleUse: 74, data: 65, coIntelligence: 76 }
+      skillScores: { prompting: 68, tools: 72, responsibleUse: 74, aiThinking: 65, coIntelligence: 76 }
     },
     {
       name: 'Lisa Rodriguez',
@@ -153,7 +153,7 @@ export function AssessmentData() {
       completionDate: '2024-05-19',
       score: 69,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 65, tools: 70, responsibleUse: 72, data: 64, coIntelligence: 74 }
+      skillScores: { prompting: 65, tools: 70, responsibleUse: 72, aiThinking: 64, coIntelligence: 74 }
     },
     {
       name: 'David Kim',
@@ -163,7 +163,7 @@ export function AssessmentData() {
       completionDate: '2024-05-20',
       score: 85,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 82, tools: 87, responsibleUse: 89, data: 83, coIntelligence: 84 }
+      skillScores: { prompting: 82, tools: 87, responsibleUse: 89, aiThinking: 83, coIntelligence: 84 }
     },
     {
       name: 'Amanda Foster',
@@ -173,7 +173,7 @@ export function AssessmentData() {
       completionDate: '2024-05-21',
       score: 90,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 87, tools: 94, responsibleUse: 86, data: 92, coIntelligence: 91 }
+      skillScores: { prompting: 87, tools: 94, responsibleUse: 86, aiThinking: 92, coIntelligence: 91 }
     },
     {
       name: 'Carlos Mendez',
@@ -183,7 +183,7 @@ export function AssessmentData() {
       completionDate: '2024-05-22',
       score: 81,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 89, tools: 78, responsibleUse: 79, data: 76, coIntelligence: 83 }
+      skillScores: { prompting: 89, tools: 78, responsibleUse: 79, aiThinking: 76, coIntelligence: 83 }
     },
     {
       name: 'Rachel Green',
@@ -193,7 +193,7 @@ export function AssessmentData() {
       completionDate: '2024-05-23',
       score: 77,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 76, tools: 71, responsibleUse: 85, data: 73, coIntelligence: 80 }
+      skillScores: { prompting: 76, tools: 71, responsibleUse: 85, aiThinking: 73, coIntelligence: 80 }
     },
     {
       name: 'Kevin Walsh',
@@ -203,7 +203,7 @@ export function AssessmentData() {
       completionDate: '2024-05-24',
       score: 75,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 72, tools: 77, responsibleUse: 78, data: 70, coIntelligence: 78 }
+      skillScores: { prompting: 72, tools: 77, responsibleUse: 78, aiThinking: 70, coIntelligence: 78 }
     },
     {
       name: 'Diana Liu',
@@ -213,7 +213,7 @@ export function AssessmentData() {
       completionDate: '2024-05-25',
       score: 86,
       cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 84, tools: 91, responsibleUse: 81, data: 88, coIntelligence: 86 }
+      skillScores: { prompting: 84, tools: 91, responsibleUse: 81, aiThinking: 88, coIntelligence: 86 }
     }
   ]
 
@@ -521,7 +521,7 @@ export function AssessmentData() {
                       { name: 'Prompting', score: selectedParticipant.skillScores.prompting },
                       { name: 'Tools', score: selectedParticipant.skillScores.tools },
                       { name: 'Responsible Use', score: selectedParticipant.skillScores.responsibleUse },
-                      { name: 'Data', score: selectedParticipant.skillScores.data },
+                      { name: 'AI Thinking', score: selectedParticipant.skillScores.aiThinking },
                       { name: 'Co-Intelligence', score: selectedParticipant.skillScores.coIntelligence }
                     ].map((skill, index) => (
                       <div key={index} className="flex items-center justify-between">
@@ -574,7 +574,7 @@ export function AssessmentData() {
                       points={[
                         [140, 40 + (100 - selectedParticipant.skillScores.prompting)],
                         [140 + (70 * selectedParticipant.skillScores.tools / 100), 110 - (30 * selectedParticipant.skillScores.tools / 100)],
-                        [140 + (40 * selectedParticipant.skillScores.data / 100), 200 - (60 * selectedParticipant.skillScores.data / 100)],
+                        [140 + (40 * selectedParticipant.skillScores.aiThinking / 100), 200 - (60 * selectedParticipant.skillScores.aiThinking / 100)],
                         [140 - (40 * selectedParticipant.skillScores.coIntelligence / 100), 200 - (60 * selectedParticipant.skillScores.coIntelligence / 100)],
                         [140 - (70 * selectedParticipant.skillScores.responsibleUse / 100), 110 - (30 * selectedParticipant.skillScores.responsibleUse / 100)]
                       ].map(point => `${point[0]},${point[1]}`).join(' ')}
@@ -587,7 +587,7 @@ export function AssessmentData() {
                     {[
                       { x: 140, y: 40 + (100 - selectedParticipant.skillScores.prompting), label: 'Prompting' },
                       { x: 140 + (70 * selectedParticipant.skillScores.tools / 100), y: 110 - (30 * selectedParticipant.skillScores.tools / 100), label: 'Tools' },
-                      { x: 140 + (40 * selectedParticipant.skillScores.data / 100), y: 200 - (60 * selectedParticipant.skillScores.data / 100), label: 'Data' },
+                      { x: 140 + (40 * selectedParticipant.skillScores.aiThinking / 100), y: 200 - (60 * selectedParticipant.skillScores.aiThinking / 100), label: 'AI Thinking' },
                       { x: 140 - (40 * selectedParticipant.skillScores.coIntelligence / 100), y: 200 - (60 * selectedParticipant.skillScores.coIntelligence / 100), label: 'Co-Intelligence' },
                       { x: 140 - (70 * selectedParticipant.skillScores.responsibleUse / 100), y: 110 - (30 * selectedParticipant.skillScores.responsibleUse / 100), label: 'Responsible Use' }
                     ].map((point, index) => (
@@ -597,7 +597,7 @@ export function AssessmentData() {
                     {/* Labels */}
                     <text x="140" y="30" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">Prompting</text>
                     <text x="220" y="115" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">Tools</text>
-                    <text x="190" y="215" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">Data</text>
+                    <text x="190" y="215" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">AI Thinking</text>
                     <text x="90" y="215" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">Co-Intelligence</text>
                     <text x="50" y="115" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">Responsible Use</text>
                   </svg>

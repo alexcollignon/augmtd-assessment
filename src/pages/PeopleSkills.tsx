@@ -38,11 +38,11 @@ export function PeopleSkills() {
   const [activeTab, setActiveTab] = useState('skills')
   
   const roleData = {
-    'Software Engineer': { count: 45, avgSkill: 89, topSkills: ['Tools', 'Data', 'Co-Intelligence'] },
+    'Software Engineer': { count: 45, avgSkill: 89, topSkills: ['Tools', 'AI Thinking', 'Co-Intelligence'] },
     'Marketing Specialist': { count: 28, avgSkill: 84, topSkills: ['Prompting', 'Tools', 'Co-Intelligence'] },
     'Sales Representative': { count: 32, avgSkill: 71, topSkills: ['Prompting', 'Tools', 'Co-Intelligence'] },
-    'Financial Analyst': { count: 18, avgSkill: 79, topSkills: ['Data', 'Tools', 'Responsible Use'] },
-    'Project Manager': { count: 24, avgSkill: 73, topSkills: ['Co-Intelligence', 'Tools', 'Data'] },
+    'Financial Analyst': { count: 18, avgSkill: 79, topSkills: ['AI Thinking', 'Tools', 'Responsible Use'] },
+    'Project Manager': { count: 24, avgSkill: 73, topSkills: ['Co-Intelligence', 'Tools', 'AI Thinking'] },
     'HR Specialist': { count: 16, avgSkill: 68, topSkills: ['Responsible Use', 'Tools', 'Co-Intelligence'] }
   }
 
@@ -72,12 +72,12 @@ export function PeopleSkills() {
       description: 'Understanding AI ethics, bias awareness, and governance'
     },
     {
-      category: 'Data',
+      category: 'AI Thinking',
       avgScore: 72,
       trend: '+15%', 
       topPerformers: 15,
       strugglers: 22,
-      description: 'Data literacy, quality assessment, and AI-driven analysis'
+      description: 'Strategic thinking with AI, problem-solving, and analytical reasoning'
     },
     {
       category: 'Co-Intelligence',
@@ -259,12 +259,12 @@ export function PeopleSkills() {
 
   // Department-specific skill scores for heatmap
   const departmentSkillScores = {
-    Engineering: { prompting: 85, tools: 89, responsibleUse: 76, data: 92, coIntelligence: 88 },
-    Sales: { prompting: 68, tools: 72, responsibleUse: 71, data: 58, coIntelligence: 64 },
-    Marketing: { prompting: 91, tools: 84, responsibleUse: 78, data: 67, coIntelligence: 79 },
-    Finance: { prompting: 71, tools: 76, responsibleUse: 89, data: 88, coIntelligence: 82 },
-    HR: { prompting: 74, tools: 69, responsibleUse: 85, data: 61, coIntelligence: 68 },
-    Operations: { prompting: 73, tools: 81, responsibleUse: 82, data: 79, coIntelligence: 91 },
+    Engineering: { prompting: 85, tools: 89, responsibleUse: 76, aiThinking: 92, coIntelligence: 88 },
+    Sales: { prompting: 68, tools: 72, responsibleUse: 71, aiThinking: 58, coIntelligence: 64 },
+    Marketing: { prompting: 91, tools: 84, responsibleUse: 78, aiThinking: 67, coIntelligence: 79 },
+    Finance: { prompting: 71, tools: 76, responsibleUse: 89, aiThinking: 88, coIntelligence: 82 },
+    HR: { prompting: 74, tools: 69, responsibleUse: 85, aiThinking: 61, coIntelligence: 68 },
+    Operations: { prompting: 73, tools: 81, responsibleUse: 82, aiThinking: 79, coIntelligence: 91 },
   }
 
   // Department-specific skill distribution (Advanced/Intermediate/Basic/Beginner percentages)
@@ -273,49 +273,49 @@ export function PeopleSkills() {
       'Prompting': { advanced: 24, intermediate: 28, basic: 31, beginner: 17 },
       'Tools': { advanced: 28, intermediate: 32, basic: 26, beginner: 14 },
       'Responsible Use': { advanced: 32, intermediate: 31, basic: 25, beginner: 12 },
-      'Data': { advanced: 26, intermediate: 29, basic: 28, beginner: 17 },
+      'AI Thinking': { advanced: 26, intermediate: 29, basic: 28, beginner: 17 },
       'Co-Intelligence': { advanced: 22, intermediate: 30, basic: 32, beginner: 16 }
     },
     Engineering: {
       'Prompting': { advanced: 38, intermediate: 30, basic: 22, beginner: 10 },
       'Tools': { advanced: 45, intermediate: 35, basic: 15, beginner: 5 },
       'Responsible Use': { advanced: 25, intermediate: 35, basic: 30, beginner: 10 },
-      'Data': { advanced: 52, intermediate: 28, basic: 15, beginner: 5 },
+      'AI Thinking': { advanced: 52, intermediate: 28, basic: 15, beginner: 5 },
       'Co-Intelligence': { advanced: 42, intermediate: 35, basic: 18, beginner: 5 }
     },
     Sales: {
       'Prompting': { advanced: 5, intermediate: 18, basic: 38, beginner: 39 },
       'Tools': { advanced: 8, intermediate: 25, basic: 35, beginner: 32 },
       'Responsible Use': { advanced: 18, intermediate: 28, basic: 32, beginner: 22 },
-      'Data': { advanced: 3, intermediate: 15, basic: 32, beginner: 50 },
+      'AI Thinking': { advanced: 3, intermediate: 15, basic: 32, beginner: 50 },
       'Co-Intelligence': { advanced: 5, intermediate: 12, basic: 28, beginner: 55 }
     },
     Marketing: {
       'Prompting': { advanced: 48, intermediate: 30, basic: 15, beginner: 7 },
       'Tools': { advanced: 35, intermediate: 32, basic: 22, beginner: 11 },
       'Responsible Use': { advanced: 28, intermediate: 32, basic: 25, beginner: 15 },
-      'Data': { advanced: 18, intermediate: 28, basic: 35, beginner: 19 },
+      'AI Thinking': { advanced: 18, intermediate: 28, basic: 35, beginner: 19 },
       'Co-Intelligence': { advanced: 22, intermediate: 35, basic: 28, beginner: 15 }
     },
     Finance: {
       'Prompting': { advanced: 15, intermediate: 28, basic: 35, beginner: 22 },
       'Tools': { advanced: 22, intermediate: 35, basic: 28, beginner: 15 },
       'Responsible Use': { advanced: 45, intermediate: 30, basic: 18, beginner: 7 },
-      'Data': { advanced: 42, intermediate: 32, basic: 18, beginner: 8 },
+      'AI Thinking': { advanced: 42, intermediate: 32, basic: 18, beginner: 8 },
       'Co-Intelligence': { advanced: 32, intermediate: 28, basic: 25, beginner: 15 }
     },
     HR: {
       'Prompting': { advanced: 18, intermediate: 25, basic: 32, beginner: 25 },
       'Tools': { advanced: 15, intermediate: 28, basic: 32, beginner: 25 },
       'Responsible Use': { advanced: 38, intermediate: 35, basic: 20, beginner: 7 },
-      'Data': { advanced: 8, intermediate: 22, basic: 38, beginner: 32 },
+      'AI Thinking': { advanced: 8, intermediate: 22, basic: 38, beginner: 32 },
       'Co-Intelligence': { advanced: 12, intermediate: 25, basic: 35, beginner: 28 }
     },
     Operations: {
       'Prompting': { advanced: 20, intermediate: 28, basic: 32, beginner: 20 },
       'Tools': { advanced: 28, intermediate: 32, basic: 25, beginner: 15 },
       'Responsible Use': { advanced: 32, intermediate: 28, basic: 25, beginner: 15 },
-      'Data': { advanced: 25, intermediate: 35, basic: 28, beginner: 12 },
+      'AI Thinking': { advanced: 25, intermediate: 35, basic: 28, beginner: 12 },
       'Co-Intelligence': { advanced: 48, intermediate: 30, basic: 15, beginner: 7 }
     }
   }
@@ -339,7 +339,7 @@ export function PeopleSkills() {
     'Prompting',
     'Tools',
     'Responsible Use',
-    'Data',
+    'AI Thinking',
     'Co-Intelligence'
   ]
 
@@ -361,7 +361,7 @@ export function PeopleSkills() {
       case 'prompting': return 'prompting'
       case 'tools': return 'tools'
       case 'responsible use': return 'responsibleUse'
-      case 'data': return 'data'
+      case 'ai thinking': return 'aiThinking'
       case 'co-intelligence': return 'coIntelligence'
       default: return skill.toLowerCase()
     }
@@ -632,12 +632,12 @@ export function PeopleSkills() {
                       )}
                       {selectedDistributionDept === 'Engineering' && (
                         <div>
-                          <strong>Technical excellence</strong> - 52% advanced in Data, 45% in Tools. Strong foundation but need support in Responsible Use (25%) and human-AI collaboration skills.
+                          <strong>Technical excellence</strong> - 52% advanced in AI Thinking, 45% in Tools. Strong foundation but need support in Responsible Use (25%) and human-AI collaboration skills.
                         </div>
                       )}
                       {selectedDistributionDept === 'Marketing' && (
                         <div>
-                          <strong>Prompting leaders</strong> - 48% advanced in Prompting, 35% in Tools. Natural mentors for AI communication but need Data literacy development.
+                          <strong>Prompting leaders</strong> - 48% advanced in Prompting, 35% in Tools. Natural mentors for AI communication but need AI Thinking strategic development.
                         </div>
                       )}
                       {selectedDistributionDept === 'Sales' && (
@@ -647,12 +647,12 @@ export function PeopleSkills() {
                       )}
                       {selectedDistributionDept === 'Finance' && (
                         <div>
-                          <strong>Compliance and data strengths</strong> - 45% advanced in Responsible Use, 42% in Data. Excellent candidates for AI governance and analytical applications.
+                          <strong>Compliance and analytical strengths</strong> - 45% advanced in Responsible Use, 42% in AI Thinking. Excellent candidates for AI governance and strategic analysis applications.
                         </div>
                       )}
                       {selectedDistributionDept === 'HR' && (
                         <div>
-                          <strong>Responsible AI champions</strong> - 38% advanced in Responsible Use. Natural leaders for AI governance but need practical Tools and Data skills.
+                          <strong>Responsible AI champions</strong> - 38% advanced in Responsible Use. Natural leaders for AI governance but need practical Tools and AI Thinking skills.
                         </div>
                       )}
                       {selectedDistributionDept === 'Operations' && (
@@ -1124,10 +1124,10 @@ export function PeopleSkills() {
                     ]
                   },
                   {
-                    skill: 'Data',
+                    skill: 'AI Thinking',
                     quotes: [
-                      { quote: "I want to use AI for Excel analysis but don't know how", role: "Financial Analyst", dept: "Finance" },
-                      { quote: "AI helps with basic charts, but I need advanced analytics training", role: "Operations Manager", dept: "Operations" }
+                      { quote: "I struggle to think strategically about when and how to apply AI", role: "Financial Analyst", dept: "Finance" },
+                      { quote: "Need help developing AI-driven problem-solving approaches", role: "Operations Manager", dept: "Operations" }
                     ]
                   },
                   {
@@ -1172,7 +1172,7 @@ export function PeopleSkills() {
                       </div>
                       <div className="flex items-start">
                         <ArrowRight className="w-3 h-3 mt-1 mr-2 flex-shrink-0" />
-                        <span><strong>Finance → All Depts:</strong> Data analysis best practices and Excel AI integration</span>
+                        <span><strong>Finance → All Depts:</strong> AI thinking frameworks and strategic analysis approaches</span>
                       </div>
                       <div className="flex items-start">
                         <ArrowRight className="w-3 h-3 mt-1 mr-2 flex-shrink-0" />

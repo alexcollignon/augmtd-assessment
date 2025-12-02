@@ -14,8 +14,7 @@ import {
   Clock,
   ArrowDown,
   MessageSquare,
-  Wrench,
-  Database
+  Wrench
 } from 'lucide-react'
 
 interface ExecutiveSummaryProps {
@@ -23,7 +22,7 @@ interface ExecutiveSummaryProps {
 }
 
 export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
-  const aiHealthScore = 36
+  const aiMaturityScore = 36
   const maturityLevel = 2
   
   
@@ -105,15 +104,15 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
         </Card>
       </div>
 
-      {/* AI Health Score and Pillars */}
+      {/* AI Maturity Score and Pillars */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Card className="lg:col-span-1">
           <CardHeader>
-            <CardTitle>AI Health Score</CardTitle>
+            <CardTitle>AI Maturity Score</CardTitle>
           </CardHeader>
           <CardContent className="text-center py-8">
             <div className="mb-6">
-              <CircularProgress value={aiHealthScore} size="xl" />
+              <CircularProgress value={aiMaturityScore} size="xl" />
             </div>
             <p className="text-gray-600 mb-4">Overall organizational readiness</p>
             <div className="flex justify-center items-center space-x-4 text-sm">
@@ -182,13 +181,13 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
                     <div className="text-center">
                       <div className="flex justify-center mb-3">
-                        <Database className="w-8 h-8 text-gray-600" />
+                        <Brain className="w-8 h-8 text-gray-600" />
                       </div>
                       <div className="mb-2">
                         <CircularProgress value={33} size="sm" />
                       </div>
-                      <p className="text-sm font-medium text-gray-900">Data</p>
-                      <p className="text-xs text-gray-500 mt-1">Data literacy & analysis</p>
+                      <p className="text-sm font-medium text-gray-900">AI Thinking</p>
+                      <p className="text-xs text-gray-500 mt-1">Strategic thinking & analysis</p>
                     </div>
                     
                     <div className="text-center">
