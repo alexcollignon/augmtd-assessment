@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 
 interface RiskComplianceProps {
-  onNavigate?: (page: string) => void
+  onNavigate?: (page: string, options?: { settingsTab?: string }) => void
 }
 
 export function RiskCompliance({ onNavigate }: RiskComplianceProps) {
@@ -150,10 +150,19 @@ export function RiskCompliance({ onNavigate }: RiskComplianceProps) {
         {/* Shadow AI Tools */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Eye className="w-5 h-5 text-warning-600 mr-2" />
-              Shadow AI Tools Overview
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center">
+                <Eye className="w-5 h-5 text-warning-600 mr-2" />
+                Shadow AI Tools Overview
+              </CardTitle>
+              <button 
+                onClick={() => onNavigate?.('settings', { settingsTab: 'ai-tools' })}
+                className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                title="Go to Settings to manage AI tool approvals"
+              >
+                <Settings className="w-5 h-5" />
+              </button>
+            </div>
             <p className="text-sm text-gray-600">
               AI tools detected in your organization
             </p>
@@ -195,25 +204,6 @@ export function RiskCompliance({ onNavigate }: RiskComplianceProps) {
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Management Link */}
-            <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Settings className="w-5 h-5 text-blue-600" />
-                  <div>
-                    <p className="text-sm font-medium text-blue-900">Manage AI Tool Approvals</p>
-                    <p className="text-sm text-blue-700">Add, remove, or modify approved AI tools for your organization</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => onNavigate?.('settings')}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                >
-                  Go to Settings →
-                </button>
-              </div>
             </div>
 
             {/* Summary Alert */}

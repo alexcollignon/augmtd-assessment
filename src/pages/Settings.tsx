@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { 
@@ -7,16 +7,40 @@ import {
   Check,
   X,
   Database,
-  Shield,
-  Bell,
-  User,
-  Globe
+  Building2,
+  Plus,
+  Edit2,
+  Trash2,
+  Save,
+  AlertCircle
 } from 'lucide-react'
 
-export function Settings() {
-  const [activeTab, setActiveTab] = useState('ai-tools')
+interface SettingsProps {
+  initialTab?: string
+}
+
+export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
+  const [activeTab, setActiveTab] = useState(initialTab)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
+
+  useEffect(() => {
+    setActiveTab(initialTab)
+  }, [initialTab])
+
+  // Department Management State
+  const [departments, setDepartments] = useState([
+    { id: 1, name: 'Engineering', employeeCount: 145, isDefault: true },
+    { id: 2, name: 'Marketing', employeeCount: 67, isDefault: true },
+    { id: 3, name: 'Finance', employeeCount: 45, isDefault: true },
+    { id: 4, name: 'Operations', employeeCount: 89, isDefault: true },
+    { id: 5, name: 'HR', employeeCount: 23, isDefault: true },
+    { id: 6, name: 'Sales', employeeCount: 134, isDefault: true },
+  ])
+  const [editingDepartment, setEditingDepartment] = useState(null)
+  const [newDepartmentName, setNewDepartmentName] = useState('')
+  const [isAddingDepartment, setIsAddingDepartment] = useState(false)
+  const [errors, setErrors] = useState({})
 
   // AI Tool Management State
   const [toolApprovals, setToolApprovals] = useState([
@@ -119,12 +143,257 @@ export function Settings() {
     }
   }
 
+  // Department Management Functions
+  const validateDepartmentName = (name) => {
+    const trimmed = name.trim()
+    if (!trimmed) {
+      return 'Department name is required'
+    }
+    if (trimmed.length < 2) {
+      return 'Department name must be at least 2 characters'
+    }
+    if (trimmed.length > 50) {
+      return 'Department name must be less than 50 characters'
+    }
+    if (departments.some(dept => dept.name.toLowerCase() === trimmed.toLowerCase() && dept.id !== editingDepartment)) {
+      return 'Department name already exists'
+    }
+    return null
+  }
+
+  const handleAddDepartment = () => {
+    const error = validateDepartmentName(newDepartmentName)
+    if (error) {
+      setErrors({ add: error })
+      return
+    }
+    
+    const newDept = {
+      id: Math.max(...departments.map(d => d.id)) + 1,
+      name: newDepartmentName.trim(),
+      employeeCount: 0,
+      isDefault: false
+    }
+    
+    setDepartments([...departments, newDept])
+    setNewDepartmentName('')
+    setIsAddingDepartment(false)
+    setErrors({})
+  }
+
+  const handleEditDepartment = (id, newName) => {
+    const error = validateDepartmentName(newName)
+    if (error) {
+      setErrors({ [id]: error })
+      return
+    }
+
+    setDepartments(departments.map(dept => 
+      dept.id === id ? { ...dept, name: newName.trim() } : dept
+    ))
+    setEditingDepartment(null)
+    setErrors({})
+  }
+
+  const handleDeleteDepartment = (id) => {
+    const dept = departments.find(d => d.id === id)
+    if (dept?.isDefault) {
+      setErrors({ [id]: 'Cannot delete default department' })
+      return
+    }
+    if (dept?.employeeCount > 0) {
+      setErrors({ [id]: `Cannot delete department with ${dept.employeeCount} employees` })
+      return
+    }
+    
+    setDepartments(departments.filter(dept => dept.id !== id))
+    setErrors({})
+  }
+
+  const handleResetToDefaults = () => {
+    setDepartments([
+      { id: 1, name: 'Engineering', employeeCount: 145, isDefault: true },
+      { id: 2, name: 'Marketing', employeeCount: 67, isDefault: true },
+      { id: 3, name: 'Finance', employeeCount: 45, isDefault: true },
+      { id: 4, name: 'Operations', employeeCount: 89, isDefault: true },
+      { id: 5, name: 'HR', employeeCount: 23, isDefault: true },
+      { id: 6, name: 'Sales', employeeCount: 134, isDefault: true },
+    ])
+    setEditingDepartment(null)
+    setIsAddingDepartment(false)
+    setNewDepartmentName('')
+    setErrors({})
+  }
+
   const tabs = [
     { id: 'ai-tools', label: 'AI Tools', icon: Database },
-    { id: 'security', label: 'Security', icon: Shield },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'organization', label: 'Organization', icon: Building2 },
   ]
+
+  const renderOrganizationTab = () => (
+    <div className="space-y-8">
+      {/* Department Management */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center">
+                <Building2 className="w-5 h-5 text-blue-600 mr-2" />
+                Department Management
+              </CardTitle>
+              <p className="text-sm text-gray-600 mt-1">
+                Configure your organization's departments. These names will appear throughout the dashboard.
+              </p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={handleResetToDefaults}
+                className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Reset to Defaults
+              </button>
+              <button
+                onClick={() => {
+                  setIsAddingDepartment(true)
+                  setNewDepartmentName('')
+                  setErrors({})
+                }}
+                className="flex items-center px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
+              >
+                <Plus className="w-4 h-4 mr-1" />
+                Add Department
+              </button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {/* Add Department Form */}
+          {isAddingDepartment && (
+            <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <h5 className="text-sm font-medium text-blue-900 mb-3">Add New Department</h5>
+              <div className="flex items-start space-x-3">
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    placeholder="Department name"
+                    value={newDepartmentName}
+                    onChange={(e) => {
+                      setNewDepartmentName(e.target.value)
+                      if (errors.add) setErrors({})
+                    }}
+                    className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.add ? 'border-red-300' : 'border-gray-300'
+                    }`}
+                    maxLength={50}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleAddDepartment()
+                      }
+                    }}
+                  />
+                  {errors.add && (
+                    <div className="mt-1 flex items-center text-sm text-red-600">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {errors.add}
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={handleAddDepartment}
+                  className="px-3 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  <Save className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => {
+                    setIsAddingDepartment(false)
+                    setNewDepartmentName('')
+                    setErrors({})
+                  }}
+                  className="px-3 py-2 text-gray-600 border border-gray-300 text-sm rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Department List */}
+          <div className="space-y-3">
+            {departments.map((department) => (
+              <DepartmentRow
+                key={department.id}
+                department={department}
+                editingDepartment={editingDepartment}
+                setEditingDepartment={setEditingDepartment}
+                onEdit={handleEditDepartment}
+                onDelete={handleDeleteDepartment}
+                errors={errors}
+                setErrors={setErrors}
+              />
+            ))}
+          </div>
+
+          {/* Department Summary */}
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+              <div>
+                <div className="text-2xl font-bold text-gray-900">{departments.length}</div>
+                <div className="text-sm text-gray-600">Total Departments</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-gray-900">
+                  {departments.reduce((sum, dept) => sum + dept.employeeCount, 0)}
+                </div>
+                <div className="text-sm text-gray-600">Total Employees</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-gray-900">
+                  {departments.filter(dept => !dept.isDefault).length}
+                </div>
+                <div className="text-sm text-gray-600">Custom Departments</div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Help Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Department Configuration Tips</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4 text-sm text-gray-600">
+            <div className="flex items-start space-x-3">
+              <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
+                <span className="text-xs font-medium text-blue-600">1</span>
+              </div>
+              <div>
+                <strong className="text-gray-900">Default Departments:</strong> These come pre-configured and can be renamed but not deleted while they have employees.
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
+                <span className="text-xs font-medium text-blue-600">2</span>
+              </div>
+              <div>
+                <strong className="text-gray-900">Custom Departments:</strong> Add departments specific to your organization. Empty custom departments can be deleted.
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
+                <span className="text-xs font-medium text-blue-600">3</span>
+              </div>
+              <div>
+                <strong className="text-gray-900">Dashboard Impact:</strong> Department names will appear in all analytics, reports, and assessment data throughout the dashboard.
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  )
 
   const renderAIToolsTab = () => (
     <div className="space-y-8">
@@ -261,6 +530,124 @@ export function Settings() {
     </div>
   )
 
+  // Department Row Component
+  const DepartmentRow = ({ department, editingDepartment, setEditingDepartment, onEdit, onDelete, errors, setErrors }) => {
+    const [editName, setEditName] = useState(department.name)
+    const isEditing = editingDepartment === department.id
+    const hasError = errors[department.id]
+
+    const handleSave = () => {
+      onEdit(department.id, editName)
+    }
+
+    const handleCancel = () => {
+      setEditName(department.name)
+      setEditingDepartment(null)
+      setErrors({})
+    }
+
+    const startEdit = () => {
+      setEditName(department.name)
+      setEditingDepartment(department.id)
+      setErrors({})
+    }
+
+    return (
+      <div className={`p-4 border rounded-lg transition-colors ${
+        hasError ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-white hover:bg-gray-50'
+      }`}>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4 flex-1">
+            {isEditing ? (
+              <div className="flex-1 max-w-md">
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => {
+                    setEditName(e.target.value)
+                    if (hasError) setErrors({})
+                  }}
+                  className={`w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    hasError ? 'border-red-300' : 'border-gray-300'
+                  }`}
+                  maxLength={50}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSave()
+                    }
+                  }}
+                  autoFocus
+                />
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h4 className="font-medium text-gray-900">{department.name}</h4>
+                  {department.isDefault && (
+                    <Badge variant="info" size="sm">Default</Badge>
+                  )}
+                </div>
+                <p className="text-sm text-gray-500">{department.employeeCount} employees</p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-2">
+            {isEditing ? (
+              <>
+                <button
+                  onClick={handleSave}
+                  className="p-2 text-green-600 hover:bg-green-100 rounded-md transition-colors"
+                  title="Save"
+                >
+                  <Save className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={handleCancel}
+                  className="p-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+                  title="Cancel"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={startEdit}
+                  className="p-2 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
+                  title="Edit department name"
+                >
+                  <Edit2 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => onDelete(department.id)}
+                  disabled={department.isDefault || department.employeeCount > 0}
+                  className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors disabled:text-gray-400 disabled:hover:bg-transparent"
+                  title={
+                    department.isDefault 
+                      ? "Cannot delete default department" 
+                      : department.employeeCount > 0 
+                      ? `Cannot delete department with ${department.employeeCount} employees`
+                      : "Delete department"
+                  }
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {hasError && (
+          <div className="mt-2 flex items-center text-sm text-red-600">
+            <AlertCircle className="w-4 h-4 mr-1" />
+            {hasError}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="p-8 space-y-8">
       <div className="border-b border-gray-200 pb-6">
@@ -298,36 +685,7 @@ export function Settings() {
       {/* Tab Content */}
       <div>
         {activeTab === 'ai-tools' && renderAIToolsTab()}
-        {activeTab === 'security' && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Security Settings</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Security configuration options will be available here.</p>
-            </CardContent>
-          </Card>
-        )}
-        {activeTab === 'notifications' && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Notification Preferences</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Notification settings will be available here.</p>
-            </CardContent>
-          </Card>
-        )}
-        {activeTab === 'profile' && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Profile Settings</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">Profile management options will be available here.</p>
-            </CardContent>
-          </Card>
-        )}
+        {activeTab === 'organization' && renderOrganizationTab()}
       </div>
     </div>
   )

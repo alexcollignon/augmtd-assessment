@@ -18,7 +18,7 @@ import {
 } from 'lucide-react'
 
 interface ExecutiveSummaryProps {
-  onNavigate?: (page: string) => void
+  onNavigate?: (page: string, options?: { settingsTab?: string }) => void
 }
 
 export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {

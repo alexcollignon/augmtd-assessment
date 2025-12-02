@@ -18,23 +18,31 @@ import { Settings } from './pages/Settings'
 
 function Dashboard() {
   const [currentPage, setCurrentPage] = useState('executive-summary')
+  const [settingsTab, setSettingsTab] = useState('ai-tools')
+
+  const handleNavigation = (page: string, options?: { settingsTab?: string }) => {
+    setCurrentPage(page)
+    if (options?.settingsTab) {
+      setSettingsTab(options.settingsTab)
+    }
+  }
 
   const renderContent = () => {
     switch (currentPage) {
       case 'executive-summary':
-        return <ExecutiveSummary onNavigate={setCurrentPage} />
+        return <ExecutiveSummary onNavigate={handleNavigation} />
       case 'ai-readiness':
         return <AIReadiness />
       case 'ai-transformation':
         return <AITransformationPipeline />
       case 'risk-compliance':
-        return <RiskCompliance onNavigate={setCurrentPage} />
+        return <RiskCompliance onNavigate={handleNavigation} />
       case 'people-skills':
         return <PeopleSkills />
       case 'assessment-data':
         return <AssessmentData />
       case 'settings':
-        return <Settings />
+        return <Settings initialTab={settingsTab} />
       
       default:
         return <ExecutiveSummary />
@@ -45,7 +53,7 @@ function Dashboard() {
     <div className="flex h-screen bg-gray-50">
       <Sidebar
         currentPage={currentPage}
-        onPageChange={setCurrentPage}
+        onPageChange={(page) => handleNavigation(page)}
       />
       
       <main className="flex-1 overflow-auto">
