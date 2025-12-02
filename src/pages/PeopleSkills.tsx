@@ -4,7 +4,8 @@ import { Badge } from '@/components/ui/Badge'
 import { CircularProgress } from '@/components/ui/CircularProgress'
 import { 
   Users, 
-  TrendingUp, 
+  TrendingUp,
+  TrendingDown, 
   Star, 
   Award,
   Target,
@@ -17,13 +18,23 @@ import {
   AlertCircle,
   BarChart3,
   Grid3x3,
-  Building2
+  Building2,
+  ChevronDown,
+  ChevronRight,
+  Mail,
+  User
 } from 'lucide-react'
 
 export function PeopleSkills() {
   const [selectedRole, setSelectedRole] = useState('all')
   const [skillDistributionView, setSkillDistributionView] = useState<'heatmap' | 'detail'>('heatmap')
-  const [selectedDistributionDept, setSelectedDistributionDept] = useState('Engineering')
+  const [selectedDistributionDept, setSelectedDistributionDept] = useState('Company Wide')
+  const [hoveredCell, setHoveredCell] = useState<{row: number, col: number} | null>(null)
+  const [expandedPersona, setExpandedPersona] = useState<string | null>(null)
+  const [selectedPersona, setSelectedPersona] = useState('AI Champions')
+  const [progressView, setProgressView] = useState<'department' | 'individual'>('department')
+  const [hoveredPoint, setHoveredPoint] = useState<any>(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   
   const roleData = {
     'Software Engineer': { count: 45, avgSkill: 89, topSkills: ['Tools', 'Data', 'Co-Intelligence'] },
@@ -85,7 +96,69 @@ export function PeopleSkills() {
       avgScore: 92,
       description: 'Advanced users leading AI adoption in their teams',
       characteristics: ['Experiment with new AI tools', 'Mentor colleagues', 'Drive innovation'],
-      nextSteps: ['Become internal AI trainers', 'Lead pilot projects', 'Evaluate new AI solutions']
+      nextSteps: ['Become internal AI trainers', 'Lead pilot projects', 'Evaluate new AI solutions'],
+      departmentBreakdown: [
+        { 
+          department: 'Engineering', 
+          count: 28, 
+          percentage: 31,
+          employees: [
+            { name: 'Sarah Chen', role: 'Senior Software Engineer', score: 95, email: 's.chen@company.com' },
+            { name: 'Alex Rodriguez', role: 'Tech Lead', score: 94, email: 'a.rodriguez@company.com' },
+            { name: 'Jordan Kim', role: 'Full Stack Developer', score: 93, email: 'j.kim@company.com' },
+            { name: 'Maya Patel', role: 'DevOps Engineer', score: 91, email: 'm.patel@company.com' },
+            { name: 'David Thompson', role: 'Senior Developer', score: 90, email: 'd.thompson@company.com' }
+          ]
+        },
+        { 
+          department: 'Marketing', 
+          count: 19, 
+          percentage: 21,
+          employees: [
+            { name: 'Emma Wilson', role: 'Content Strategy Lead', score: 96, email: 'e.wilson@company.com' },
+            { name: 'Michael Brown', role: 'Digital Marketing Manager', score: 93, email: 'm.brown@company.com' },
+            { name: 'Lisa Zhang', role: 'Brand Manager', score: 91, email: 'l.zhang@company.com' },
+            { name: 'James Miller', role: 'Marketing Analyst', score: 89, email: 'j.miller@company.com' }
+          ]
+        },
+        { 
+          department: 'Finance', 
+          count: 15, 
+          percentage: 17,
+          employees: [
+            { name: 'Robert Johnson', role: 'Senior Financial Analyst', score: 94, email: 'r.johnson@company.com' },
+            { name: 'Amanda Lee', role: 'Finance Manager', score: 92, email: 'a.lee@company.com' },
+            { name: 'Carlos Mendez', role: 'Budget Analyst', score: 90, email: 'c.mendez@company.com' }
+          ]
+        },
+        { 
+          department: 'Operations', 
+          count: 12, 
+          percentage: 13,
+          employees: [
+            { name: 'Rachel Green', role: 'Operations Manager', score: 93, email: 'r.green@company.com' },
+            { name: 'Kevin Walsh', role: 'Process Improvement Lead', score: 91, email: 'k.walsh@company.com' }
+          ]
+        },
+        { 
+          department: 'Sales', 
+          count: 9, 
+          percentage: 10,
+          employees: [
+            { name: 'Tom Anderson', role: 'Sales Director', score: 89, email: 't.anderson@company.com' },
+            { name: 'Nicole Davis', role: 'Account Manager', score: 87, email: 'n.davis@company.com' }
+          ]
+        },
+        { 
+          department: 'HR', 
+          count: 6, 
+          percentage: 8,
+          employees: [
+            { name: 'Jessica Taylor', role: 'HR Business Partner', score: 91, email: 'j.taylor@company.com' },
+            { name: 'Mark Williams', role: 'Talent Acquisition Lead', score: 88, email: 'm.williams@company.com' }
+          ]
+        }
+      ]
     },
     {
       persona: 'Active Adopters',
@@ -94,7 +167,64 @@ export function PeopleSkills() {
       avgScore: 81,
       description: 'Regular AI users with solid foundational skills',
       characteristics: ['Use AI tools daily', 'Comfortable with basics', 'Open to learning'],
-      nextSteps: ['Advanced skill workshops', 'Cross-functional projects', 'Automation training']
+      nextSteps: ['Advanced skill workshops', 'Cross-functional projects', 'Automation training'],
+      departmentBreakdown: [
+        { 
+          department: 'Engineering', 
+          count: 87, 
+          percentage: 28,
+          employees: [
+            { name: 'Chris Johnson', role: 'Software Engineer', score: 83, email: 'c.johnson@company.com' },
+            { name: 'Diana Liu', role: 'Frontend Developer', score: 81, email: 'd.liu@company.com' },
+            { name: 'Marcus Williams', role: 'Backend Developer', score: 79, email: 'm.williams@company.com' }
+          ]
+        },
+        { 
+          department: 'Marketing', 
+          count: 68, 
+          percentage: 22,
+          employees: [
+            { name: 'Sophie Martin', role: 'Marketing Specialist', score: 82, email: 's.martin@company.com' },
+            { name: 'Ryan Cooper', role: 'Social Media Manager', score: 80, email: 'r.cooper@company.com' }
+          ]
+        },
+        { 
+          department: 'Operations', 
+          count: 56, 
+          percentage: 18,
+          employees: [
+            { name: 'Jennifer Adams', role: 'Operations Analyst', score: 81, email: 'j.adams@company.com' },
+            { name: 'Pablo Garcia', role: 'Supply Chain Specialist', score: 78, email: 'p.garcia@company.com' }
+          ]
+        },
+        { 
+          department: 'Finance', 
+          count: 43, 
+          percentage: 14,
+          employees: [
+            { name: 'Lauren Foster', role: 'Financial Analyst', score: 83, email: 'l.foster@company.com' },
+            { name: 'Daniel Kim', role: 'Accounting Specialist', score: 79, email: 'd.kim@company.com' }
+          ]
+        },
+        { 
+          department: 'Sales', 
+          count: 34, 
+          percentage: 11,
+          employees: [
+            { name: 'Ashley Turner', role: 'Sales Representative', score: 77, email: 'a.turner@company.com' },
+            { name: 'Brian Mitchell', role: 'Account Executive', score: 75, email: 'b.mitchell@company.com' }
+          ]
+        },
+        { 
+          department: 'HR', 
+          count: 24, 
+          percentage: 7,
+          employees: [
+            { name: 'Melissa Chen', role: 'HR Coordinator', score: 80, email: 'm.chen@company.com' },
+            { name: 'Nathan Scott', role: 'Recruiter', score: 78, email: 'n.scott@company.com' }
+          ]
+        }
+      ]
     },
     {
       persona: 'Cautious Learners',
@@ -103,7 +233,15 @@ export function PeopleSkills() {
       avgScore: 67,
       description: 'Interested but need guidance and support',
       characteristics: ['Occasional AI use', 'Want more training', 'Need clear guidelines'],
-      nextSteps: ['Structured learning paths', 'Hands-on workshops', 'Peer mentoring']
+      nextSteps: ['Structured learning paths', 'Hands-on workshops', 'Peer mentoring'],
+      departmentBreakdown: [
+        { department: 'Sales', count: 156, percentage: 31 },
+        { department: 'Operations', count: 124, percentage: 25 },
+        { department: 'HR', count: 89, percentage: 18 },
+        { department: 'Finance', count: 67, percentage: 13 },
+        { department: 'Marketing', count: 34, percentage: 7 },
+        { department: 'Engineering', count: 28, percentage: 6 }
+      ]
     },
     {
       persona: 'Resistant Users',
@@ -112,7 +250,15 @@ export function PeopleSkills() {
       avgScore: 45,
       description: 'Skeptical about AI value or lack confidence',
       characteristics: ['Minimal AI use', 'Prefer traditional methods', 'Need convincing'],
-      nextSteps: ['Show quick wins', 'Address concerns', 'Start with simple tools']
+      nextSteps: ['Show quick wins', 'Address concerns', 'Start with simple tools'],
+      departmentBreakdown: [
+        { department: 'Sales', count: 89, percentage: 38 },
+        { department: 'HR', count: 56, percentage: 24 },
+        { department: 'Operations', count: 43, percentage: 18 },
+        { department: 'Finance', count: 28, percentage: 12 },
+        { department: 'Engineering', count: 12, percentage: 5 },
+        { department: 'Marketing', count: 6, percentage: 3 }
+      ]
     },
     {
       persona: 'Non-Users',
@@ -121,16 +267,60 @@ export function PeopleSkills() {
       avgScore: 28,
       description: 'Have not engaged with AI tools yet',
       characteristics: ['No current AI use', 'May lack awareness', 'Need basic introduction'],
-      nextSteps: ['AI awareness sessions', 'Basic tool training', 'Success story sharing']
+      nextSteps: ['AI awareness sessions', 'Basic tool training', 'Success story sharing'],
+      departmentBreakdown: [
+        { department: 'Sales', count: 34, percentage: 30 },
+        { department: 'HR', count: 28, percentage: 25 },
+        { department: 'Operations', count: 23, percentage: 20 },
+        { department: 'Finance', count: 15, percentage: 13 },
+        { department: 'Engineering', count: 8, percentage: 7 },
+        { department: 'Marketing', count: 6, percentage: 5 }
+      ]
     }
   ]
 
-  const progressData = [
-    { month: 'Jan 2024', avgScore: 62, assessmentCount: 987 },
-    { month: 'Feb 2024', avgScore: 64, assessmentCount: 1089 },
-    { month: 'Mar 2024', avgScore: 67, assessmentCount: 1156 },
-    { month: 'Apr 2024', avgScore: 70, assessmentCount: 1203 },
-    { month: 'May 2024', avgScore: 74, assessmentCount: 1247 },
+  // Department progress data (6 months ago vs current)
+  const departmentProgressData = [
+    { department: 'Engineering', pastScore: 82, currentScore: 87, improvement: 5 },
+    { department: 'Marketing', pastScore: 76, currentScore: 81, improvement: 5 },
+    { department: 'Finance', pastScore: 71, currentScore: 78, improvement: 7 },
+    { department: 'Operations', pastScore: 75, currentScore: 72, improvement: -3 },
+    { department: 'HR', pastScore: 65, currentScore: 71, improvement: 6 },
+    { department: 'Sales', pastScore: 62, currentScore: 58, improvement: -4 }
+  ]
+
+  // Individual employee progress data (sample)
+  const individualProgressData = [
+    { name: 'Sarah Chen', department: 'Engineering', role: 'AI Researcher', pastScore: 88, currentScore: 95, improvement: 7 },
+    { name: 'Emma Wilson', department: 'Marketing', role: 'Content Manager', pastScore: 89, currentScore: 96, improvement: 7 },
+    { name: 'Alex Rodriguez', department: 'Engineering', role: 'Software Engineer', pastScore: 86, currentScore: 94, improvement: 8 },
+    { name: 'Robert Johnson', department: 'Finance', role: 'Financial Analyst', pastScore: 87, currentScore: 94, improvement: 7 },
+    { name: 'Michael Brown', department: 'Marketing', role: 'Marketing Specialist', pastScore: 85, currentScore: 93, improvement: 8 },
+    { name: 'Rachel Green', department: 'Operations', role: 'Operations Manager', pastScore: 84, currentScore: 78, improvement: -6 },
+    { name: 'Amanda Lee', department: 'Finance', role: 'Budget Analyst', pastScore: 83, currentScore: 92, improvement: 9 },
+    { name: 'Jessica Taylor', department: 'HR', role: 'HR Business Partner', pastScore: 84, currentScore: 91, improvement: 7 },
+    { name: 'Lisa Zhang', department: 'Marketing', role: 'Digital Marketer', pastScore: 83, currentScore: 91, improvement: 8 },
+    { name: 'Maya Patel', department: 'Engineering', role: 'Product Engineer', pastScore: 84, currentScore: 91, improvement: 7 },
+    { name: 'Carlos Mendez', department: 'Finance', role: 'Senior Accountant', pastScore: 82, currentScore: 90, improvement: 8 },
+    { name: 'David Thompson', department: 'Engineering', role: 'DevOps Engineer', pastScore: 82, currentScore: 90, improvement: 8 },
+    { name: 'Kevin Walsh', department: 'Operations', role: 'Process Analyst', pastScore: 83, currentScore: 79, improvement: -4 },
+    { name: 'Tom Anderson', department: 'Sales', role: 'Account Executive', pastScore: 81, currentScore: 75, improvement: -6 },
+    { name: 'James Miller', department: 'Marketing', role: 'Brand Manager', pastScore: 81, currentScore: 89, improvement: 8 },
+    { name: 'Mark Williams', department: 'HR', role: 'Recruiter', pastScore: 80, currentScore: 88, improvement: 8 },
+    { name: 'Nicole Davis', department: 'Sales', role: 'Sales Representative', pastScore: 79, currentScore: 73, improvement: -6 },
+    { name: 'Chris Johnson', department: 'Engineering', role: 'Backend Developer', pastScore: 75, currentScore: 83, improvement: 8 },
+    { name: 'Sophie Martin', department: 'Marketing', role: 'Social Media Manager', pastScore: 74, currentScore: 82, improvement: 8 },
+    { name: 'Jennifer Adams', department: 'Operations', role: 'Supply Chain Analyst', pastScore: 78, currentScore: 74, improvement: -4 },
+    { name: 'Lauren Foster', department: 'Finance', role: 'Tax Specialist', pastScore: 75, currentScore: 83, improvement: 8 },
+    { name: 'Melissa Chen', department: 'HR', role: 'Training Coordinator', pastScore: 72, currentScore: 80, improvement: 8 },
+    { name: 'Diana Liu', department: 'Engineering', role: 'Frontend Developer', pastScore: 73, currentScore: 81, improvement: 8 },
+    { name: 'Ryan Cooper', department: 'Marketing', role: 'Campaign Manager', pastScore: 72, currentScore: 80, improvement: 8 },
+    { name: 'Pablo Garcia', department: 'Operations', role: 'Logistics Coordinator', pastScore: 76, currentScore: 71, improvement: -5 },
+    { name: 'Daniel Kim', department: 'Finance', role: 'Financial Planning', pastScore: 71, currentScore: 79, improvement: 8 },
+    { name: 'Nathan Scott', department: 'HR', role: 'Benefits Administrator', pastScore: 70, currentScore: 78, improvement: 8 },
+    { name: 'Ashley Turner', department: 'Sales', role: 'Inside Sales Rep', pastScore: 74, currentScore: 69, improvement: -5 },
+    { name: 'Brian Mitchell', department: 'Sales', role: 'Territory Manager', pastScore: 67, currentScore: 61, improvement: -6 },
+    { name: 'Marcus Williams', department: 'Engineering', role: 'QA Engineer', pastScore: 71, currentScore: 79, improvement: 8 }
   ]
 
   // Department-specific skill scores for heatmap
@@ -145,6 +335,13 @@ export function PeopleSkills() {
 
   // Department-specific skill distribution (Advanced/Intermediate/Basic/Beginner percentages)
   const departmentSkillDistribution = {
+    'Company Wide': {
+      'Prompting': { advanced: 24, intermediate: 28, basic: 31, beginner: 17 },
+      'Tools': { advanced: 28, intermediate: 32, basic: 26, beginner: 14 },
+      'Responsible Use': { advanced: 32, intermediate: 31, basic: 25, beginner: 12 },
+      'Data': { advanced: 26, intermediate: 29, basic: 28, beginner: 17 },
+      'Co-Intelligence': { advanced: 22, intermediate: 30, basic: 32, beginner: 16 }
+    },
     Engineering: {
       'Prompting': { advanced: 38, intermediate: 30, basic: 22, beginner: 10 },
       'Tools': { advanced: 45, intermediate: 35, basic: 15, beginner: 5 },
@@ -213,6 +410,17 @@ export function PeopleSkills() {
   ]
 
   const departmentNames = ['Engineering', 'Sales', 'Marketing', 'Finance', 'HR', 'Operations']
+  const departmentNamesWithCompanyWide = ['Company Wide', 'Engineering', 'Sales', 'Marketing', 'Finance', 'HR', 'Operations']
+
+  // Department color mapping
+  const departmentColors = {
+    'Engineering': '#3B82F6',    // Blue
+    'Marketing': '#10B981',      // Green  
+    'Finance': '#F59E0B',        // Yellow/Orange
+    'Operations': '#8B5CF6',     // Purple
+    'HR': '#EF4444',             // Red
+    'Sales': '#06B6D4'           // Cyan
+  }
 
   const getPillarKey = (skill: string) => {
     switch (skill.toLowerCase()) {
@@ -266,53 +474,6 @@ export function PeopleSkills() {
         </Card>
       </div>
 
-      {/* Skill Categories Performance */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Target className="w-5 h-5 text-blue-600 mr-2" />
-            AI Skills Performance by Category
-          </CardTitle>
-          <p className="text-sm text-gray-600">Average proficiency across five key AI skill pillars</p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {skillCategories.map((skill, index) => (
-              <div key={index} className="p-4 border border-gray-200 rounded-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium text-gray-900">{skill.category}</h4>
-                  <div className="flex items-center space-x-2">
-                    <Badge variant={skill.avgScore >= 80 ? 'success' : skill.avgScore >= 70 ? 'warning' : 'danger'} size="sm">
-                      {skill.avgScore}%
-                    </Badge>
-                    <span className="text-sm text-green-600 font-medium">{skill.trend}</span>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 mb-3">{skill.description}</p>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                    <span className="text-gray-700">{skill.topPerformers} top performers (80%+)</span>
-                  </div>
-                  <div className="flex items-center">
-                    <AlertCircle className="w-4 h-4 text-orange-600 mr-2" />
-                    <span className="text-gray-700">{skill.strugglers} need support (&lt;60%)</span>
-                  </div>
-                </div>
-                <div className="mt-3 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className={`h-2 rounded-full ${
-                      skill.avgScore >= 80 ? 'bg-green-500' : 
-                      skill.avgScore >= 70 ? 'bg-yellow-500' : 'bg-red-500'
-                    }`}
-                    style={{ width: `${skill.avgScore}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Detailed Skills Analysis by Department */}
       <Card>
@@ -364,8 +525,10 @@ export function PeopleSkills() {
                   {/* Headers */}
                   <div className="grid grid-cols-6 gap-2 mb-2">
                     <div className="text-xs font-medium text-gray-500 p-2"></div>
-                    {skillNames.map((skill) => (
-                      <div key={skill} className="text-xs font-medium text-gray-700 p-2 text-center">
+                    {skillNames.map((skill, skillIndex) => (
+                      <div key={skill} className={`text-xs font-medium text-gray-700 p-2 text-center transition-colors duration-200 ${
+                        hoveredCell?.col === skillIndex ? 'bg-gray-200' : ''
+                      }`}>
                         {skill.split(' ').map((word, i) => (
                           <div key={i}>{word}</div>
                         ))}
@@ -374,20 +537,33 @@ export function PeopleSkills() {
                   </div>
                   
                   {/* Heatmap Grid */}
-                  {departmentNames.map((dept) => (
+                  {departmentNames.map((dept, deptIndex) => (
                     <div key={dept} className="grid grid-cols-6 gap-2 mb-2">
-                      <div className="text-sm font-medium text-gray-900 p-2 flex items-center">
+                      <div className={`text-sm font-medium text-gray-900 p-2 flex items-center transition-colors duration-200 ${
+                        hoveredCell?.row === deptIndex ? 'bg-gray-200' : ''
+                      }`}>
                         {dept}
                       </div>
-                      {skillNames.map((skill) => {
+                      {skillNames.map((skill, skillIndex) => {
                         const score = departmentSkillScores[dept as keyof typeof departmentSkillScores][getPillarKey(skill) as keyof typeof departmentSkillScores.Engineering]
+                        const isRowHovered = hoveredCell?.row === deptIndex
+                        const isColHovered = hoveredCell?.col === skillIndex
+                        const isHovered = isRowHovered || isColHovered
+                        
                         return (
                           <div
                             key={`${dept}-${skill}`}
-                            className={`h-12 rounded-lg border border-gray-200 flex items-center justify-center text-white text-sm font-medium ${getHeatmapColor(score)} ${getHeatmapIntensity(score)}`}
+                            className={`h-12 rounded-lg border flex items-center justify-center text-white text-sm font-medium transition-all duration-200 cursor-pointer relative ${getHeatmapColor(score)} ${getHeatmapIntensity(score)} ${
+                              isHovered ? 'border-gray-400 shadow-md' : 'border-gray-200'
+                            }`}
                             title={`${dept}: ${skill} - ${score}%`}
+                            onMouseEnter={() => setHoveredCell({row: deptIndex, col: skillIndex})}
+                            onMouseLeave={() => setHoveredCell(null)}
                           >
-                            {score}%
+                            {isHovered && (
+                              <div className="absolute inset-0 bg-white opacity-25 rounded-lg pointer-events-none"></div>
+                            )}
+                            <span className="relative z-10">{score}%</span>
                           </div>
                         )
                       })}
@@ -416,34 +592,6 @@ export function PeopleSkills() {
                 </div>
               </div>
               
-              {/* Key Insights from Heatmap */}
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h4 className="font-medium text-blue-900 mb-3">Key Insights</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <div className="flex items-center mb-2">
-                      <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                      <span className="font-medium text-gray-900">Departmental Strengths:</span>
-                    </div>
-                    <ul className="space-y-1 text-gray-700">
-                      <li>• <strong>Engineering:</strong> Data (92%), Tools (89%)</li>
-                      <li>• <strong>Marketing:</strong> Prompting (91%), Tools (84%)</li>
-                      <li>• <strong>Operations:</strong> Co-Intelligence (91%), Responsible Use (82%)</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <div className="flex items-center mb-2">
-                      <AlertCircle className="w-4 h-4 text-orange-600 mr-2" />
-                      <span className="font-medium text-gray-900">Areas for Improvement:</span>
-                    </div>
-                    <ul className="space-y-1 text-gray-700">
-                      <li>• <strong>Sales:</strong> Needs foundational support across all pillars</li>
-                      <li>• <strong>HR:</strong> Data literacy (61%) and Co-Intelligence (68%) need development</li>
-                      <li>• <strong>All Depts:</strong> Co-Intelligence shows lowest average scores</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
             </div>
           ) : (
             /* Department Detail View */
@@ -456,7 +604,7 @@ export function PeopleSkills() {
                   onChange={(e) => setSelectedDistributionDept(e.target.value)}
                   className="px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  {departmentNames.map(dept => (
+                  {departmentNamesWithCompanyWide.map(dept => (
                     <option key={dept} value={dept}>{dept}</option>
                   ))}
                 </select>
@@ -511,8 +659,15 @@ export function PeopleSkills() {
               
               {/* Department-Specific Insights */}
               <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                <h4 className="font-medium text-purple-900 mb-3">Department-Specific Insights</h4>
+                <h4 className="font-medium text-purple-900 mb-3">
+                  {selectedDistributionDept === 'Company Wide' ? 'Company-Wide Insights' : 'Department-Specific Insights'}
+                </h4>
                 <div className="text-sm text-gray-700">
+                  {selectedDistributionDept === 'Company Wide' && (
+                    <div>
+                      <strong>Overall AI readiness profile</strong> - 32% advanced in Responsible Use (highest), but Co-Intelligence needs attention with only 22% advanced. Most employees are in intermediate-basic range across all skills, indicating strong potential for targeted upskilling programs.
+                    </div>
+                  )}
                   {selectedDistributionDept === 'Engineering' && (
                     <div>
                       <strong>Technical excellence</strong> - 52% advanced in Data, 45% in Tools. Strong foundation but need support in Responsible Use (25%) and human-AI collaboration skills.
@@ -560,208 +715,412 @@ export function PeopleSkills() {
           <p className="text-sm text-gray-600">Workforce segmentation based on AI adoption and skill levels</p>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
+          {/* Persona Tabs */}
+          <div className="flex flex-wrap border-b border-gray-200 mb-6">
             {personaProfiles.map((persona, index) => (
-              <div key={index} className="p-5 border-l-4 border-purple-400 bg-purple-50 rounded-r-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <h3 className="text-lg font-semibold text-gray-900">{persona.persona}</h3>
-                    <Badge variant={
-                      persona.avgScore >= 85 ? 'success' : 
-                      persona.avgScore >= 70 ? 'warning' : 
-                      persona.avgScore >= 50 ? 'info' : 'danger'
-                    }>
-                      {persona.avgScore}% avg
-                    </Badge>
+              <button
+                key={index}
+                onClick={() => setSelectedPersona(persona.persona)}
+                className={`px-4 py-2 mr-2 mb-2 text-sm font-medium rounded-t-lg transition-colors ${
+                  selectedPersona === persona.persona
+                    ? 'bg-purple-100 text-purple-700 border-b-2 border-purple-600'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                }`}
+              >
+                {persona.persona}
+                <span className="ml-1 text-xs">({persona.count})</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Selected Persona Content */}
+          {(() => {
+            const persona = personaProfiles.find(p => p.persona === selectedPersona)!
+            return (
+              <div className="space-y-6">
+                {/* Persona Overview */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="bg-purple-50 p-4 rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-semibold text-purple-900">{persona.persona}</h3>
+                      <Badge variant={
+                        persona.avgScore >= 85 ? 'success' : 
+                        persona.avgScore >= 70 ? 'warning' : 
+                        persona.avgScore >= 50 ? 'info' : 'danger'
+                      }>
+                        {persona.avgScore}% avg
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-purple-700 mb-3">{persona.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold text-purple-700">{persona.count}</span>
+                      <span className="text-sm text-purple-600">{persona.percentage}% of workforce</span>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-purple-700">{persona.count}</div>
-                    <div className="text-sm text-gray-600">{persona.percentage}% of workforce</div>
-                  </div>
-                </div>
-                
-                <p className="text-gray-700 mb-3">{persona.description}</p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                   <div>
-                    <h4 className="font-medium text-gray-800 mb-2">Characteristics:</h4>
-                    <ul className="text-sm text-gray-600 space-y-1">
+                    <h4 className="font-medium text-gray-800 mb-3">Characteristics:</h4>
+                    <ul className="text-sm text-gray-600 space-y-2">
                       {persona.characteristics.map((char, idx) => (
                         <li key={idx} className="flex items-start">
-                          <span className="text-purple-500 mr-2">•</span>
+                          <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                           {char}
                         </li>
                       ))}
                     </ul>
                   </div>
+
                   <div>
-                    <h4 className="font-medium text-gray-800 mb-2">Recommended Next Steps:</h4>
-                    <ul className="text-sm text-gray-600 space-y-1">
+                    <h4 className="font-medium text-gray-800 mb-3">Recommended Next Steps:</h4>
+                    <ul className="text-sm text-gray-600 space-y-2">
                       {persona.nextSteps.map((step, idx) => (
                         <li key={idx} className="flex items-start">
-                          <ArrowRight className="w-3 h-3 text-green-500 mr-2 mt-1 flex-shrink-0" />
+                          <ArrowRight className="w-4 h-4 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
                           {step}
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
 
-      {/* Role-Based Performance */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Award className="w-5 h-5 text-orange-600 mr-2" />
-            Performance by Role
-          </CardTitle>
-          <p className="text-sm text-gray-600">AI skill levels across different job functions</p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(roleData).map(([role, data], index) => (
-              <div key={index} className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium text-gray-900">{role}</h4>
-                  <CircularProgress value={data.avgSkill} size="sm" />
-                </div>
-                <div className="text-sm text-gray-600 mb-3">
-                  <span className="font-medium">{data.count}</span> employees
-                </div>
-                <div>
-                  <h5 className="text-xs font-medium text-gray-700 mb-1">Top Skills:</h5>
-                  <div className="flex flex-wrap gap-1">
-                    {data.topSkills.slice(0, 3).map((skill, idx) => (
-                      <span key={idx} className="text-xs bg-white px-2 py-1 rounded border">
-                        {skill}
-                      </span>
-                    ))}
+                {/* Department & Employee Breakdown */}
+                <div className="bg-white border border-gray-200 rounded-lg">
+                  <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                    <h4 className="font-medium text-gray-900">Individual Employees by Department</h4>
+                    <p className="text-xs text-gray-600 mt-1">Click email icon to contact directly</p>
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                      {persona.departmentBreakdown.map((dept, deptIdx) => (
+                        <div key={deptIdx} className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <Building2 className="w-4 h-4 text-gray-500 mr-2" />
+                              <h5 className="font-semibold text-gray-900">{dept.department}</h5>
+                            </div>
+                            <span className="text-sm text-gray-500">{dept.count} people</span>
+                          </div>
+                          
+                          {dept.employees && (
+                            <div className="space-y-2">
+                              {dept.employees.map((employee, empIdx) => (
+                                <div key={empIdx} className="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100 transition-colors">
+                                  <div className="flex items-center space-x-2">
+                                    <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                                      <User className="w-3 h-3 text-purple-600" />
+                                    </div>
+                                    <div>
+                                      <div className="text-sm font-medium text-gray-900">{employee.name}</div>
+                                      <div className="text-xs text-gray-500">{employee.role}</div>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center space-x-2">
+                                    <Badge variant={employee.score >= 90 ? 'success' : employee.score >= 80 ? 'warning' : 'info'} size="sm">
+                                      {employee.score}%
+                                    </Badge>
+                                    <a 
+                                      href={`mailto:${employee.email}`}
+                                      className="text-gray-400 hover:text-purple-600 transition-colors"
+                                      title={`Email ${employee.name}`}
+                                    >
+                                      <Mail className="w-3 h-3" />
+                                    </a>
+                                  </div>
+                                </div>
+                              ))}
+                              
+                              {dept.employees.length < dept.count && (
+                                <div className="p-2 bg-gray-50 rounded border border-dashed border-gray-300 text-center">
+                                  <span className="text-xs text-gray-500">
+                                    +{dept.count - dept.employees.length} more employees
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            )
+          })()}
         </CardContent>
       </Card>
 
-      {/* Progress Over Time */}
+
+      {/* Progress Analysis */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">
-            <Clock className="w-5 h-5 text-green-600 mr-2" />
-            Progress Over Time
+            <TrendingUp className="w-5 h-5 text-green-600 mr-2" />
+            Progress & Impact
           </CardTitle>
-          <p className="text-sm text-gray-600">AI skill development trajectory across the organization</p>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-sm text-gray-600">
+              {progressView === 'department' 
+                ? 'Department-level AI skill improvements over the last 6 months' 
+                : 'Individual employee progress tracking'
+              }
+            </p>
+            <div className="flex bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setProgressView('department')}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+                  progressView === 'department'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Departments
+              </button>
+              <button
+                onClick={() => setProgressView('individual')}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
+                  progressView === 'individual'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Individuals
+              </button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div>
-              <h4 className="font-medium text-gray-900 mb-4">Monthly Progress</h4>
-              <div className="space-y-4">
-                {progressData.map((month, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div>
-                      <div className="font-medium text-gray-900">{month.month}</div>
-                      <div className="text-sm text-gray-600">{month.assessmentCount} assessments</div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Scatter Plot */}
+            <div className="lg:col-span-2">
+              <div className="relative bg-gray-50 rounded-lg p-4" style={{ height: '400px' }}>
+                {/* Axes Labels */}
+                <div className="absolute -left-12 top-1/2 -translate-y-1/2 -rotate-90 text-sm font-medium text-gray-600">
+                  Current Score →
+                </div>
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-sm font-medium text-gray-600">
+                  Past Score (6 months ago) →
+                </div>
+                
+                {/* Chart Area */}
+                <div className="absolute left-12 right-4 top-4 bottom-12">
+                  {/* Grid Lines */}
+                  {[20, 40, 60, 80, 100].map(value => (
+                    <React.Fragment key={value}>
+                      <div 
+                        className="absolute w-full h-px bg-gray-300"
+                        style={{ top: `${100 - value}%` }}
+                      />
+                      <div 
+                        className="absolute h-full w-px bg-gray-300"
+                        style={{ left: `${value}%` }}
+                      />
+                    </React.Fragment>
+                  ))}
+                  
+                  {/* Diagonal Line (y = x) */}
+                  <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                    <line
+                      x1="0%"
+                      y1="100%"
+                      x2="100%"
+                      y2="0%"
+                      stroke="#9ca3af"
+                      strokeWidth="2"
+                      strokeDasharray="4 4"
+                    />
+                  </svg>
+                  
+                  {/* Data Points */}
+                  {progressView === 'department' 
+                    ? departmentProgressData.map((dept, index) => (
+                        <div
+                          key={index}
+                          className="absolute w-4 h-4 rounded-full border-2 border-white shadow-md cursor-pointer transform -translate-x-1/2 -translate-y-1/2 hover:scale-125 transition-transform"
+                          style={{
+                            left: `${dept.pastScore}%`,
+                            top: `${100 - dept.currentScore}%`,
+                            backgroundColor: departmentColors[dept.department as keyof typeof departmentColors]
+                          }}
+                          onMouseEnter={(e) => {
+                            setHoveredPoint(dept)
+                            setMousePos({ x: e.clientX, y: e.clientY })
+                          }}
+                          onMouseLeave={() => setHoveredPoint(null)}
+                          onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
+                        />
+                      ))
+                    : individualProgressData.map((person, index) => (
+                        <div
+                          key={index}
+                          className="absolute w-2 h-2 rounded-full border border-white shadow-sm cursor-pointer transform -translate-x-1/2 -translate-y-1/2 hover:scale-150 transition-transform"
+                          style={{
+                            left: `${person.pastScore}%`,
+                            top: `${100 - person.currentScore}%`,
+                            backgroundColor: departmentColors[person.department as keyof typeof departmentColors]
+                          }}
+                          onMouseEnter={(e) => {
+                            setHoveredPoint(person)
+                            setMousePos({ x: e.clientX, y: e.clientY })
+                          }}
+                          onMouseLeave={() => setHoveredPoint(null)}
+                          onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
+                        />
+                      ))
+                  }
+                  
+                  {/* Axis Numbers */}
+                  {[0, 20, 40, 60, 80, 100].map(value => (
+                    <React.Fragment key={value}>
+                      <div 
+                        className="absolute text-xs text-gray-500"
+                        style={{ 
+                          left: `${value}%`,
+                          bottom: '-24px',
+                          transform: 'translateX(-50%)'
+                        }}
+                      >
+                        {value}
+                      </div>
+                      <div 
+                        className="absolute text-xs text-gray-500"
+                        style={{ 
+                          top: `${100 - value}%`,
+                          left: '-32px',
+                          transform: 'translateY(50%)'
+                        }}
+                      >
+                        {value}
+                      </div>
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Hover Tooltip */}
+              {hoveredPoint && (
+                <div
+                  className="fixed z-50 bg-white border border-gray-200 rounded-lg shadow-lg p-3 max-w-xs pointer-events-none"
+                  style={{
+                    left: mousePos.x + 10,
+                    top: mousePos.y - 10,
+                    transform: mousePos.x > window.innerWidth - 200 ? 'translateX(-100%)' : 'none'
+                  }}
+                >
+                  {progressView === 'department' ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: departmentColors[hoveredPoint.department as keyof typeof departmentColors] }}
+                        />
+                        <h4 className="font-medium text-gray-900">{hoveredPoint.department}</h4>
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <div>Past Score: <span className="font-medium">{hoveredPoint.pastScore}%</span></div>
+                        <div>Current Score: <span className="font-medium">{hoveredPoint.currentScore}%</span></div>
+                        <div className={`font-medium ${hoveredPoint.improvement >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          Improvement: {hoveredPoint.improvement >= 0 ? '+' : ''}{hoveredPoint.improvement} points
+                        </div>
+                        <div className="mt-1 pt-1 border-t border-gray-200 text-xs flex items-center">
+                          {hoveredPoint.improvement > 0 ? (
+                            <><TrendingUp className="w-3 h-3 text-green-600 mr-1" /> Above diagonal = Improved</>
+                          ) : hoveredPoint.improvement === 0 ? (
+                            <><ArrowRight className="w-3 h-3 text-gray-600 mr-1" /> On diagonal = No change</>
+                          ) : (
+                            <><TrendingDown className="w-3 h-3 text-red-600 mr-1" /> Below diagonal = Declined</>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-lg font-bold text-green-600">{month.avgScore}%</div>
-                      {index > 0 && (
-                        <div className="text-sm text-green-600">
-                          +{month.avgScore - progressData[index-1].avgScore}%
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <div 
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: departmentColors[hoveredPoint.department as keyof typeof departmentColors] }}
+                        />
+                        <h4 className="font-medium text-gray-900">{hoveredPoint.name}</h4>
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <div>Department: <span className="font-medium">{hoveredPoint.department}</span></div>
+                        <div>Role: <span className="font-medium">{hoveredPoint.role}</span></div>
+                        <div>Past Score: <span className="font-medium">{hoveredPoint.pastScore}%</span></div>
+                        <div>Current Score: <span className="font-medium">{hoveredPoint.currentScore}%</span></div>
+                        <div className={`font-medium ${hoveredPoint.improvement >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          Improvement: {hoveredPoint.improvement >= 0 ? '+' : ''}{hoveredPoint.improvement} points
+                        </div>
+                        <div className="mt-1 pt-1 border-t border-gray-200 text-xs flex items-center">
+                          {hoveredPoint.improvement > 0 ? (
+                            <><TrendingUp className="w-3 h-3 text-green-600 mr-1" /> Above diagonal = Improved</>
+                          ) : hoveredPoint.improvement === 0 ? (
+                            <><ArrowRight className="w-3 h-3 text-gray-600 mr-1" /> On diagonal = No change</>
+                          ) : (
+                            <><TrendingDown className="w-3 h-3 text-red-600 mr-1" /> Below diagonal = Declined</>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Legend */}
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <h5 className="text-sm font-medium text-blue-900 mb-2">How to Read This Chart:</h5>
+                <div className="text-xs text-blue-800 space-y-1">
+                  <div>• Points <strong>above the diagonal line</strong> = Improved (current score &gt; past score)</div>
+                  <div>• Points <strong>on the diagonal line</strong> = No change</div>
+                  <div>• Points <strong>below the diagonal line</strong> = Declined (rare)</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Department Legend & Stats */}
+            <div>
+              <h4 className="font-medium text-gray-900 mb-4">
+                {progressView === 'department' ? 'Department Legend' : 'Department Colors'}
+              </h4>
+              <div className="space-y-3">
+                {departmentNames.map((dept) => {
+                  const deptData = progressView === 'department' 
+                    ? departmentProgressData.find(d => d.department === dept)
+                    : null
+                  
+                  return (
+                    <div key={dept} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                      <div className="flex items-center">
+                        <div 
+                          className="w-4 h-4 rounded-full mr-3 border border-white shadow-sm"
+                          style={{ backgroundColor: departmentColors[dept as keyof typeof departmentColors] }}
+                        />
+                        <span className="text-sm font-medium text-gray-900">{dept}</span>
+                      </div>
+                      {deptData && (
+                        <div className="text-right">
+                          <div className="text-sm font-bold text-green-600">+{deptData.improvement}</div>
+                          <div className="text-xs text-gray-500">{deptData.pastScore}→{deptData.currentScore}</div>
                         </div>
                       )}
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
-            </div>
-            
-            <div>
-              <h4 className="font-medium text-gray-900 mb-4">Key Achievements</h4>
-              <div className="space-y-4">
-                {[
-                  { achievement: '312 employees moved from Cautious to Active adopters', impact: 'High', timeframe: 'Last 3 months' },
-                  { achievement: '89 AI Champions identified and engaged', impact: 'High', timeframe: 'Last 2 months' },
-                  { achievement: '23% reduction in employees needing foundational training', impact: 'Medium', timeframe: 'Last quarter' },
-                  { achievement: 'Creative Applications saw +18% improvement', impact: 'Medium', timeframe: 'Last month' },
-                  { achievement: '67% of workforce now actively using AI tools', impact: 'High', timeframe: 'Current' }
-                ].map((achievement, index) => (
-                  <div key={index} className="p-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
-                    <div className="flex items-start justify-between mb-2">
-                      <p className="text-sm text-gray-700 flex-1">{achievement.achievement}</p>
-                      <Badge variant={achievement.impact === 'High' ? 'success' : 'warning'} size="sm">
-                        {achievement.impact}
-                      </Badge>
-                    </div>
-                    <div className="text-xs text-gray-500">{achievement.timeframe}</div>
+              
+              {progressView === 'individual' && (
+                <div className="mt-6 p-3 bg-gray-50 rounded-lg">
+                  <h5 className="text-sm font-medium text-gray-900 mb-2">Individual Progress Stats</h5>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    <div>Total tracked: <span className="font-medium">{individualProgressData.length} employees</span></div>
+                    <div>Avg improvement: <span className="font-medium text-green-600">
+                      +{Math.round(individualProgressData.reduce((sum, p) => sum + p.improvement, 0) / individualProgressData.length)}%
+                    </span></div>
+                    <div>Top performer: <span className="font-medium">
+                      {individualProgressData.reduce((max, p) => p.improvement > max.improvement ? p : max).name}
+                    </span></div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Learning & Development Recommendations */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <BookOpen className="w-5 h-5 text-indigo-600 mr-2" />
-            Learning & Development Priorities
-          </CardTitle>
-          <p className="text-sm text-gray-600">Targeted training recommendations based on assessment data</p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-medium text-gray-900 mb-3">Immediate Priorities (Next 30 days)</h4>
-              <div className="space-y-3">
-                {[
-                  { priority: 'Process Automation Training for 35 employees', urgency: 'High', effort: 'Medium' },
-                  { priority: 'Prompt Engineering Workshop for Marketing team', urgency: 'High', effort: 'Low' },
-                  { priority: 'AI Tool Proficiency basics for 48 non-users', urgency: 'Medium', effort: 'Low' }
-                ].map((item, index) => (
-                  <div key={index} className="p-3 border border-gray-200 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-900">{item.priority}</span>
-                      <div className="flex space-x-2">
-                        <Badge variant={item.urgency === 'High' ? 'danger' : 'warning'} size="sm">
-                          {item.urgency}
-                        </Badge>
-                        <Badge variant={item.effort === 'Low' ? 'success' : 'warning'} size="sm">
-                          {item.effort} effort
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="font-medium text-gray-900 mb-3">Long-term Development (Next 90 days)</h4>
-              <div className="space-y-3">
-                {[
-                  { priority: 'Advanced AI applications for Champions', impact: 'High', timeline: '6-8 weeks' },
-                  { priority: 'Cross-departmental AI mentorship program', impact: 'High', timeline: '8-12 weeks' },
-                  { priority: 'AI ethics certification for all employees', impact: 'Medium', timeline: '4-6 weeks' }
-                ].map((item, index) => (
-                  <div key={index} className="p-3 border border-gray-200 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-900">{item.priority}</span>
-                      <Badge variant={item.impact === 'High' ? 'success' : 'info'} size="sm">
-                        {item.impact} impact
-                      </Badge>
-                    </div>
-                    <div className="text-xs text-gray-500">{item.timeline}</div>
-                  </div>
-                ))}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </CardContent>
