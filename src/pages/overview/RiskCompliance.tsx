@@ -581,28 +581,6 @@ export function RiskCompliance() {
         </Card>
       </div>
 
-      {/* Top 5 Governance Gaps */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <XCircle className="w-5 h-5 text-danger-600 mr-2" />
-            Top 5 Governance Gaps
-          </CardTitle>
-          <p className="text-sm text-gray-600">Critical areas requiring immediate attention</p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {governanceGaps.map((gap, index) => (
-              <div key={index} className="p-4 border-2 border-danger-200 bg-danger-50 rounded-lg">
-                <div className="flex items-start">
-                  <AlertTriangle className="w-5 h-5 text-danger-600 mr-2 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-danger-800">{gap}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Dynamic Compliance Status */}
       <Card>
