@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts'
 import { 
   FileText, 
   Users, 
@@ -13,7 +14,8 @@ import {
   Search,
   Filter,
   TrendingUp,
-  BarChart3
+  BarChart3,
+  ChevronRight
 } from 'lucide-react'
 
 export function AssessmentData() {
@@ -286,16 +288,23 @@ export function AssessmentData() {
       <Card>
         <CardHeader>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
               <div>
                 <CardTitle className="flex items-center">
                   <Search className="w-5 h-5 text-green-600 mr-2" />
                   Participant Explorer
                 </CardTitle>
-                <p className="text-sm text-gray-600">Individual participant data and completion status</p>
+                <p className="text-sm text-gray-600 mt-1">Individual participant data and completion status</p>
               </div>
-              <div className="text-sm text-gray-600">
-                {filteredParticipants.length} of {participantData.length} participants
+              <div className="flex items-center space-x-3">
+                <button className="flex items-center px-4 py-2 bg-white border border-green-300 text-green-700 text-sm font-medium rounded-lg hover:bg-green-50 hover:border-green-400 transition-all duration-200 shadow-sm">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export Data
+                </button>
+                <button className="flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 hover:shadow-md transition-all duration-200 shadow-sm">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Executive Report
+                </button>
               </div>
             </div>
             
@@ -381,13 +390,14 @@ export function AssessmentData() {
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Role</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Score</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Completion Date</th>
+                  <th className="w-8"></th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedParticipants.map((participant, index) => (
                   <tr 
                     key={index} 
-                    className="border-b border-gray-100 transition-colors hover:bg-blue-50 cursor-pointer"
+                    className="border-b border-gray-100 transition-colors hover:bg-blue-50 cursor-pointer group"
                     onClick={() => setSelectedParticipant(participant)}
                   >
                     <td className="py-3 px-4">
@@ -408,6 +418,9 @@ export function AssessmentData() {
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700">
                       {participant.completionDate}
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
                     </td>
                   </tr>
                 ))}
@@ -547,60 +560,52 @@ export function AssessmentData() {
               {/* Radar Chart */}
               <div className="mt-6">
                 <h4 className="font-medium text-gray-900 mb-4">AI Skills Radar Chart</h4>
-                <div className="bg-gray-50 rounded-lg p-6 flex items-center justify-center" style={{ height: '300px' }}>
-                  <svg width="280" height="280" viewBox="0 0 280 280">
-                    {/* Pentagon grid lines */}
-                    {[1, 2, 3, 4, 5].map(level => (
-                      <g key={level}>
-                        <polygon
-                          points="140,40 210,110 180,200 100,200 70,110"
-                          fill="none"
-                          stroke="#e5e7eb"
-                          strokeWidth="1"
-                          transform={`scale(${level * 0.2}) translate(${140 - 140 * level * 0.2}, ${140 - 140 * level * 0.2})`}
-                        />
-                      </g>
-                    ))}
-                    
-                    {/* Axis lines */}
-                    <line x1="140" y1="140" x2="140" y2="40" stroke="#d1d5db" strokeWidth="1" />
-                    <line x1="140" y1="140" x2="210" y2="110" stroke="#d1d5db" strokeWidth="1" />
-                    <line x1="140" y1="140" x2="180" y2="200" stroke="#d1d5db" strokeWidth="1" />
-                    <line x1="140" y1="140" x2="100" y2="200" stroke="#d1d5db" strokeWidth="1" />
-                    <line x1="140" y1="140" x2="70" y2="110" stroke="#d1d5db" strokeWidth="1" />
-                    
-                    {/* Data polygon */}
-                    <polygon
-                      points={[
-                        [140, 40 + (100 - selectedParticipant.skillScores.prompting)],
-                        [140 + (70 * selectedParticipant.skillScores.tools / 100), 110 - (30 * selectedParticipant.skillScores.tools / 100)],
-                        [140 + (40 * selectedParticipant.skillScores.aiThinking / 100), 200 - (60 * selectedParticipant.skillScores.aiThinking / 100)],
-                        [140 - (40 * selectedParticipant.skillScores.coIntelligence / 100), 200 - (60 * selectedParticipant.skillScores.coIntelligence / 100)],
-                        [140 - (70 * selectedParticipant.skillScores.responsibleUse / 100), 110 - (30 * selectedParticipant.skillScores.responsibleUse / 100)]
-                      ].map(point => `${point[0]},${point[1]}`).join(' ')}
-                      fill="rgba(59, 130, 246, 0.3)"
-                      stroke="#3b82f6"
-                      strokeWidth="2"
-                    />
-                    
-                    {/* Data points */}
-                    {[
-                      { x: 140, y: 40 + (100 - selectedParticipant.skillScores.prompting), label: 'Prompting' },
-                      { x: 140 + (70 * selectedParticipant.skillScores.tools / 100), y: 110 - (30 * selectedParticipant.skillScores.tools / 100), label: 'Tools' },
-                      { x: 140 + (40 * selectedParticipant.skillScores.aiThinking / 100), y: 200 - (60 * selectedParticipant.skillScores.aiThinking / 100), label: 'AI Thinking' },
-                      { x: 140 - (40 * selectedParticipant.skillScores.coIntelligence / 100), y: 200 - (60 * selectedParticipant.skillScores.coIntelligence / 100), label: 'Co-Intelligence' },
-                      { x: 140 - (70 * selectedParticipant.skillScores.responsibleUse / 100), y: 110 - (30 * selectedParticipant.skillScores.responsibleUse / 100), label: 'Responsible Use' }
-                    ].map((point, index) => (
-                      <circle key={index} cx={point.x} cy={point.y} r="4" fill="#3b82f6" />
-                    ))}
-                    
-                    {/* Labels */}
-                    <text x="140" y="30" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">Prompting</text>
-                    <text x="220" y="115" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">Tools</text>
-                    <text x="190" y="215" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">AI Thinking</text>
-                    <text x="90" y="215" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">Co-Intelligence</text>
-                    <text x="50" y="115" textAnchor="middle" className="text-xs fill-gray-600" fontWeight="600">Responsible Use</text>
-                  </svg>
+                <div className="bg-gray-50 rounded-lg p-6" style={{ height: '300px' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart data={[
+                      {
+                        pillar: 'Prompting',
+                        score: selectedParticipant.skillScores.prompting
+                      },
+                      {
+                        pillar: 'Tools',
+                        score: selectedParticipant.skillScores.tools
+                      },
+                      {
+                        pillar: 'Responsible Use',
+                        score: selectedParticipant.skillScores.responsibleUse
+                      },
+                      {
+                        pillar: 'AI Thinking',
+                        score: selectedParticipant.skillScores.aiThinking
+                      },
+                      {
+                        pillar: 'Co-Intelligence',
+                        score: selectedParticipant.skillScores.coIntelligence
+                      }
+                    ]}>
+                      <PolarGrid gridType="polygon" radialLines={true} />
+                      <PolarAngleAxis 
+                        dataKey="pillar" 
+                        tick={{ fontSize: 12, fontWeight: 'bold' }}
+                        className="text-gray-700"
+                      />
+                      <PolarRadiusAxis 
+                        angle={90} 
+                        domain={[0, 100]} 
+                        tick={{ fontSize: 10 }}
+                        tickCount={6}
+                        className="text-gray-500"
+                      />
+                      <Radar 
+                        dataKey="score" 
+                        stroke="#3b82f6" 
+                        fill="rgba(59, 130, 246, 0.2)" 
+                        strokeWidth={2}
+                        dot={{ r: 4, fill: '#3b82f6' }}
+                      />
+                    </RadarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
             </div>
