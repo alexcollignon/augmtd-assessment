@@ -22,8 +22,8 @@ interface ExecutiveSummaryProps {
 }
 
 export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
-  const aiMaturityScore = 36
-  const maturityLevel = 2
+  const aiMaturityScore = 58
+  const maturityLevel = 3
   
   
   const opportunities = [
@@ -117,10 +117,10 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
             <p className="text-gray-600 mb-4">Overall organizational readiness</p>
             <div className="flex justify-center items-center space-x-4 text-sm">
               <div className="flex items-center">
-                <div className="w-3 h-3 bg-danger-500 rounded-full mr-2"></div>
+                <div className="w-3 h-3 bg-warning-500 rounded-full mr-2"></div>
                 Level {maturityLevel}
               </div>
-              <div className="text-gray-500">Developing</div>
+              <div className="text-gray-500">Progressing</div>
             </div>
           </CardContent>
         </Card>
@@ -147,7 +147,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                       <MessageSquare className="w-8 h-8 text-gray-600" />
                     </div>
                     <div className="mb-2">
-                      <CircularProgress value={34} size="sm" />
+                      <CircularProgress value={62} size="sm" />
                     </div>
                     <p className="text-sm font-medium text-gray-900">Prompting</p>
                     <p className="text-xs text-gray-500 mt-1">AI conversation & prompt skills</p>
@@ -158,7 +158,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                       <Wrench className="w-8 h-8 text-gray-600" />
                     </div>
                     <div className="mb-2">
-                      <CircularProgress value={40} size="sm" />
+                      <CircularProgress value={58} size="sm" />
                     </div>
                     <p className="text-sm font-medium text-gray-900">Tools</p>
                     <p className="text-xs text-gray-500 mt-1">AI platform proficiency</p>
@@ -169,7 +169,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                       <Shield className="w-8 h-8 text-gray-600" />
                     </div>
                     <div className="mb-2">
-                      <CircularProgress value={37} size="sm" />
+                      <CircularProgress value={71} size="sm" />
                     </div>
                     <p className="text-sm font-medium text-gray-900">Responsible Use</p>
                     <p className="text-xs text-gray-500 mt-1">Ethics & governance</p>
@@ -184,7 +184,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                         <Brain className="w-8 h-8 text-gray-600" />
                       </div>
                       <div className="mb-2">
-                        <CircularProgress value={33} size="sm" />
+                        <CircularProgress value={45} size="sm" />
                       </div>
                       <p className="text-sm font-medium text-gray-900">AI Thinking</p>
                       <p className="text-xs text-gray-500 mt-1">Strategic thinking & analysis</p>
@@ -195,7 +195,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                         <Users className="w-8 h-8 text-gray-600" />
                       </div>
                       <div className="mb-2">
-                        <CircularProgress value={35} size="sm" />
+                        <CircularProgress value={52} size="sm" />
                       </div>
                       <p className="text-sm font-medium text-gray-900">Co-Intelligence</p>
                       <p className="text-xs text-gray-500 mt-1">Human-AI collaboration</p>

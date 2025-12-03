@@ -30,7 +30,7 @@ export function CircularProgress({
 
   const getStrokeColor = () => {
     if (value >= 80) return '#16a34a' // success-600
-    if (value >= 60) return '#d97706' // warning-600
+    if (value >= 50) return '#d97706' // warning-600
     return '#dc2626' // danger-600
   }
 

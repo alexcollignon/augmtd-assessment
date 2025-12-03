@@ -30,12 +30,12 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
 
   // Department Management State
   const [departments, setDepartments] = useState([
-    { id: 1, name: 'Engineering', employeeCount: 145, isDefault: true },
-    { id: 2, name: 'Marketing', employeeCount: 67, isDefault: true },
-    { id: 3, name: 'Finance', employeeCount: 45, isDefault: true },
-    { id: 4, name: 'Operations', employeeCount: 89, isDefault: true },
-    { id: 5, name: 'HR', employeeCount: 23, isDefault: true },
-    { id: 6, name: 'Sales', employeeCount: 134, isDefault: true },
+    { id: 1, name: 'Engineering' },
+    { id: 2, name: 'Marketing' },
+    { id: 3, name: 'Finance' },
+    { id: 4, name: 'Operations' },
+    { id: 5, name: 'HR' },
+    { id: 6, name: 'Sales' },
   ])
   const [editingDepartment, setEditingDepartment] = useState(null)
   const [newDepartmentName, setNewDepartmentName] = useState('')
@@ -170,9 +170,7 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
     
     const newDept = {
       id: Math.max(...departments.map(d => d.id)) + 1,
-      name: newDepartmentName.trim(),
-      employeeCount: 0,
-      isDefault: false
+      name: newDepartmentName.trim()
     }
     
     setDepartments([...departments, newDept])
@@ -196,32 +194,7 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
   }
 
   const handleDeleteDepartment = (id) => {
-    const dept = departments.find(d => d.id === id)
-    if (dept?.isDefault) {
-      setErrors({ [id]: 'Cannot delete default department' })
-      return
-    }
-    if (dept?.employeeCount > 0) {
-      setErrors({ [id]: `Cannot delete department with ${dept.employeeCount} employees` })
-      return
-    }
-    
     setDepartments(departments.filter(dept => dept.id !== id))
-    setErrors({})
-  }
-
-  const handleResetToDefaults = () => {
-    setDepartments([
-      { id: 1, name: 'Engineering', employeeCount: 145, isDefault: true },
-      { id: 2, name: 'Marketing', employeeCount: 67, isDefault: true },
-      { id: 3, name: 'Finance', employeeCount: 45, isDefault: true },
-      { id: 4, name: 'Operations', employeeCount: 89, isDefault: true },
-      { id: 5, name: 'HR', employeeCount: 23, isDefault: true },
-      { id: 6, name: 'Sales', employeeCount: 134, isDefault: true },
-    ])
-    setEditingDepartment(null)
-    setIsAddingDepartment(false)
-    setNewDepartmentName('')
     setErrors({})
   }
 
@@ -245,25 +218,17 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
                 Configure your organization's departments. These names will appear throughout the dashboard.
               </p>
             </div>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={handleResetToDefaults}
-                className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-              >
-                Reset to Defaults
-              </button>
-              <button
-                onClick={() => {
-                  setIsAddingDepartment(true)
-                  setNewDepartmentName('')
-                  setErrors({})
-                }}
-                className="flex items-center px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
-              >
-                <Plus className="w-4 h-4 mr-1" />
-                Add Department
-              </button>
-            </div>
+            <button
+              onClick={() => {
+                setIsAddingDepartment(true)
+                setNewDepartmentName('')
+                setErrors({})
+              }}
+              className="flex items-center px-3 py-1.5 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              Add Department
+            </button>
           </div>
         </CardHeader>
         <CardContent>
@@ -333,65 +298,9 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
               />
             ))}
           </div>
-
-          {/* Department Summary */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-              <div>
-                <div className="text-2xl font-bold text-gray-900">{departments.length}</div>
-                <div className="text-sm text-gray-600">Total Departments</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-gray-900">
-                  {departments.reduce((sum, dept) => sum + dept.employeeCount, 0)}
-                </div>
-                <div className="text-sm text-gray-600">Total Employees</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-gray-900">
-                  {departments.filter(dept => !dept.isDefault).length}
-                </div>
-                <div className="text-sm text-gray-600">Custom Departments</div>
-              </div>
-            </div>
-          </div>
         </CardContent>
       </Card>
 
-      {/* Help Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Department Configuration Tips</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4 text-sm text-gray-600">
-            <div className="flex items-start space-x-3">
-              <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
-                <span className="text-xs font-medium text-blue-600">1</span>
-              </div>
-              <div>
-                <strong className="text-gray-900">Default Departments:</strong> These come pre-configured and can be renamed but not deleted while they have employees.
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
-                <span className="text-xs font-medium text-blue-600">2</span>
-              </div>
-              <div>
-                <strong className="text-gray-900">Custom Departments:</strong> Add departments specific to your organization. Empty custom departments can be deleted.
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
-                <span className="text-xs font-medium text-blue-600">3</span>
-              </div>
-              <div>
-                <strong className="text-gray-900">Dashboard Impact:</strong> Department names will appear in all analytics, reports, and assessment data throughout the dashboard.
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 
@@ -581,13 +490,7 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
               </div>
             ) : (
               <div>
-                <div className="flex items-center space-x-2">
-                  <h4 className="font-medium text-gray-900">{department.name}</h4>
-                  {department.isDefault && (
-                    <Badge variant="info" size="sm">Default</Badge>
-                  )}
-                </div>
-                <p className="text-sm text-gray-500">{department.employeeCount} employees</p>
+                <h4 className="font-medium text-gray-900">{department.name}</h4>
               </div>
             )}
           </div>
@@ -621,15 +524,8 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
                 </button>
                 <button
                   onClick={() => onDelete(department.id)}
-                  disabled={department.isDefault || department.employeeCount > 0}
-                  className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors disabled:text-gray-400 disabled:hover:bg-transparent"
-                  title={
-                    department.isDefault 
-                      ? "Cannot delete default department" 
-                      : department.employeeCount > 0 
-                      ? `Cannot delete department with ${department.employeeCount} employees`
-                      : "Delete department"
-                  }
+                  className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors"
+                  title="Delete department"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

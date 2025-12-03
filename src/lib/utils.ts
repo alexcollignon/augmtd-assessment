@@ -27,12 +27,12 @@ export function formatPercentage(value: number): string {
 
 export function getScoreColor(score: number): string {
   if (score >= 80) return 'text-success-600'
-  if (score >= 60) return 'text-warning-600'
+  if (score >= 50) return 'text-warning-600'
   return 'text-danger-600'
 }
 
 export function getScoreBgColor(score: number): string {
   if (score >= 80) return 'bg-success-100'
-  if (score >= 60) return 'bg-warning-100'
+  if (score >= 50) return 'bg-warning-100'
   return 'bg-danger-100'
 }

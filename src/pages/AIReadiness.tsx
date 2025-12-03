@@ -7,14 +7,14 @@ export function AIReadiness() {
   const [showDepartments, setShowDepartments] = useState(false)
   
   const departments = ['Engineering', 'Sales', 'Marketing', 'Finance', 'HR', 'Operations']
-  // Department-specific scores (realistic for beginner-level company)
+  // Department-specific scores (balanced middle-range scores)
   const departmentScores = {
-    Engineering: { prompting: 45, tools: 52, responsibleUse: 38, aiThinking: 48, coIntelligence: 41 },
-    Sales: { prompting: 28, tools: 35, responsibleUse: 25, aiThinking: 22, coIntelligence: 30 },
-    Marketing: { prompting: 38, tools: 42, responsibleUse: 35, aiThinking: 28, coIntelligence: 33 },
-    Finance: { prompting: 32, tools: 38, responsibleUse: 45, aiThinking: 40, coIntelligence: 35 },
-    HR: { prompting: 25, tools: 30, responsibleUse: 42, aiThinking: 28, coIntelligence: 26 },
-    Operations: { prompting: 35, tools: 40, responsibleUse: 38, aiThinking: 32, coIntelligence: 44 },
+    Engineering: { prompting: 72, tools: 68, responsibleUse: 58, aiThinking: 65, coIntelligence: 61 },
+    Sales: { prompting: 48, tools: 52, responsibleUse: 45, aiThinking: 42, coIntelligence: 50 },
+    Marketing: { prompting: 68, tools: 62, responsibleUse: 55, aiThinking: 48, coIntelligence: 53 },
+    Finance: { prompting: 52, tools: 58, responsibleUse: 75, aiThinking: 70, coIntelligence: 55 },
+    HR: { prompting: 45, tools: 50, responsibleUse: 72, aiThinking: 48, coIntelligence: 46 },
+    Operations: { prompting: 55, tools: 60, responsibleUse: 68, aiThinking: 52, coIntelligence: 74 },
   }
 
 
@@ -33,46 +33,46 @@ export function AIReadiness() {
   const maturityData = [
     { 
       pillar: 'Strategy Alignment', 
-      current: 55, 
-      target: 75,
-      gap: 20,
-      impact: 'Misaligned AI initiatives reduce strategic impact',
+      current: 68, 
+      target: 85,
+      gap: 17,
+      impact: 'Strong foundation with room for strategic refinement',
       effort: 'Medium (2-3 months)',
       priority: 1
     },
     { 
       pillar: 'Team Ownership', 
-      current: 60, 
-      target: 80,
-      gap: 20,
-      impact: 'Limited ownership slows AI adoption and accountability',
+      current: 72, 
+      target: 90,
+      gap: 18,
+      impact: 'Good ownership levels, focus on expanding accountability',
       effort: 'Low (1-2 months)',
       priority: 2
     },
     { 
       pillar: 'Infrastructure', 
-      current: 65, 
-      target: 85,
-      gap: 20,
-      impact: 'Weak infrastructure limits AI implementation scale',
-      effort: 'High (4-6 months)',
+      current: 75, 
+      target: 90,
+      gap: 15,
+      impact: 'Solid infrastructure foundation ready for scaling',
+      effort: 'Medium (3-4 months)',
       priority: 5
     },
     { 
       pillar: 'Culture', 
-      current: 60, 
-      target: 80,
-      gap: 20,
-      impact: 'Poor AI culture creates resistance and adoption barriers',
-      effort: 'High (4-5 months)',
+      current: 70, 
+      target: 85,
+      gap: 15,
+      impact: 'Positive AI culture with opportunities for deeper adoption',
+      effort: 'Medium (3-4 months)',
       priority: 4
     },
     { 
       pillar: 'Task Automation', 
-      current: 45, 
-      target: 70,
-      gap: 25,
-      impact: 'Limited automation reduces productivity potential',
+      current: 58, 
+      target: 80,
+      gap: 22,
+      impact: 'Good progress in automation with room for expansion',
       effort: 'Medium (3-4 months)',
       priority: 3
     },
