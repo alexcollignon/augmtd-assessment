@@ -224,38 +224,6 @@ export function AssessmentAccessPage() {
                 </CardContent>
               </Card>
 
-              {/* What to Expect */}
-              <div className="bg-air-blue-50 border border-air-blue-200 rounded-xl p-6">
-                <div className="flex items-start space-x-3 mb-6">
-                  <CheckCircle className="w-6 h-6 text-air-blue-600 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <h3 className="text-xl font-bold text-air-blue-900">What to Expect</h3>
-                  </div>
-                </div>
-                <ul className="space-y-4">
-                  <li className="flex items-start space-x-3">
-                    <Clock className="w-5 h-5 text-air-blue-600 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <div className="font-medium text-air-blue-900">15-20 minutes to complete</div>
-                      <div className="text-sm text-air-blue-700">Comprehensive evaluation covering all key areas</div>
-                    </div>
-                  </li>
-                  <li className="flex items-start space-x-3">
-                    <Shield className="w-5 h-5 text-air-blue-600 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <div className="font-medium text-air-blue-900">Confidential & secure</div>
-                      <div className="text-sm text-air-blue-700">Your responses remain private and anonymous</div>
-                    </div>
-                  </li>
-                  <li className="flex items-start space-x-3">
-                    <Award className="w-5 h-5 text-air-blue-600 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <div className="font-medium text-air-blue-900">Personalized insights</div>
-                      <div className="text-sm text-air-blue-700">Tailored recommendations for your role</div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
             </div>
           </div>
 

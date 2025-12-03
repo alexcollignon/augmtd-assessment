@@ -46,8 +46,14 @@ export function Sidebar({ currentPage, onPageChange }: SidebarProps) {
   return (
     <div className="w-72 bg-navy-900 text-white h-screen flex flex-col">
       <div className="p-6 border-b border-navy-700">
-        <h1 className="text-xl font-bold text-white">AIR Dashboard</h1>
-        <p className="text-navy-300 text-sm mt-1">AI Readiness & Due Diligence</p>
+        <div className="flex items-center">
+          <img 
+            src="/images/air-logo-white-text.png" 
+            alt="AIR Dashboard" 
+            className="h-20 w-auto"
+          />
+        </div>
+        <p className="text-navy-300 text-sm mt-2">AI Readiness & Due Diligence</p>
       </div>
       
       <nav className="flex-1 overflow-y-auto py-4">
