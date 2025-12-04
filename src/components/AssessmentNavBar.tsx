@@ -1,19 +1,23 @@
 import React from 'react'
-import { Settings, LogOut } from 'lucide-react'
+import { Settings, LogOut, ArrowLeft } from 'lucide-react'
 import { AIRLogo } from './ui/AIRLogo'
-import { navigateToAdmin } from '../router'
+import { navigateToAdmin, navigateToHome } from '../router'
 
 interface AssessmentNavBarProps {
   showAdminButton?: boolean
   showLogoutButton?: boolean
+  showBackButton?: boolean
   onLogout?: () => void
+  onBack?: () => void
   subtitle?: string
 }
 
 export function AssessmentNavBar({ 
   showAdminButton = true, 
-  showLogoutButton = false, 
+  showLogoutButton = false,
+  showBackButton = false,
   onLogout,
+  onBack,
   subtitle = "AI Readiness Assessment Platform"
 }: AssessmentNavBarProps) {
   return (
@@ -31,6 +35,17 @@ export function AssessmentNavBar({
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-3">
+            {showBackButton && (
+              <button
+                onClick={onBack || navigateToHome}
+                className="flex items-center px-4 py-2 text-sm text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-all"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Exit Assessment</span>
+                <span className="sm:hidden">Exit</span>
+              </button>
+            )}
+            
             {showAdminButton && (
               <button
                 onClick={navigateToAdmin}

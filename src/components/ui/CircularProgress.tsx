@@ -3,8 +3,9 @@ import { cn, getScoreColor } from '@/lib/utils'
 
 interface CircularProgressProps {
   value: number
-  size?: 'sm' | 'md' | 'lg' | 'xl'
+  size?: 'sm' | 'md' | 'lg' | 'xl' | number
   thickness?: number
+  strokeWidth?: number
   showValue?: boolean
   className?: string
 }
@@ -12,7 +13,8 @@ interface CircularProgressProps {
 export function CircularProgress({ 
   value, 
   size = 'md', 
-  thickness = 8, 
+  thickness,
+  strokeWidth,
   showValue = true, 
   className 
 }: CircularProgressProps) {
@@ -23,8 +25,9 @@ export function CircularProgress({
     xl: 160,
   }
 
-  const dimension = sizes[size]
-  const radius = (dimension - thickness) / 2
+  const dimension = typeof size === 'number' ? size : sizes[size]
+  const strokeThickness = strokeWidth || thickness || 8
+  const radius = (dimension - strokeThickness) / 2
   const circumference = radius * 2 * Math.PI
   const strokeDashoffset = circumference - (value / 100) * circumference
 
@@ -41,6 +44,16 @@ export function CircularProgress({
     xl: 'text-xl',
   }
 
+  const getTextSize = () => {
+    if (typeof size === 'number') {
+      if (size >= 160) return 'text-xl'
+      if (size >= 120) return 'text-lg'
+      if (size >= 80) return 'text-sm'
+      return 'text-xs'
+    }
+    return textSizes[size]
+  }
+
   return (
     <div className={cn('relative inline-flex items-center justify-center', className)}>
       <svg
@@ -53,7 +66,7 @@ export function CircularProgress({
           cy={dimension / 2}
           r={radius}
           stroke="#e5e7eb"
-          strokeWidth={thickness}
+          strokeWidth={strokeThickness}
           fill="none"
         />
         <circle
@@ -61,7 +74,7 @@ export function CircularProgress({
           cy={dimension / 2}
           r={radius}
           stroke={getStrokeColor()}
-          strokeWidth={thickness}
+          strokeWidth={strokeThickness}
           strokeLinecap="round"
           fill="none"
           strokeDasharray={circumference}
@@ -72,7 +85,7 @@ export function CircularProgress({
       
       {showValue && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className={cn('font-bold', getScoreColor(value), textSizes[size])}>
+          <span className={cn('font-bold', getScoreColor(value), getTextSize())}>
             {Math.round(value)}%
           </span>
         </div>

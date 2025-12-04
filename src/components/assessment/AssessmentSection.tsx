@@ -29,6 +29,15 @@ export function AssessmentSection({
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [responses, setResponses] = useState<Record<string, string | string[] | number>>({})
 
+  // Show loading if section or questions are not ready
+  if (!section || !section.questions) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-gray-500">Loading assessment questions...</div>
+      </div>
+    )
+  }
+
   // Load existing responses on mount
   useEffect(() => {
     const existingResponses: Record<string, string | string[] | number> = {}
@@ -50,9 +59,13 @@ export function AssessmentSection({
   const completionPercentage = Math.round((completedQuestions / section.questions.length) * 100)
 
   // Handle question response
-  const handleQuestionChange = (questionId: string, value: string | string[] | number) => {
+  const handleQuestionChange = async (questionId: string, value: string | string[] | number) => {
     setResponses(prev => ({ ...prev, [questionId]: value }))
-    saveResponse(sectionId, questionId, value)
+    try {
+      await saveResponse(sectionId, questionId, value)
+    } catch (error) {
+      console.error('Failed to save response:', error)
+    }
     
     // Clear error for this question
     if (errors[questionId]) {

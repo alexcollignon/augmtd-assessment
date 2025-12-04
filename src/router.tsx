@@ -1,6 +1,6 @@
 import React from 'react'
 
-export type AppMode = 'assessment' | 'admin'
+export type AppMode = 'home' | 'assessment' | 'admin'
 
 export function getAppMode(): AppMode {
   const path = window.location.pathname
@@ -10,8 +10,13 @@ export function getAppMode(): AppMode {
     return 'admin'
   }
   
-  // Everything else defaults to assessment (including root)
-  return 'assessment'
+  // Check for assessment routes
+  if (path === '/assessment' || path.startsWith('/assessment/')) {
+    return 'assessment'
+  }
+  
+  // Root defaults to home/landing page
+  return 'home'
 }
 
 export function handleNavigation() {
@@ -25,6 +30,11 @@ export function navigateToAdmin() {
 }
 
 export function navigateToAssessment() {
+  window.history.pushState(null, '', '/assessment')
+  window.location.reload()
+}
+
+export function navigateToHome() {
   window.history.pushState(null, '', '/')
   window.location.reload()
 }

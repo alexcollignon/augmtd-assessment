@@ -6,6 +6,7 @@ import { Assessment } from './components/assessment/Assessment'
 import { AuthProvider } from './contexts/AuthContext'
 import { AssessmentProvider } from './contexts/AssessmentContext'
 import { getAppMode, handleNavigation, AppMode } from './router'
+import { AssessmentAccessPage } from './components/AssessmentAccessPage'
 
 // Page Components
 import { ExecutiveSummary } from './pages/overview/ExecutiveSummary'
@@ -89,13 +90,18 @@ function App() {
     )
   }
 
-  return (
-    <AuthProvider>
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
-    </AuthProvider>
-  )
+  if (appMode === 'admin') {
+    return (
+      <AuthProvider>
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      </AuthProvider>
+    )
+  }
+
+  // Default home/landing page
+  return <AssessmentAccessPage />
 }
 
 export default App

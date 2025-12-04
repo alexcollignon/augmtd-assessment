@@ -57,7 +57,7 @@ export function Assessment() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const nextIndex = currentSectionIndex + 1
     if (nextIndex < sectionConfig.length) {
       const nextSectionId = sectionConfig[nextIndex].id
@@ -66,8 +66,12 @@ export function Assessment() {
       scrollToTop()
     } else {
       // Assessment completed
-      completeAssessment()
-      setShowResults(true)
+      try {
+        await completeAssessment()
+        setShowResults(true)
+      } catch (error) {
+        console.error('Failed to complete assessment:', error)
+      }
     }
   }
 
@@ -110,6 +114,7 @@ export function Assessment() {
       <AssessmentNavBar 
         subtitle={`${assessmentTemplate.name} • ${participant.email}`}
         showAdminButton={false}
+        showBackButton={true}
       />
 
       <div className="container mx-auto px-6 py-8">

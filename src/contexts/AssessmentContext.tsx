@@ -1,32 +1,26 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { AssessmentTemplate, AssessmentResponse } from '@/types'
-import { getAssessmentTemplateForAccessCode, getAssessmentConfigByAccessCode } from '@/data/assessmentTemplates'
+import { supabase } from '@/lib/supabase'
 
-interface AssessmentParticipant {
-  id: string
+interface AssessmentSession {
   email: string
-  name?: string
-  department?: string
-  role?: string
   accessCode: string
   cohortId: string
-  assessmentStatus: 'not_started' | 'in_progress' | 'completed'
-  completionPercentage: number
-  lastActivity?: Date
-  companyId?: string
-  templateId?: string
+  companyId: string
+  templateId: string
+  lastActivity: string
 }
 
 interface AssessmentContextType {
-  participant: AssessmentParticipant | null
+  participant: AssessmentSession | null
   assessmentTemplate: AssessmentTemplate | null
   responses: Map<string, AssessmentResponse>
   isAuthenticated: boolean
   isLoading: boolean
   accessAssessment: (email: string, accessCode: string) => Promise<boolean>
-  updateProgress: (percentage: number) => void
-  completeAssessment: () => void
-  saveResponse: (sectionId: string, questionId: string, value: string | string[] | number) => void
+  updateProgress: (percentage: number) => Promise<void>
+  completeAssessment: () => Promise<void>
+  saveResponse: (sectionId: string, questionId: string, value: string | string[] | number) => Promise<void>
   getResponse: (sectionId: string, questionId: string) => AssessmentResponse | undefined
   getCurrentSection: () => string
   setCurrentSection: (section: string) => void
@@ -48,219 +42,189 @@ interface AssessmentProviderProps {
 }
 
 export function AssessmentProvider({ children }: AssessmentProviderProps) {
-  const [participant, setParticipant] = useState<AssessmentParticipant | null>(null)
+  const [participant, setParticipant] = useState<AssessmentSession | null>(null)
   const [assessmentTemplate, setAssessmentTemplate] = useState<AssessmentTemplate | null>(null)
   const [responses, setResponses] = useState<Map<string, AssessmentResponse>>(new Map())
-  const [currentSection, setCurrentSection] = useState<string>('profile')
+  const [currentSection, setCurrentSectionState] = useState('profile')
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const storedParticipant = localStorage.getItem('air_assessment_participant')
-    const storedResponses = localStorage.getItem('air_assessment_responses')
-    const storedSection = localStorage.getItem('air_current_section')
-    
-    if (storedParticipant) {
-      const participantData = JSON.parse(storedParticipant)
-      setParticipant(participantData)
-      
-      // Load assessment template based on access code
-      if (participantData.accessCode) {
-        const template = getAssessmentTemplateForAccessCode(participantData.accessCode)
-        const config = getAssessmentConfigByAccessCode(participantData.accessCode)
-        
-        setAssessmentTemplate(template)
-        
-        // Update participant with company info
-        if (config) {
-          const updatedParticipant = {
-            ...participantData,
-            companyId: config.companyId,
-            templateId: config.templateId
-          }
-          setParticipant(updatedParticipant)
-          localStorage.setItem('air_assessment_participant', JSON.stringify(updatedParticipant))
-        }
-      }
-    }
-    
-    if (storedResponses) {
-      const responsesArray: AssessmentResponse[] = JSON.parse(storedResponses)
-      const responsesMap = new Map()
-      responsesArray.forEach(response => {
-        const key = `${response.sectionId}-${response.questionId}`
-        responsesMap.set(key, response)
-      })
-      setResponses(responsesMap)
-    }
-    
-    if (storedSection) {
-      setCurrentSection(storedSection)
-    }
-    
-    setIsLoading(false)
+    loadSession()
   }, [])
 
-  const accessAssessment = async (email: string, accessCode: string): Promise<boolean> => {
-    setIsLoading(true)
-    
+  const loadSession = async () => {
     try {
-      // Demo assessment participants for testing - only email and access code known initially
-      const demoParticipants: Record<string, { accessCode: string; participant: AssessmentParticipant }> = {
-        'john.smith@company.com': {
-          accessCode: 'ASS2024001',
-          participant: {
-            id: 'emp-001',
-            email: 'john.smith@company.com',
-            accessCode: 'ASS2024001',
-            cohortId: 'cohort-q1-2024',
-            assessmentStatus: 'not_started',
-            completionPercentage: 0
-          }
-        },
-        'sarah.jones@company.com': {
-          accessCode: 'ASS2024002',
-          participant: {
-            id: 'emp-002',
-            email: 'sarah.jones@company.com',
-            accessCode: 'ASS2024002',
-            cohortId: 'cohort-q1-2024',
-            assessmentStatus: 'in_progress',
-            completionPercentage: 45
-          }
-        },
-        'mike.wilson@company.com': {
-          accessCode: 'ASS2024003',
-          participant: {
-            id: 'emp-003',
-            email: 'mike.wilson@company.com',
-            accessCode: 'ASS2024003',
-            cohortId: 'cohort-q1-2024',
-            assessmentStatus: 'completed',
-            completionPercentage: 100,
-            lastActivity: new Date('2024-01-15')
-          }
-        },
-        'lisa.chen@company.com': {
-          accessCode: 'ASS2024004',
-          participant: {
-            id: 'emp-004',
-            email: 'lisa.chen@company.com',
-            accessCode: 'ASS2024004',
-            cohortId: 'cohort-q1-2024',
-            assessmentStatus: 'not_started',
-            completionPercentage: 0
-          }
-        }
-      }
-
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500))
-
-      const participantRecord = demoParticipants[email.toLowerCase()]
-      if (participantRecord && participantRecord.accessCode === accessCode) {
-        // Load assessment template and config for this access code
-        const template = getAssessmentTemplateForAccessCode(accessCode)
-        const config = getAssessmentConfigByAccessCode(accessCode)
+      const storedSession = localStorage.getItem('air_assessment_session')
+      const storedTemplate = localStorage.getItem('air_assessment_template')
+      const storedSection = localStorage.getItem('air_current_section')
+      
+      if (storedSession && storedTemplate) {
+        const sessionData = JSON.parse(storedSession)
+        const templateData = JSON.parse(storedTemplate)
         
-        const participantWithActivity = {
-          ...participantRecord.participant,
-          lastActivity: new Date(),
-          companyId: config?.companyId,
-          templateId: config?.templateId
+        setParticipant(sessionData)
+        setAssessmentTemplate(templateData)
+        
+        if (storedSection) {
+          setCurrentSectionState(storedSection)
         }
         
-        setParticipant(participantWithActivity)
-        setAssessmentTemplate(template)
-        localStorage.setItem('air_assessment_participant', JSON.stringify(participantWithActivity))
-        setIsLoading(false)
-        return true
+        // Load existing responses for this email/cohort
+        await loadExistingResponses(sessionData.email, sessionData.cohortId)
       }
-
+      
       setIsLoading(false)
-      return false
     } catch (error) {
+      console.error('Session load failed:', error)
+      logout()
       setIsLoading(false)
-      return false
     }
   }
 
-  const updateProgress = (percentage: number) => {
-    if (participant) {
-      const updatedParticipant = {
-        ...participant,
-        completionPercentage: percentage,
-        assessmentStatus: percentage === 100 ? 'completed' as const : 'in_progress' as const,
-        lastActivity: new Date()
+  const loadExistingResponses = async (email: string, cohortId: string) => {
+    try {
+      const { data: responses } = await supabase
+        .from('assessment_responses')
+        .select('*')
+        .eq('email', email)
+        .eq('cohort_id', cohortId)
+      
+      if (responses) {
+        const responsesMap = new Map()
+        responses.forEach(response => {
+          const assessmentResponse: AssessmentResponse = {
+            participantId: email, // Use email as participant identifier
+            assessmentId: response.assessment_id || '',
+            sectionId: response.section_id,
+            questionId: response.question_id,
+            value: response.response_value,
+            timestamp: new Date(response.created_at)
+          }
+          const key = `${response.section_id}-${response.question_id}`
+          responsesMap.set(key, assessmentResponse)
+        })
+        setResponses(responsesMap)
       }
-      setParticipant(updatedParticipant)
-      localStorage.setItem('air_assessment_participant', JSON.stringify(updatedParticipant))
+    } catch (error) {
+      console.error('Failed to load existing responses:', error)
     }
   }
 
-  const completeAssessment = () => {
-    if (participant) {
-      const completedParticipant = {
-        ...participant,
-        assessmentStatus: 'completed' as const,
-        completionPercentage: 100,
-        lastActivity: new Date()
-      }
-      setParticipant(completedParticipant)
-      localStorage.setItem('air_assessment_participant', JSON.stringify(completedParticipant))
-    }
+  const accessAssessment = async (email: string, accessCode: string): Promise<boolean> => {
+    // This function is not used anymore since authentication happens in AssessmentAccessPage
+    // But keeping it for backwards compatibility
+    return false
   }
 
-  const saveResponse = (sectionId: string, questionId: string, value: string | string[] | number) => {
+  const saveResponse = async (sectionId: string, questionId: string, value: string | string[] | number) => {
     if (!participant || !assessmentTemplate) return
-    
-    const response: AssessmentResponse = {
-      participantId: participant.id,
-      assessmentId: assessmentTemplate.id,
-      sectionId,
-      questionId,
-      value,
-      timestamp: new Date()
+
+    try {
+      // Save to database
+      const responseData = {
+        email: participant.email,
+        cohort_id: participant.cohortId,
+        assessment_id: assessmentTemplate.id,
+        section_id: sectionId,
+        question_id: questionId,
+        response_value: Array.isArray(value) ? JSON.stringify(value) : String(value),
+        created_at: new Date().toISOString()
+      }
+
+      // Upsert the response (update if exists, insert if not)
+      await supabase
+        .from('assessment_responses')
+        .upsert(responseData, {
+          onConflict: 'email,cohort_id,section_id,question_id',
+          ignoreDuplicates: false
+        })
+
+      // Update local state
+      const key = `${sectionId}-${questionId}`
+      const assessmentResponse: AssessmentResponse = {
+        participantId: participant.email,
+        assessmentId: assessmentTemplate.id,
+        sectionId,
+        questionId,
+        value,
+        timestamp: new Date()
+      }
+      
+      const newResponses = new Map(responses)
+      newResponses.set(key, assessmentResponse)
+      setResponses(newResponses)
+    } catch (error) {
+      console.error('Failed to save response:', error)
     }
-    
-    const key = `${sectionId}-${questionId}`
-    const newResponses = new Map(responses)
-    newResponses.set(key, response)
-    setResponses(newResponses)
-    
-    // Save to localStorage
-    const responsesArray = Array.from(newResponses.values())
-    localStorage.setItem('air_assessment_responses', JSON.stringify(responsesArray))
   }
-  
+
   const getResponse = (sectionId: string, questionId: string): AssessmentResponse | undefined => {
     const key = `${sectionId}-${questionId}`
     return responses.get(key)
   }
-  
-  const getCurrentSection = (): string => {
+
+  const updateProgress = async (percentage: number) => {
+    // Since we don't have participants table, we can track progress locally
+    // or save it as a special response type
+    if (participant) {
+      localStorage.setItem('air_assessment_progress', JSON.stringify({
+        email: participant.email,
+        cohortId: participant.cohortId,
+        percentage,
+        lastUpdated: new Date().toISOString()
+      }))
+    }
+  }
+
+  const completeAssessment = async () => {
+    if (!participant) return
+    
+    try {
+      // Mark assessment as completed
+      await updateProgress(100)
+      
+      // Optionally save completion status to assessment_results table
+      await supabase
+        .from('assessment_results')
+        .upsert({
+          email: participant.email,
+          cohort_id: participant.cohortId,
+          completion_status: 'completed',
+          completed_at: new Date().toISOString(),
+          total_responses: responses.size
+        }, {
+          onConflict: 'email,cohort_id'
+        })
+    } catch (error) {
+      console.error('Failed to complete assessment:', error)
+    }
+  }
+
+  const getCurrentSection = () => {
     return currentSection
   }
-  
-  const handleSetCurrentSection = (section: string) => {
-    setCurrentSection(section)
+
+  const setCurrentSection = (section: string) => {
+    setCurrentSectionState(section)
     localStorage.setItem('air_current_section', section)
   }
 
   const logout = () => {
+    localStorage.removeItem('air_assessment_session')
+    localStorage.removeItem('air_assessment_template')
+    localStorage.removeItem('air_current_section')
+    localStorage.removeItem('air_assessment_progress')
     setParticipant(null)
     setAssessmentTemplate(null)
     setResponses(new Map())
-    setCurrentSection('profile')
-    localStorage.removeItem('air_assessment_participant')
-    localStorage.removeItem('air_assessment_responses')
-    localStorage.removeItem('air_current_section')
+    setCurrentSectionState('profile')
   }
 
   const value = {
     participant,
     assessmentTemplate,
     responses,
-    isAuthenticated: !!participant,
+    isAuthenticated: !!participant && !!assessmentTemplate,
     isLoading,
     accessAssessment,
     updateProgress,
@@ -268,7 +232,7 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
     saveResponse,
     getResponse,
     getCurrentSection,
-    setCurrentSection: handleSetCurrentSection,
+    setCurrentSection,
     logout
   }
 

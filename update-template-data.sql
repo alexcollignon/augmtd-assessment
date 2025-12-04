@@ -1,0 +1,126 @@
+-- Update the assessment template with full structure
+UPDATE assessment_templates 
+SET template_data = '{
+  "dimensions": [
+    {
+      "id": "promptingProficiency",
+      "name": "Prompting Proficiency",
+      "description": "Ability to effectively communicate with AI systems",
+      "maxScore": 100,
+      "weight": 1
+    },
+    {
+      "id": "toolUse",
+      "name": "Tool Use",
+      "description": "Experience with AI tools and automation",
+      "maxScore": 100,
+      "weight": 1
+    },
+    {
+      "id": "ethics",
+      "name": "Ethics & Responsible Use",
+      "description": "Understanding of responsible AI practices",
+      "maxScore": 100,
+      "weight": 1
+    },
+    {
+      "id": "aiThinking",
+      "name": "AI Thinking",
+      "description": "Conceptual understanding of AI systems and data",
+      "maxScore": 100,
+      "weight": 1
+    },
+    {
+      "id": "coIntelligence",
+      "name": "Co-Intelligence",
+      "description": "Human-AI collaboration and workflow integration",
+      "maxScore": 100,
+      "weight": 1.5
+    }
+  ],
+  "profile": {
+    "title": "Professional Profile",
+    "questions": [
+      {
+        "id": "industry",
+        "text": "What industry sector does your organization work in?",
+        "type": "select",
+        "options": [
+          {"id": "technology", "label": "Technology & Software", "value": "Technology & Software"},
+          {"id": "financial", "label": "Financial Services & Banking", "value": "Financial Services & Banking"},
+          {"id": "healthcare", "label": "Healthcare & Life Sciences", "value": "Healthcare & Life Sciences"},
+          {"id": "manufacturing", "label": "Manufacturing & Industrial", "value": "Manufacturing & Industrial"},
+          {"id": "other", "label": "Other", "value": "Other"}
+        ]
+      },
+      {
+        "id": "department",
+        "text": "Which department do you work in?",
+        "type": "select",
+        "options": [
+          {"id": "executive_office", "label": "Executive Office / Board", "value": "Executive Office / Board"},
+          {"id": "data_ai_digital", "label": "Data, AI & Digital", "value": "Data, AI & Digital"},
+          {"id": "product_rd_services", "label": "Product, R&D & Services", "value": "Product, R&D & Services"},
+          {"id": "operations_delivery", "label": "Operations & Delivery", "value": "Operations & Delivery"},
+          {"id": "marketing_sales_customer", "label": "Marketing, Sales & Customer", "value": "Marketing, Sales & Customer"}
+        ]
+      },
+      {
+        "id": "role",
+        "text": "What is your current role in the organization?",
+        "type": "select",
+        "options": [
+          {"id": "executive_leader", "label": "Executive / C-Level Leader", "value": "Executive / C-Level Leader"},
+          {"id": "team_manager", "label": "Team or Department Manager", "value": "Team or Department Manager"},
+          {"id": "technical_expert", "label": "Technical Expert / Engineer", "value": "Technical Expert / Engineer"},
+          {"id": "data_ai_specialist", "label": "Data & AI Specialist", "value": "Data & AI Specialist"},
+          {"id": "other", "label": "Other", "value": "Other"}
+        ]
+      }
+    ]
+  },
+  "strategic": {
+    "title": "AI Company Strategy",
+    "questions": [
+      {
+        "id": "genai_strategic_goals",
+        "text": "Is Generative AI explicitly part of your organizations strategic goals?",
+        "type": "radio",
+        "options": [
+          {"id": "yes", "label": "Yes", "value": "yes"},
+          {"id": "no", "label": "No", "value": "no"},
+          {"id": "unsure", "label": "Im not sure", "value": "unsure"}
+        ]
+      }
+    ]
+  },
+  "competence": {
+    "title": "AI Fluency Screener",
+    "questions": [
+      {
+        "id": "prompt_multi_step",
+        "text": "How often do you break a prompt into multiple steps when using AI tools?",
+        "type": "radio",
+        "options": [
+          {"id": "never", "label": "Never", "value": "never"},
+          {"id": "rarely", "label": "Rarely", "value": "rarely"},
+          {"id": "sometimes", "label": "Sometimes", "value": "sometimes"},
+          {"id": "often", "label": "Often", "value": "often"},
+          {"id": "always", "label": "Always", "value": "always"}
+        ],
+        "scoring": {
+          "weight": 1.67,
+          "dimension": "promptingProficiency",
+          "valueMapping": {
+            "never": 1,
+            "rarely": 2,
+            "sometimes": 3,
+            "often": 4,
+            "always": 5
+          }
+        }
+      }
+    ]
+  }
+}'::jsonb
+WHERE id = '660e8400-e29b-41d4-a716-446655440000';

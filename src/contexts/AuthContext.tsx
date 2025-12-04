@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { supabase } from '@/lib/supabase'
 
 interface User {
   id: string
@@ -6,6 +7,7 @@ interface User {
   name: string
   role: 'admin' | 'executive' | 'manager'
   department?: string
+  company_id?: string
 }
 
 interface AuthContextType {
@@ -35,57 +37,85 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('air_user')
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
+    checkSession()
+  }, [])
+
+  const checkSession = async () => {
+    try {
+      const storedUser = localStorage.getItem('air_user')
+      if (storedUser) {
+        const userData = JSON.parse(storedUser)
+        // Verify user still exists in database
+        const { data } = await supabase
+          .from('admin_users')
+          .select('*')
+          .eq('id', userData.id)
+          .eq('is_active', true)
+          .single()
+        
+        if (data) {
+          setUser({
+            id: data.id,
+            email: data.email,
+            name: data.name,
+            role: data.role,
+            department: data.department,
+            company_id: data.company_id
+          })
+        } else {
+          localStorage.removeItem('air_user')
+        }
+      }
+    } catch (error) {
+      console.error('Session check failed:', error)
+      localStorage.removeItem('air_user')
     }
     setIsLoading(false)
-  }, [])
+  }
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true)
     
     try {
-      // Demo users for testing
-      const demoUsers: Record<string, { password: string; user: User }> = {
-        'admin@airplatform.com': {
-          password: 'admin123',
-          user: {
-            id: '1',
-            email: 'admin@airplatform.com',
-            name: 'Sarah Chen',
-            role: 'admin'
-          }
-        },
-        'cto@company.com': {
-          password: 'executive123',
-          user: {
-            id: '2',
-            email: 'cto@company.com',
-            name: 'Michael Rodriguez',
-            role: 'executive',
-            department: 'Technology'
-          }
-        },
-        'manager@company.com': {
-          password: 'manager123',
-          user: {
-            id: '3',
-            email: 'manager@company.com',
-            name: 'Emily Johnson',
-            role: 'manager',
-            department: 'Operations'
-          }
-        }
+      // Query admin user from database
+      const { data: adminUser, error } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('email', email.toLowerCase())
+        .eq('is_active', true)
+        .single()
+
+      if (error || !adminUser) {
+        setIsLoading(false)
+        return false
       }
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // For demo purposes, compare with simple password
+      // In production, you'd use bcrypt.compare(password, adminUser.password_hash)
+      const validPassword = (
+        (password === 'admin123' && adminUser.email === 'admin@airplatform.com') ||
+        (password === 'executive123' && adminUser.email === 'cto@company.com') ||
+        (password === 'manager123' && adminUser.email === 'manager@company.com')
+      )
+      
+      if (validPassword) {
+        const userData: User = {
+          id: adminUser.id,
+          email: adminUser.email,
+          name: adminUser.name,
+          role: adminUser.role,
+          department: adminUser.department,
+          company_id: adminUser.company_id
+        }
 
-      const userRecord = demoUsers[email]
-      if (userRecord && userRecord.password === password) {
-        setUser(userRecord.user)
-        localStorage.setItem('air_user', JSON.stringify(userRecord.user))
+        // Update last login
+        await supabase
+          .from('admin_users')
+          .update({ last_login_at: new Date().toISOString() })
+          .eq('id', adminUser.id)
+
+        setUser(userData)
+        localStorage.setItem('air_user', JSON.stringify(userData))
         setIsLoading(false)
         return true
       }
@@ -93,6 +123,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoading(false)
       return false
     } catch (error) {
+      console.error('Login error:', error)
       setIsLoading(false)
       return false
     }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/Card'
-import { useAssessment } from '../contexts/AssessmentContext'
-import { navigateToAdmin } from '../router'
+import { navigateToAdmin, navigateToAssessment } from '../router'
+import { authenticateAssessment } from '../lib/assessmentAuth'
 import { 
   Brain, 
   Key, 
@@ -27,26 +27,35 @@ export function AssessmentAccessPage() {
   const [email, setEmail] = useState('')
   const [accessCode, setAccessCode] = useState('')
   const [error, setError] = useState('')
-  const { accessAssessment, isLoading } = useAssessment()
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setIsLoading(true)
     
     if (!email || !accessCode) {
       setError('Please enter both your work email and access code')
+      setIsLoading(false)
       return
     }
 
     if (!email.includes('@') || !email.includes('.')) {
       setError('Please enter a valid work email address')
+      setIsLoading(false)
       return
     }
 
-    const success = await accessAssessment(email, accessCode)
-    if (!success) {
-      setError('Invalid email or access code. Please check your credentials and try again.')
+    const result = await authenticateAssessment(email, accessCode)
+    if (result.success && result.session && result.template) {
+      // Store the template in localStorage for the assessment to use
+      localStorage.setItem('air_assessment_template', JSON.stringify(result.template))
+      // Navigate to assessment route
+      navigateToAssessment()
+    } else {
+      setError(result.error || 'Invalid email or access code. Please check your credentials and try again.')
     }
+    setIsLoading(false)
   }
 
   const handleELearningClick = () => {
@@ -55,20 +64,20 @@ export function AssessmentAccessPage() {
 
   const demoParticipants = [
     { 
-      email: 'john.smith@company.com', 
-      accessCode: 'ASS2024001'
+      email: 'test@company.com', 
+      accessCode: 'AIR-2024-Q1'
     },
     { 
-      email: 'sarah.jones@company.com', 
-      accessCode: 'ASS2024002'
+      email: 'employee@company.com', 
+      accessCode: 'AIR-2024-Q1'
     },
     { 
-      email: 'mike.wilson@company.com', 
-      accessCode: 'ASS2024003'
+      email: 'user@company.com', 
+      accessCode: 'AIR-2024-Q1'
     },
     { 
-      email: 'lisa.chen@company.com', 
-      accessCode: 'ASS2024004'
+      email: 'demo@company.com', 
+      accessCode: 'AIR-2024-Q1'
     }
   ]
 
