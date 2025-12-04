@@ -60,3 +60,93 @@ export interface RiskItem {
   category: string
   description: string
 }
+
+// Assessment System Types
+
+export type QuestionType = 'radio' | 'select' | 'multi_select' | 'slider' | 'text'
+
+export interface QuestionOption {
+  id: string
+  label: string
+  value: string
+  score?: number
+}
+
+export interface QuestionScoring {
+  weight: number
+  dimension: string
+  valueMapping?: Record<string, number>
+}
+
+export interface AssessmentQuestion {
+  id: string
+  text: string
+  type: QuestionType
+  options?: QuestionOption[]
+  scoring?: QuestionScoring
+  tags?: string[]
+  allowMultiple?: boolean
+  min?: number
+  max?: number
+  step?: number
+  labels?: Record<string, string>
+}
+
+export interface AssessmentSection {
+  title: string
+  questions: AssessmentQuestion[]
+}
+
+export interface AssessmentTemplate {
+  id: string
+  name: string
+  description?: string
+  companyId?: string
+  profile: AssessmentSection
+  strategic: AssessmentSection
+  competence: AssessmentSection
+  dimensions: AssessmentDimension[]
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+export interface AssessmentDimension {
+  id: string
+  name: string
+  description?: string
+  maxScore: number
+  weight?: number
+}
+
+export interface AssessmentResponse {
+  participantId: string
+  assessmentId: string
+  sectionId: string
+  questionId: string
+  value: string | string[] | number
+  timestamp: Date
+}
+
+export interface AssessmentResult {
+  participantId: string
+  assessmentId: string
+  scores: DimensionScore[]
+  overallScore: number
+  completionDate: Date
+  recommendations?: string[]
+  radarData: RadarChartData[]
+}
+
+export interface DimensionScore {
+  dimension: string
+  score: number
+  maxScore: number
+  percentage: number
+}
+
+export interface RadarChartData {
+  dimension: string
+  userScore: number
+  peerAverage?: number
+  maxScore: number
+}

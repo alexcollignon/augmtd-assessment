@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Sidebar } from './components/Sidebar'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { ProtectedAssessment } from './components/ProtectedAssessment'
-import { AssessmentPlaceholder } from './components/AssessmentPlaceholder'
+import { Assessment } from './components/assessment/Assessment'
 import { AuthProvider } from './contexts/AuthContext'
 import { AssessmentProvider } from './contexts/AssessmentContext'
 import { getAppMode, handleNavigation, AppMode } from './router'
@@ -83,7 +83,7 @@ function App() {
     return (
       <AssessmentProvider>
         <ProtectedAssessment>
-          <AssessmentPlaceholder />
+          <Assessment />
         </ProtectedAssessment>
       </AssessmentProvider>
     )
