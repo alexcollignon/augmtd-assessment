@@ -68,9 +68,21 @@ export function Assessment() {
       // Assessment completed
       try {
         await completeAssessment()
-        setShowResults(true)
+        
+        // Redirect to unique URL instead of showing results directly
+        const resultsId = localStorage.getItem('air_assessment_results_id')
+        if (resultsId) {
+          // Navigate to unique assessment URL
+          window.history.pushState(null, '', `/a/${resultsId}`)
+          window.location.reload()
+        } else {
+          // Fallback to showing results directly if no results ID
+          setShowResults(true)
+        }
       } catch (error) {
         console.error('Failed to complete assessment:', error)
+        // Show error or fallback to local results
+        setShowResults(true)
       }
     }
   }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useAssessment } from '@/contexts/AssessmentContext'
 import { createScoringEngine } from '@/lib/assessmentScoring'
+import { generateAssessmentUrl } from '@/lib/assessmentResults'
+import { supabase } from '@/lib/supabase'
 import { AssessmentResult } from '@/types'
 import { AssessmentNavBar } from '../AssessmentNavBar'
 import { OverallScoreCard } from './OverallScoreCard'
@@ -187,12 +189,61 @@ export function AssessmentResults() {
     }
   }
 
-  // Mock data - in real implementation, this would come from user's assessment history
-  const hasMultipleAssessments = true // Set to true to show progress tab
-  const previousAssessments = [
-    { date: '2024-09-15', overallScore: 42, scores: result?.scores?.map(s => ({ ...s, percentage: s.percentage - 15 })) || [] },
-    { date: '2024-06-20', overallScore: 35, scores: result?.scores?.map(s => ({ ...s, percentage: s.percentage - 25 })) || [] }
-  ]
+  // Load assessment history for progress tracking
+  const [assessmentHistory, setAssessmentHistory] = useState<any[]>([])
+  const [hasMultipleAssessments, setHasMultipleAssessments] = useState(false)
+
+  useEffect(() => {
+    const loadAssessmentHistory = async () => {
+      if (!participant?.email || !participant?.cohortId) return
+      
+      try {
+        // Load all submissions for this user/cohort ordered by submission date
+        const { data: submissions } = await supabase
+          .from('assessment_submissions')
+          .select(`
+            id,
+            submission_number,
+            submitted_at,
+            assessment_results (
+              overall_score,
+              dimension_scores
+            )
+          `)
+          .eq('email', participant.email)
+          .eq('cohort_id', participant.cohortId)
+          .order('submitted_at', { ascending: true })
+          .not('assessment_results', 'is', null)
+
+        if (submissions && submissions.length > 1) {
+          setHasMultipleAssessments(true)
+          // Convert to format expected by progress tab (excluding current/latest)
+          const previousAssessments = submissions.slice(0, -1).map(sub => ({
+            date: new Date(sub.submitted_at).toISOString().split('T')[0],
+            overallScore: sub.assessment_results[0]?.overall_score || 0,
+            submissionNumber: sub.submission_number,
+            dimensionScores: sub.assessment_results[0]?.dimension_scores || {},
+            scores: Object.entries(sub.assessment_results[0]?.dimension_scores || {}).map(([dimension, percentage]) => ({
+              dimension,
+              percentage
+            }))
+          }))
+          setAssessmentHistory(previousAssessments)
+        } else {
+          setHasMultipleAssessments(false)
+          setAssessmentHistory([])
+        }
+      } catch (error) {
+        console.error('Failed to load assessment history:', error)
+        setHasMultipleAssessments(false)
+        setAssessmentHistory([])
+      }
+    }
+
+    loadAssessmentHistory()
+  }, [participant?.email, participant?.cohortId])
+
+  const previousAssessments = assessmentHistory
 
   const tabConfig = [
     {
@@ -233,8 +284,21 @@ export function AssessmentResults() {
   }
 
   const handleShareResults = () => {
-    // TODO: Implement sharing functionality
-    alert('Results sharing will be available soon!')
+    const resultsId = localStorage.getItem('air_assessment_results_id')
+    
+    if (resultsId) {
+      const uniqueUrl = generateAssessmentUrl(resultsId)
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(uniqueUrl).then(() => {
+        alert(`Your unique assessment URL has been copied to clipboard:\n\n${uniqueUrl}\n\nShare this link to allow others to view your results.`)
+      }).catch(() => {
+        // Fallback for older browsers
+        prompt('Copy this unique assessment URL:', uniqueUrl)
+      })
+    } else {
+      alert('Unable to generate unique URL. Please complete the assessment first.')
+    }
   }
 
   if (isLoading || !result || !participant) {

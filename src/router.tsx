@@ -10,13 +10,22 @@ export function getAppMode(): AppMode {
     return 'admin'
   }
   
-  // Check for assessment routes
-  if (path === '/assessment' || path.startsWith('/assessment/')) {
+  // Check for assessment routes (including unique assessment URLs)
+  if (path === '/assessment' || path.startsWith('/assessment/') || path.startsWith('/a/')) {
     return 'assessment'
   }
   
   // Root defaults to home/landing page
   return 'home'
+}
+
+// Get assessment results ID from URL
+export function getAssessmentIdFromUrl(): string | null {
+  const path = window.location.pathname
+  
+  // Check for unique assessment URL format: /a/{results_id}
+  const match = path.match(/^\/a\/([a-f0-9-]+)$/i)
+  return match ? match[1] : null
 }
 
 export function handleNavigation() {
@@ -31,6 +40,11 @@ export function navigateToAdmin() {
 
 export function navigateToAssessment() {
   window.history.pushState(null, '', '/assessment')
+  window.location.reload()
+}
+
+export function navigateToUniqueAssessment(resultsId: string) {
+  window.history.pushState(null, '', `/a/${resultsId}`)
   window.location.reload()
 }
 

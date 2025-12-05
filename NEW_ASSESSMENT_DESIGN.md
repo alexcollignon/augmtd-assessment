@@ -74,17 +74,18 @@ CREATE TABLE assessment_results (
 ## How It Works
 
 1. **User fills out assessment** - responses stored locally (no database writes)
-2. **User clicks "Complete Assessment"** - single INSERT with all responses as JSON
-3. **Done!** One row in database with complete assessment
+2. **User clicks "Complete Assessment"** - INSERT new submission with sequential number
+3. **Progress tracking** - Each new submission gets submission_number (1, 2, 3...)
+4. **Learning journey** - Compare results over time to track improvement
 
 ## Benefits
 
-✅ **Simplest possible**: Just 1 table, 1 row per assessment  
-✅ **No database spam**: Only 1 write operation per assessment  
-✅ **Easy analysis**: All responses in one JSON field  
-✅ **Perfect for one-shot**: No unnecessary progress tracking  
+✅ **Progress tracking**: Multiple submissions per user to track learning  
+✅ **Learning analytics**: Compare before/after training results  
+✅ **Easy analysis**: All responses in one JSON field per submission  
+✅ **Sequential numbering**: submission_number tracks attempt sequence  
 ✅ **Clean data**: Only completed assessments in database  
-✅ **Fast**: No complex queries or multiple table joins  
+✅ **Growth insights**: See improvement over time in existing results tab  
 
 ## Migration
 

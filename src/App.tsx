@@ -5,8 +5,9 @@ import { ProtectedAssessment } from './components/ProtectedAssessment'
 import { Assessment } from './components/assessment/Assessment'
 import { AuthProvider } from './contexts/AuthContext'
 import { AssessmentProvider } from './contexts/AssessmentContext'
-import { getAppMode, handleNavigation, AppMode } from './router'
+import { getAppMode, handleNavigation, AppMode, getAssessmentIdFromUrl } from './router'
 import { AssessmentAccessPage } from './components/AssessmentAccessPage'
+import { UniqueAssessmentView } from './components/UniqueAssessmentView'
 
 // Page Components
 import { ExecutiveSummary } from './pages/overview/ExecutiveSummary'
@@ -81,6 +82,15 @@ function App() {
   }, [])
 
   if (appMode === 'assessment') {
+    // Check if this is a unique assessment URL
+    const assessmentId = getAssessmentIdFromUrl()
+    
+    if (assessmentId) {
+      // Show unique assessment results (no authentication required)
+      return <UniqueAssessmentView />
+    }
+    
+    // Regular assessment flow
     return (
       <AssessmentProvider>
         <ProtectedAssessment>
