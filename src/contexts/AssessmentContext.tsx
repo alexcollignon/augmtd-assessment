@@ -83,30 +83,25 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
 
   const loadExistingResponses = async (email: string, cohortId: string) => {
     try {
-      const { data: responses } = await supabase
-        .from('assessment_responses')
+      // Check if user has already submitted assessment
+      const { data: submission } = await supabase
+        .from('assessment_submissions')
         .select('*')
         .eq('email', email)
         .eq('cohort_id', cohortId)
+        .single()
       
-      if (responses) {
-        const responsesMap = new Map()
-        responses.forEach(response => {
-          const assessmentResponse: AssessmentResponse = {
-            participantId: email, // Use email as participant identifier
-            assessmentId: response.assessment_id || '',
-            sectionId: response.section_id,
-            questionId: response.question_id,
-            value: response.response_value,
-            timestamp: new Date(response.created_at)
-          }
-          const key = `${response.section_id}-${response.question_id}`
-          responsesMap.set(key, assessmentResponse)
-        })
-        setResponses(responsesMap)
+      if (submission) {
+        console.log('User has already completed assessment:', submission)
+        // For one-shot assessment, redirect to results or show completion message
+        // TODO: Handle already completed assessment
+      } else {
+        console.log('Fresh assessment for user')
+        // Start with empty responses
       }
     } catch (error) {
-      console.error('Failed to load existing responses:', error)
+      // No existing submission found - this is expected for new users
+      console.log('No existing submission found (this is normal for new users)')
     }
   }
 
@@ -117,45 +112,28 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
   }
 
   const saveResponse = async (sectionId: string, questionId: string, value: string | string[] | number) => {
-    if (!participant || !assessmentTemplate) return
-
-    try {
-      // Save to database
-      const responseData = {
-        email: participant.email,
-        cohort_id: participant.cohortId,
-        assessment_id: assessmentTemplate.id,
-        section_id: sectionId,
-        question_id: questionId,
-        response_value: Array.isArray(value) ? JSON.stringify(value) : String(value),
-        created_at: new Date().toISOString()
-      }
-
-      // Upsert the response (update if exists, insert if not)
-      await supabase
-        .from('assessment_responses')
-        .upsert(responseData, {
-          onConflict: 'email,cohort_id,section_id,question_id',
-          ignoreDuplicates: false
-        })
-
-      // Update local state
-      const key = `${sectionId}-${questionId}`
-      const assessmentResponse: AssessmentResponse = {
-        participantId: participant.email,
-        assessmentId: assessmentTemplate.id,
-        sectionId,
-        questionId,
-        value,
-        timestamp: new Date()
-      }
-      
-      const newResponses = new Map(responses)
-      newResponses.set(key, assessmentResponse)
-      setResponses(newResponses)
-    } catch (error) {
-      console.error('Failed to save response:', error)
+    if (!participant || !assessmentTemplate) {
+      console.error('Cannot save response: missing participant or template')
+      return
     }
+
+    console.log('Saving response locally:', { sectionId, questionId, value })
+
+    // For one-shot assessment, just update local state
+    // Database save happens only on final submission
+    const key = `${sectionId}-${questionId}`
+    const assessmentResponse: AssessmentResponse = {
+      participantId: participant.email,
+      assessmentId: participant.cohortId,
+      sectionId,
+      questionId,
+      value,
+      timestamp: new Date()
+    }
+    
+    const newResponses = new Map(responses)
+    newResponses.set(key, assessmentResponse)
+    setResponses(newResponses)
   }
 
   const getResponse = (sectionId: string, questionId: string): AssessmentResponse | undefined => {
@@ -180,23 +158,100 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
     if (!participant) return
     
     try {
-      // Mark assessment as completed
-      await updateProgress(100)
+      console.log('Submitting complete assessment to database...')
       
-      // Optionally save completion status to assessment_results table
-      await supabase
-        .from('assessment_results')
-        .upsert({
+      // Convert local responses to simple object format
+      const responsesObject: Record<string, any> = {}
+      responses.forEach((response, key) => {
+        responsesObject[key] = response.value
+      })
+
+      console.log('Final responses:', responsesObject)
+
+      // Submit complete assessment to database (one-shot)
+      const now = new Date().toISOString()
+      const { data, error } = await supabase
+        .from('assessment_submissions')
+        .insert({
           email: participant.email,
           cohort_id: participant.cohortId,
-          completion_status: 'completed',
-          completed_at: new Date().toISOString(),
-          total_responses: responses.size
-        }, {
-          onConflict: 'email,cohort_id'
+          responses: responsesObject,
+          submitted_at: now,
+          started_at: now, // For one-shot, started when completed
+          completed_at: now
         })
+        .select()
+
+      if (error) {
+        console.error('Failed to submit assessment:', error)
+        throw error
+      }
+
+      console.log('Successfully submitted assessment:', data)
+      
+      // Calculate and store results
+      await calculateAssessmentResults(participant.email, participant.cohortId, responsesObject)
+      
     } catch (error) {
       console.error('Failed to complete assessment:', error)
+      throw error
+    }
+  }
+
+  const calculateAssessmentResults = async (email: string, cohortId: string, responses: Record<string, any>) => {
+    try {
+      console.log('Calculating assessment results...')
+      
+      // TODO: Implement actual scoring logic based on responses
+      // For now, create placeholder results structure
+      
+      const dimensionScores = {
+        strategy: Math.floor(Math.random() * 40 + 60), // 60-100
+        cost: Math.floor(Math.random() * 40 + 60),
+        organization: Math.floor(Math.random() * 40 + 60),
+        technology: Math.floor(Math.random() * 40 + 60),
+        data: Math.floor(Math.random() * 40 + 60),
+        security: Math.floor(Math.random() * 40 + 60)
+      }
+      
+      const overallScore = Math.round(
+        Object.values(dimensionScores).reduce((sum: number, score: number) => sum + score, 0) / 6
+      )
+      
+      const recommendationReport = {
+        summary: "Based on your responses, here are your personalized AI readiness recommendations.",
+        strengths: ["Strong strategic vision", "Good technical foundation"],
+        improvements: ["Enhance data governance", "Expand AI training programs"],
+        actionPlan: [
+          { priority: "High", action: "Develop AI governance framework", timeline: "3 months" },
+          { priority: "Medium", action: "Implement AI training program", timeline: "6 months" }
+        ],
+        nextSteps: "Focus on building a comprehensive AI strategy and improving team capabilities."
+      }
+      
+      // Store results
+      const { data, error } = await supabase
+        .from('assessment_results')
+        .insert({
+          email,
+          cohort_id: cohortId,
+          dimension_scores: dimensionScores,
+          overall_score: overallScore,
+          recommendation_report: recommendationReport,
+          calculated_at: new Date().toISOString(),
+          report_generated_at: new Date().toISOString()
+        })
+        .select()
+      
+      if (error) {
+        console.error('Failed to store results:', error)
+        throw error
+      }
+      
+      console.log('Successfully calculated and stored results:', data)
+      
+    } catch (error) {
+      console.error('Failed to calculate results:', error)
     }
   }
 

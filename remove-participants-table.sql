@@ -16,6 +16,10 @@ DROP INDEX IF EXISTS idx_assessment_results_participant_id;
 ALTER TABLE assessment_responses DROP COLUMN IF EXISTS participant_id;
 ALTER TABLE assessment_results DROP COLUMN IF EXISTS participant_id;
 
+-- Also remove assessment_id if it exists (not needed for our simplified approach)
+ALTER TABLE assessment_responses DROP COLUMN IF EXISTS assessment_id;
+ALTER TABLE assessment_results DROP COLUMN IF EXISTS assessment_id;
+
 -- 4. Add email column to assessment_responses to track who submitted what
 ALTER TABLE assessment_responses ADD COLUMN IF NOT EXISTS email TEXT;
 ALTER TABLE assessment_responses ADD COLUMN IF NOT EXISTS cohort_id UUID REFERENCES cohorts(id);
@@ -27,9 +31,13 @@ ALTER TABLE assessment_results ADD COLUMN IF NOT EXISTS cohort_id UUID REFERENCE
 -- 6. Drop the participants table entirely
 DROP TABLE IF EXISTS participants;
 
--- 7. Create indexes for the new email-based structure
+-- 7. Create indexes and constraints for the new email-based structure
 CREATE INDEX IF NOT EXISTS idx_assessment_responses_email_cohort ON assessment_responses(email, cohort_id);
 CREATE INDEX IF NOT EXISTS idx_assessment_results_email_cohort ON assessment_results(email, cohort_id);
+
+-- 8. Add unique constraint for upsert operations on assessment_responses
+ALTER TABLE assessment_responses ADD CONSTRAINT IF NOT EXISTS unique_response_per_question 
+  UNIQUE (email, cohort_id, section_id, question_id);
 
 -- 8. Update Row Level Security policies to work with email instead of participant_id
 DROP POLICY IF EXISTS "Users can only access their own responses" ON assessment_responses;

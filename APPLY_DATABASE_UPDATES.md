@@ -21,10 +21,18 @@ UPDATE cohorts SET access_code = 'AIR-2024-Q1' WHERE access_code IS NULL;
 ALTER TABLE cohorts ALTER COLUMN access_code SET NOT NULL;
 ALTER TABLE cohorts ADD CONSTRAINT unique_cohort_access_code UNIQUE (access_code);
 
--- 4. Remove access_code from participants (belongs to cohorts)
+-- 4. Remove assessment_id columns (not needed for simplified approach)
+ALTER TABLE assessment_responses DROP COLUMN IF EXISTS assessment_id;
+ALTER TABLE assessment_results DROP COLUMN IF EXISTS assessment_id;
+
+-- 5. Remove access_code from participants (belongs to cohorts)
 ALTER TABLE participants DROP COLUMN IF EXISTS access_code;
 
--- 5. Clean up - remove any demo participants (they'll be created automatically)
+-- 5. Add unique constraint for upsert operations
+ALTER TABLE assessment_responses ADD CONSTRAINT IF NOT EXISTS unique_response_per_question 
+  UNIQUE (email, cohort_id, section_id, question_id);
+
+-- 6. Clean up - remove any demo participants (they'll be created automatically)
 DELETE FROM participants;
 ```
 
