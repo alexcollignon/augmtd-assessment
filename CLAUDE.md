@@ -163,15 +163,18 @@ Any email works with the access code!
 
 #### Assessment Features
 - **Session-Based Authentication**: No participant pre-registration required
-- **Automatic Response Saving**: Real-time persistence to Supabase database
-- **Progress Tracking**: Stored locally and in database by email + cohort
-- **Resume Capability**: Continue where left off across browser sessions
+- **Fresh Assessment Starts**: Each assessment begins with blank form, regardless of previous completions
+- **Multiple Submissions Support**: Users can retake assessments to track learning progress over time
+- **One-Shot Storage**: Complete assessment stored as single database row with JSON responses
+- **Progress Tracking**: Historical submissions enable before/after comparison in results
+- **Unique Shareable URLs**: Assessment results accessible via `/a/{results_id}` format
+- **Comprehensive Results Interface**: Full tabbed view with Overview, Deep Dive, Tools & Use Cases, Progress, Learning Path
 - **Cohort Organization**: Group assessments by company initiative/time period
 - **Assessment Benefits Display**: Strategic insights, opportunity discovery, personalized results
 - **eLearning Integration**: Access to AI training resources, use cases library, PowerPrompts
 - **Two-Column Layout**: Benefits and eLearning (left) + assessment form and expectations (right)
 - **Demo Account Quick Access**: One-click demo email selection for testing
-- **Direct Response Storage**: Responses saved by email + cohort_id (no intermediate participant records)
+- **Automatic URL Redirect**: Assessment completion redirects to unique shareable URL
 
 ## Dashboard Architecture
 
@@ -224,6 +227,11 @@ danger: '#ef4444',     // High-risk items and criticals
 - **Scalable Architecture** - Ready for 1000+ concurrent users (Vercel + Supabase)
 - **Assessment Access Interface** - Two-column layout with benefits, eLearning access, and form
 - **Assessment Questionnaire** - Full implementation with progress tracking and response saving
+- **Multiple Submissions Support** - Users can retake assessments to track learning progress over time
+- **Comprehensive Assessment Results** - Full tabbed interface with Overview, Deep Dive, Tools & Use Cases, Progress, Learning Path
+- **Progress Tracking** - Compare results between assessments for users with multiple submissions
+- **Unique Shareable URLs** - Assessment results accessible via unique URLs (format: `/a/{results_id}`)
+- **Fresh Assessment Starts** - Each assessment begins with blank form, regardless of previous completions
 - **Admin Dashboard** - Complete sidebar navigation and page routing
 - **Executive Summary** (`pages/overview/ExecutiveSummary.tsx`) - AI health scoring, KPIs, opportunities
 - **Company Maturity** - 6-pillar radar charts and gap analysis
@@ -233,7 +241,6 @@ danger: '#ef4444',     // High-risk items and criticals
 - **Enterprise Styling** - Professional design system with Tailwind CSS
 - **Demo Accounts** - Test accounts for both assessment and admin portals
 - **Assessment Navigation** - Back/exit buttons with proper routing
-- **Response Resume** - Continue assessment where left off across sessions
 
 ### 🚧 Placeholder Pages (Ready for Development)
 - Most capabilities pages (AI pillars, skills, departments)
@@ -257,15 +264,19 @@ danger: '#ef4444',     // High-risk items and criticals
 - **companies** - Organization data and settings
 - **assessment_templates** - Assessment configurations with JSON template data
 - **cohorts** - Assessment batches with access codes (e.g., AIR-2024-Q1)
-- **assessment_responses** - Individual responses stored by email + cohort_id
-- **assessment_results** - Calculated scores and completion status
+- **assessment_submissions** - Complete assessment submissions with responses (one row per assessment)
+- **assessment_results** - Calculated scores, dimension analysis, and recommendations linked to submissions
 - **admin_users** - Dashboard user accounts with role-based access
 
 **Key Design Decisions:**
-- **No participants table** - Direct response storage by email + cohort for simplicity
+- **One-shot assessment storage** - Complete assessment stored in single row with JSON responses
+- **Multiple submissions support** - Users can retake assessments, each creates new submission with incremented submission_number
+- **Unique shareable URLs** - Assessment results accessible via `/a/{results_id}` format
+- **No participants table** - Direct submission storage by email + cohort for simplicity
 - **Access codes at cohort level** - One code shared by entire company/initiative
 - **Session-based assessment** - No pre-registration required
 - **Row Level Security** - Database-level access control for multi-tenancy
+- **Progress tracking** - Historical submissions enable learning progress comparison
 
 ### TypeScript Interfaces (`types/index.ts`)
 
@@ -332,15 +343,35 @@ The application is fully production-ready with:
 
 ### Setup Instructions
 
-1. **Apply Database Schema**: Run `remove-participants-table.sql` and `APPLY_DATABASE_UPDATES.md`
+1. **Apply Database Schema**: Run `allow-multiple-submissions.sql` for the latest schema with multiple submissions support
 2. **Environment Variables**: Configure `.env.local` with Supabase credentials
 3. **Deploy to Vercel**: Connect GitHub repo with environment variables
 4. **Test Access**: Use access code `AIR-2024-Q1` with any email
+5. **Test Features**:
+   - Complete assessment → Get unique URL `/a/{results_id}`
+   - Share unique URL to view full tabbed results
+   - Retake assessment → See progress tracking in results
 
 ### Cost Estimate (Monthly)
 - **Supabase Pro**: $25/month (500+ connections)
 - **Vercel Pro**: $20/month (team features)  
 - **Total**: $45/month for enterprise-scale deployment
+
+## Recent Major Updates ✨
+
+### Multiple Submissions & Progress Tracking (Latest)
+- **Fresh Assessment Guarantee**: Each assessment starts blank, regardless of previous completions
+- **Multiple Submissions**: Users can retake assessments, each creates new submission with submission_number
+- **Progress Tracking**: "Impact & Progress" tab shows improvement over time for users with multiple submissions
+- **Unique Shareable URLs**: Assessment results accessible via `/a/{results_id}` format
+- **Full Results Interface**: Unique URLs show complete tabbed assessment results (not simplified view)
+- **Automatic Redirection**: Assessment completion automatically redirects to unique URL
+
+### Database Schema Evolution
+- **Simplified Storage**: One row per assessment with JSON responses (not per-question rows)
+- **Assessment Results Integration**: Results linked to submissions for unique URL access
+- **Progress Analytics**: Historical comparison enabled by multiple submissions per user
+- **Optimized Queries**: Step-by-step database loading for better error handling
 
 ## Next Steps for Enhancement
 
