@@ -73,6 +73,12 @@ export class AssessmentScoringEngine {
   calculateDimensionScores(): DimensionScore[] {
     const dimensionTotals = new Map<string, { totalScore: number; totalWeight: number; maxScore: number }>()
     
+    // Check if dimensions exist
+    if (!this.template.dimensions || !Array.isArray(this.template.dimensions)) {
+      console.error('Template dimensions missing or invalid:', this.template)
+      return []
+    }
+    
     // Initialize dimension totals
     this.template.dimensions.forEach(dim => {
       dimensionTotals.set(dim.id, { 

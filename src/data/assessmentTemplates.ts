@@ -364,6 +364,218 @@ export const defaultAssessmentTemplate: AssessmentTemplate = {
           weight: 1.67,
           dimension: 'toolUse'
         }
+      },
+      {
+        id: 'ai_automation_integration',
+        text: 'How do you currently integrate AI into your regular workflows?',
+        type: 'radio',
+        options: [
+          { id: 'manual', label: 'I use AI manually for specific tasks', value: 'manual' },
+          { id: 'connected', label: 'I connect AI tools to some of my work systems', value: 'connected' },
+          { id: 'automated', label: 'I have automated workflows that use AI', value: 'automated' },
+          { id: 'none', label: 'I don\'t integrate AI into my workflows yet', value: 'none' }
+        ],
+        scoring: {
+          weight: 1.66,
+          dimension: 'toolUse',
+          valueMapping: {
+            'none': 1,
+            'manual': 2,
+            'connected': 4,
+            'automated': 5
+          }
+        }
+      },
+      {
+        id: 'ai_security_awareness',
+        text: 'When using AI tools for work, how often do you consider data privacy and security?',
+        type: 'radio',
+        options: [
+          { id: 'never', label: 'Never - I don\'t think about it', value: 'never' },
+          { id: 'rarely', label: 'Rarely - only for sensitive data', value: 'rarely' },
+          { id: 'sometimes', label: 'Sometimes - for most work data', value: 'sometimes' },
+          { id: 'often', label: 'Often - I\'m very cautious', value: 'often' },
+          { id: 'always', label: 'Always - I follow strict protocols', value: 'always' }
+        ],
+        scoring: {
+          weight: 2,
+          dimension: 'ethics',
+          valueMapping: {
+            'never': 1,
+            'rarely': 2,
+            'sometimes': 3,
+            'often': 4,
+            'always': 5
+          }
+        }
+      },
+      {
+        id: 'ai_bias_awareness',
+        text: 'How do you handle potential bias or inaccuracy in AI outputs?',
+        type: 'radio',
+        options: [
+          { id: 'trust_completely', label: 'I generally trust AI outputs completely', value: 'trust_completely' },
+          { id: 'spot_check', label: 'I spot-check outputs occasionally', value: 'spot_check' },
+          { id: 'verify_important', label: 'I verify outputs for important decisions', value: 'verify_important' },
+          { id: 'always_verify', label: 'I always verify and cross-check AI outputs', value: 'always_verify' }
+        ],
+        scoring: {
+          weight: 2,
+          dimension: 'ethics',
+          valueMapping: {
+            'trust_completely': 1,
+            'spot_check': 2,
+            'verify_important': 4,
+            'always_verify': 5
+          }
+        }
+      },
+      {
+        id: 'ai_environmental_impact',
+        text: 'How aware are you of the environmental impact of AI usage?',
+        type: 'radio',
+        options: [
+          { id: 'unaware', label: 'I\'m not aware of any environmental impact', value: 'unaware' },
+          { id: 'somewhat', label: 'I know AI uses energy but don\'t consider it', value: 'somewhat' },
+          { id: 'aware', label: 'I\'m aware and sometimes consider it', value: 'aware' },
+          { id: 'conscious', label: 'I actively try to minimize environmental impact', value: 'conscious' }
+        ],
+        scoring: {
+          weight: 1,
+          dimension: 'ethics',
+          valueMapping: {
+            'unaware': 1,
+            'somewhat': 2,
+            'aware': 3,
+            'conscious': 5
+          }
+        }
+      },
+      {
+        id: 'data_quality_understanding',
+        text: 'How well do you understand what makes data "AI-ready"?',
+        type: 'radio',
+        options: [
+          { id: 'no_idea', label: 'I have no idea what that means', value: 'no_idea' },
+          { id: 'basic', label: 'I understand it needs to be clean and organized', value: 'basic' },
+          { id: 'intermediate', label: 'I understand formats, quality, and preparation steps', value: 'intermediate' },
+          { id: 'advanced', label: 'I can prepare and structure data for AI applications', value: 'advanced' }
+        ],
+        scoring: {
+          weight: 2,
+          dimension: 'aiThinking',
+          valueMapping: {
+            'no_idea': 1,
+            'basic': 2,
+            'intermediate': 4,
+            'advanced': 5
+          }
+        }
+      },
+      {
+        id: 'ai_concepts_understanding',
+        text: 'How comfortable are you with AI concepts like embeddings, vector databases, or fine-tuning?',
+        type: 'radio',
+        options: [
+          { id: 'unfamiliar', label: 'These terms are unfamiliar to me', value: 'unfamiliar' },
+          { id: 'heard_of', label: 'I\'ve heard of them but don\'t understand them', value: 'heard_of' },
+          { id: 'basic_understanding', label: 'I have a basic understanding of what they do', value: 'basic_understanding' },
+          { id: 'working_knowledge', label: 'I have working knowledge and could explain them', value: 'working_knowledge' }
+        ],
+        scoring: {
+          weight: 2,
+          dimension: 'aiThinking',
+          valueMapping: {
+            'unfamiliar': 1,
+            'heard_of': 2,
+            'basic_understanding': 4,
+            'working_knowledge': 5
+          }
+        }
+      },
+      {
+        id: 'ai_limitations_understanding',
+        text: 'How well do you understand the limitations and capabilities of current AI systems?',
+        type: 'radio',
+        options: [
+          { id: 'minimal', label: 'Minimal understanding', value: 'minimal' },
+          { id: 'basic', label: 'Basic understanding of what AI can and cannot do', value: 'basic' },
+          { id: 'good', label: 'Good understanding of strengths and weaknesses', value: 'good' },
+          { id: 'expert', label: 'Expert level - I can predict AI performance for new tasks', value: 'expert' }
+        ],
+        scoring: {
+          weight: 1,
+          dimension: 'aiThinking',
+          valueMapping: {
+            'minimal': 1,
+            'basic': 2,
+            'good': 4,
+            'expert': 5
+          }
+        }
+      },
+      {
+        id: 'ai_collaboration_approach',
+        text: 'How do you typically work with AI as a thinking partner?',
+        type: 'radio',
+        options: [
+          { id: 'task_based', label: 'I use AI for specific tasks only', value: 'task_based' },
+          { id: 'iterative', label: 'I have back-and-forth conversations to refine ideas', value: 'iterative' },
+          { id: 'strategic', label: 'I use AI for brainstorming and strategic thinking', value: 'strategic' },
+          { id: 'integrated', label: 'AI is fully integrated into my thinking process', value: 'integrated' }
+        ],
+        scoring: {
+          weight: 2,
+          dimension: 'coIntelligence',
+          valueMapping: {
+            'task_based': 1,
+            'iterative': 3,
+            'strategic': 4,
+            'integrated': 5
+          }
+        }
+      },
+      {
+        id: 'ai_workflow_integration',
+        text: 'How well have you integrated AI into your overall workflow and decision-making?',
+        type: 'radio',
+        options: [
+          { id: 'not_integrated', label: 'AI is separate from my main workflow', value: 'not_integrated' },
+          { id: 'occasional', label: 'I occasionally use AI for specific steps', value: 'occasional' },
+          { id: 'regular', label: 'AI is regularly part of my workflow', value: 'regular' },
+          { id: 'seamless', label: 'AI is seamlessly integrated throughout my work', value: 'seamless' }
+        ],
+        scoring: {
+          weight: 2,
+          dimension: 'coIntelligence',
+          valueMapping: {
+            'not_integrated': 1,
+            'occasional': 2,
+            'regular': 4,
+            'seamless': 5
+          }
+        }
+      },
+      {
+        id: 'ai_human_balance',
+        text: 'How do you balance AI assistance with your own critical thinking and expertise?',
+        type: 'radio',
+        options: [
+          { id: 'ai_dependent', label: 'I rely heavily on AI for most thinking tasks', value: 'ai_dependent' },
+          { id: 'ai_first', label: 'I usually try AI first, then add my input', value: 'ai_first' },
+          { id: 'collaborative', label: 'I use AI as a thinking partner while maintaining my expertise', value: 'collaborative' },
+          { id: 'human_led', label: 'I lead the thinking and use AI to enhance my ideas', value: 'human_led' }
+        ],
+        scoring: {
+          weight: 1,
+          dimension: 'coIntelligence',
+          valueMapping: {
+            'ai_dependent': 2,
+            'ai_first': 3,
+            'collaborative': 5,
+            'human_led': 4
+          }
+        }
       }
     ]
   }

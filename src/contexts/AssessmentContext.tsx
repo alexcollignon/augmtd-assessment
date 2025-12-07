@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { AssessmentTemplate, AssessmentResponse } from '@/types'
 import { supabase } from '@/lib/supabase'
+import { createScoringEngine } from '@/lib/assessmentScoring'
+import { defaultAssessmentTemplate } from '@/data/assessmentTemplates'
 
 interface AssessmentSession {
   email: string
@@ -252,33 +254,73 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
 
   const calculateAssessmentResults = async (email: string, cohortId: string, responses: Record<string, any>, submissionId: string, submissionNumber: number) => {
     try {
-      console.log('Calculating assessment results...')
+      console.log('Calculating assessment results using real scoring engine...')
       
-      // TODO: Implement actual scoring logic based on responses
-      // For now, create placeholder results structure
-      
-      const dimensionScores = {
-        strategy: Math.floor(Math.random() * 40 + 60), // 60-100
-        cost: Math.floor(Math.random() * 40 + 60),
-        organization: Math.floor(Math.random() * 40 + 60),
-        technology: Math.floor(Math.random() * 40 + 60),
-        data: Math.floor(Math.random() * 40 + 60),
-        security: Math.floor(Math.random() * 40 + 60)
+      if (!assessmentTemplate) {
+        console.error('Assessment template not available for scoring')
+        return null
       }
+
+      // Use the real scoring engine (with fallback if database template incomplete)
+      const templateToUse = (assessmentTemplate.dimensions && assessmentTemplate.dimensions.length > 0) 
+        ? assessmentTemplate 
+        : defaultAssessmentTemplate
+        
+      console.log('Database template complete?', !!assessmentTemplate.dimensions, 'Using fallback?', templateToUse.id === defaultAssessmentTemplate.id)
+      const scoringEngine = createScoringEngine(templateToUse)
       
-      const overallScore = Math.round(
-        Object.values(dimensionScores).reduce((sum: number, score: number) => sum + score, 0) / 6
-      )
+      // Convert responses object back to AssessmentResponse format
+      const assessmentResponses: AssessmentResponse[] = Object.entries(responses).map(([key, value]) => {
+        const [sectionId, questionId] = key.split('-')
+        return {
+          participantId: email,
+          assessmentId: cohortId,
+          sectionId,
+          questionId,
+          value,
+          timestamp: new Date()
+        }
+      })
+      
+      // Add responses to scoring engine
+      scoringEngine.addResponses(assessmentResponses)
+      
+      // Calculate real scores
+      const result = scoringEngine.calculateResult(email)
+      const dimensionScores = result.scores
+      const overallScore = result.overallScore
+      
+      console.log('Real calculated scores:', { dimensionScores, overallScore })
+      
+      // Convert dimension scores to the database format
+      const dimensionScoresObject: Record<string, number> = {}
+      dimensionScores.forEach(score => {
+        // Map dimension names to database field names
+        const dimensionKey = score.dimension.toLowerCase().replace(/[^a-z]/g, '')
+        dimensionScoresObject[dimensionKey] = score.percentage
+      })
+      
+      // Generate real recommendation report based on calculated scores
+      const recommendations = result.recommendations || []
+      const lowScoreDimensions = dimensionScores.filter(d => d.percentage < 60)
+      const highScoreDimensions = dimensionScores.filter(d => d.percentage >= 70)
       
       const recommendationReport = {
-        summary: "Based on your responses, here are your personalized AI readiness recommendations.",
-        strengths: ["Strong strategic vision", "Good technical foundation"],
-        improvements: ["Enhance data governance", "Expand AI training programs"],
-        actionPlan: [
-          { priority: "High", action: "Develop AI governance framework", timeline: "3 months" },
-          { priority: "Medium", action: "Implement AI training program", timeline: "6 months" }
-        ],
-        nextSteps: "Focus on building a comprehensive AI strategy and improving team capabilities."
+        summary: `Based on your assessment responses, your overall AI readiness score is ${overallScore}%.`,
+        strengths: highScoreDimensions.length > 0 
+          ? highScoreDimensions.map(d => `Strong performance in ${d.dimension} (${d.percentage}%)`)
+          : ["Consistent performance across all AI dimensions"],
+        improvements: lowScoreDimensions.length > 0
+          ? lowScoreDimensions.map(d => `Focus on developing ${d.dimension} skills (${d.percentage}%)`)
+          : ["Continue strengthening all dimensions for advanced AI readiness"],
+        actionPlan: recommendations.slice(0, 3).map((rec, index) => ({
+          priority: index === 0 ? "High" : index === 1 ? "Medium" : "Low",
+          action: rec,
+          timeline: index === 0 ? "1-2 months" : index === 1 ? "3-4 months" : "6 months"
+        })),
+        nextSteps: recommendations.length > 0 
+          ? recommendations[0]
+          : "Continue practicing with AI tools and expand your knowledge in weaker areas."
       }
       
       // Store results (always insert new record for each submission)
@@ -289,7 +331,7 @@ export function AssessmentProvider({ children }: AssessmentProviderProps) {
           email,
           cohort_id: cohortId,
           submission_number: submissionNumber,
-          dimension_scores: dimensionScores,
+          dimension_scores: dimensionScoresObject,
           overall_score: overallScore,
           recommendation_report: recommendationReport,
           calculated_at: new Date().toISOString(),
