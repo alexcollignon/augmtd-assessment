@@ -287,18 +287,6 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
               </div>
             ))}
           </div>
-          
-          {metrics.workflowInsights.estimatedSavings > 0 && (
-            <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
-              <div className="flex items-center space-x-2 text-green-800">
-                <DollarSign className="w-5 h-5" />
-                <span className="font-semibold">Estimated Annual Savings: ${metrics.workflowInsights.estimatedSavings.toLocaleString()}</span>
-              </div>
-              <p className="text-sm text-green-600 mt-1">
-                Based on {metrics.automatableWork}% automation potential across {metrics.workflowInsights.totalProcesses} identified processes
-              </p>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

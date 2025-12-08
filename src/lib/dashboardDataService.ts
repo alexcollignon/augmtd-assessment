@@ -96,7 +96,7 @@ export class DashboardDataService {
       const riskExposure = this.calculateRiskExposure(submissions)
       
       // Get top opportunities from workflow analysis
-      const topOpportunities = this.generateTopOpportunities()
+      const topOpportunities = this.generateTopOpportunities(submissions)
       
       // Calculate department maturity
       const departmentMaturity = this.calculateDepartmentMaturity(submissions)
@@ -237,45 +237,123 @@ export class DashboardDataService {
     return totalFactors > 0 ? Math.round((riskFactors / totalFactors) * 100) : 15
   }
 
-  private generateTopOpportunities(): DashboardMetrics['topOpportunities'] {
-    const opportunityTemplates = [
-      {
-        name: 'Customer Service Chatbot',
-        process: 'Customer Onboarding Process',
-        productivityGain: '75% faster response times',
-        feasibility: 'High'
-      },
-      {
-        name: 'Invoice Data Extraction & Validation',
-        process: 'Invoice Processing Workflow',
-        productivityGain: '70% processing acceleration',
-        feasibility: 'Medium'
-      },
-      {
-        name: 'Resume Screening & Ranking AI',
-        process: 'Employee Recruitment Process',
-        productivityGain: '80% screening efficiency',
-        feasibility: 'High'
-      },
-      {
-        name: 'Predictive Equipment Maintenance',
-        process: 'Operations Maintenance Workflow',
-        productivityGain: '60% downtime reduction',
-        feasibility: 'Medium'
-      },
-      {
-        name: 'Content Generation Assistant',
-        process: 'Marketing Campaign Creation',
-        productivityGain: '65% content creation speed',
-        feasibility: 'High'
-      }
-    ]
+  private generateTopOpportunities(submissions: any[]): DashboardMetrics['topOpportunities'] {
+    try {
+      // Generate real workflow opportunities from assessment data
+      const allWorkflowInsights: WorkflowInsights[] = []
+      
+      for (const submission of submissions) {
+        if (!submission.responses || !submission.assessment_results?.[0]) continue
+        
+        try {
+          const workflowEngine = createWorkflowIntelligenceEngine()
+          const responses: AssessmentResponse[] = []
+          
+          Object.entries(submission.responses).forEach(([questionId, value]) => {
+            const sectionId = questionId.includes('-') ? questionId.split('-')[0] : 'general'
+            responses.push({
+              participantId: submission.email,
+              assessmentId: submission.cohort_id,
+              sectionId,
+              questionId,
+              value,
+              timestamp: new Date(submission.submitted_at)
+            })
+          })
 
-    // For now, use templates (workflow insights integration will be added later)
-    return opportunityTemplates.map(opp => ({
-      ...opp,
-      department: 'Multiple'
-    }))
+          const insights = workflowEngine.analyzeWorkflows(responses)
+          allWorkflowInsights.push(insights)
+        } catch (error) {
+          console.error('Error analyzing workflow for submission:', submission.id, error)
+        }
+      }
+
+      if (allWorkflowInsights.length === 0) {
+        // Comprehensive fallback opportunities based on common AI use cases
+        return [
+          {
+            name: 'Email Processing Automation',
+            process: 'Email Management Workflow', 
+            productivityGain: '45% time saved',
+            feasibility: 'High',
+            department: 'Operations'
+          },
+          {
+            name: 'Document Review & Summarization',
+            process: 'Document Processing Workflow',
+            productivityGain: '65% faster document analysis',
+            feasibility: 'High', 
+            department: 'Legal'
+          },
+          {
+            name: 'Customer Support Chatbot',
+            process: 'Customer Service Workflow',
+            productivityGain: '70% response time reduction',
+            feasibility: 'Medium',
+            department: 'Customer Support'
+          },
+          {
+            name: 'Data Analysis Reports',
+            process: 'Reporting Workflow',
+            productivityGain: '60% faster insights',
+            feasibility: 'Medium', 
+            department: 'Analytics'
+          },
+          {
+            name: 'Meeting Notes & Action Items',
+            process: 'Meeting Management Workflow',
+            productivityGain: '80% documentation time saved',
+            feasibility: 'High',
+            department: 'All Departments'
+          },
+          {
+            name: 'Invoice Processing Automation',
+            process: 'Financial Processing Workflow',
+            productivityGain: '75% processing speed increase',
+            feasibility: 'Medium',
+            department: 'Finance'
+          },
+          {
+            name: 'Content Creation Assistant',
+            process: 'Marketing Content Workflow',
+            productivityGain: '55% content creation efficiency',
+            feasibility: 'High',
+            department: 'Marketing'
+          },
+          {
+            name: 'Code Review & Documentation',
+            process: 'Software Development Workflow',
+            productivityGain: '50% review time reduction',
+            feasibility: 'Medium',
+            department: 'Engineering'
+          }
+        ]
+      }
+
+      const aggregated = aggregateWorkflowInsights(allWorkflowInsights)
+      
+      return aggregated.topOpportunities.slice(0, 5).map(opportunity => ({
+        name: opportunity.processType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) + ' Automation',
+        process: opportunity.processType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) + ' Workflow',
+        productivityGain: `${opportunity.automationPotential}% automation potential`,
+        feasibility: opportunity.feasibility === 'high' ? 'High' : 
+                   opportunity.feasibility === 'medium' ? 'Medium' : 'Low',
+        department: opportunity.department || 'General'
+      }))
+      
+    } catch (error) {
+      console.error('Error generating top opportunities:', error)
+      // Return fallback data
+      return [
+        {
+          name: 'Process Automation',
+          process: 'General Workflow',
+          productivityGain: '35% efficiency gain',
+          feasibility: 'Medium',
+          department: 'Operations'
+        }
+      ]
+    }
   }
 
   private calculateDepartmentMaturity(submissions: any[]): DashboardMetrics['departmentMaturity'] {
@@ -697,7 +775,7 @@ export class DashboardDataService {
           role: this.formatRoleName(role),
           prompting: dimensionScores.promptingproficiency || 0,
           tools: dimensionScores.tooluse || 0,
-          ethics: dimensionScores.ethics || 0,
+          ethicsresponsibleuse: dimensionScores.ethicsresponsibleuse || 0,
           thinking: dimensionScores.aithinking || 0,
           coIntelligence: dimensionScores.cointelligence || 0,
           overall: overallScore
@@ -1094,7 +1172,7 @@ export interface SkillHeatmapData {
   role: string
   prompting: number
   tools: number
-  ethics: number
+  ethicsresponsibleuse: number
   thinking: number
   coIntelligence: number
   overall: number

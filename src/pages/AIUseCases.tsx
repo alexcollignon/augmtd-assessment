@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { useAuth } from '@/contexts/AuthContext'
+import { dashboardDataService } from '@/lib/dashboardDataService'
 import { 
   Zap, 
   Star, 
@@ -20,180 +22,287 @@ import {
   BookOpen
 } from 'lucide-react'
 
+interface UseCase {
+  id: string
+  name: string
+  department: string
+  category: string
+  maturity: 'Quick Win' | 'Moderate' | 'Advanced'
+  description: string
+  impact: 'High' | 'Medium' | 'Low'
+  effort: 'Low' | 'Medium' | 'High'
+  timeSavings: string
+  costSavings: string
+  employeesImpacted: number
+  roiTimeframe: string
+  toolsNeeded: string[]
+  skills: string[]
+  successMetrics: string[]
+  implementationSteps: string[]
+  businessValue: string
+}
+
+interface UseCaseStats {
+  totalUseCases: number
+  quickWins: number
+  totalSavings: number
+  avgROI: string
+  processesAnalyzed: number
+  employeesImpacted: number
+  avgTimeSavings: number
+}
+
 export function AIUseCases() {
+  const { user } = useAuth()
   const [selectedDepartment, setSelectedDepartment] = useState('all')
   const [selectedMaturity, setSelectedMaturity] = useState('all')
-  
-  const useCases = [
-    {
-      id: 'uc-001',
-      name: 'Intelligent Email Management',
-      department: 'Sales',
-      category: 'Communication',
-      maturity: 'Quick Win',
-      description: 'AI-powered email classification, prioritization, and auto-responses for customer inquiries',
-      impact: 'High',
-      effort: 'Low',
-      timeSavings: '2-3 hours/week per person',
-      costSavings: '$45K annually',
-      employeesImpacted: 45,
-      roiTimeframe: '2 months',
-      toolsNeeded: ['Email AI platform', 'CRM integration'],
-      skills: ['Basic AI prompting', 'Email workflow setup'],
-      successMetrics: ['Response time -60%', 'Email processing +75% faster', 'Customer satisfaction +15%'],
-      implementationSteps: [
-        'Set up email AI classification',
-        'Train on historical email data',
-        'Create response templates',
-        'Deploy to pilot group',
-        'Scale across sales team'
-      ],
-      businessValue: 'Dramatically reduces email management overhead while improving customer response quality'
-    },
-    {
-      id: 'uc-002',
-      name: 'Automated Invoice Processing',
-      department: 'Finance',
-      category: 'Document Processing',
-      maturity: 'Quick Win',
-      description: 'Extract data from invoices, validate against purchase orders, and route for approval',
-      impact: 'High',
-      effort: 'Medium',
-      timeSavings: '6-8 hours/week per person',
-      costSavings: '$125K annually',
-      employeesImpacted: 12,
-      roiTimeframe: '3 months',
-      toolsNeeded: ['OCR platform', 'ERP integration', 'Workflow automation'],
-      skills: ['Document AI setup', 'Workflow configuration'],
-      successMetrics: ['Processing time -70%', 'Error rate -85%', 'Approval cycle -50%'],
-      implementationSteps: [
-        'Configure OCR for invoice scanning',
-        'Set up data validation rules',
-        'Create approval workflows',
-        'Test with sample invoices',
-        'Full deployment'
-      ],
-      businessValue: 'Eliminates manual data entry errors and accelerates payment processing'
-    },
-    {
-      id: 'uc-003',
-      name: 'AI-Powered Resume Screening',
-      department: 'HR',
-      category: 'Talent Management',
-      maturity: 'Moderate',
-      description: 'Automatically screen resumes against job requirements and rank candidates',
-      impact: 'High',
-      effort: 'Medium',
-      timeSavings: '8-12 hours/week per recruiter',
-      costSavings: '$90K annually',
-      employeesImpacted: 8,
-      roiTimeframe: '4 months',
-      toolsNeeded: ['AI screening platform', 'ATS integration'],
-      skills: ['AI model training', 'Bias detection'],
-      successMetrics: ['Screening time -80%', 'Candidate quality +25%', 'Time to hire -30%'],
-      implementationSteps: [
-        'Define job requirement criteria',
-        'Train AI model on historical hires',
-        'Set up bias detection checks',
-        'Pilot with current openings',
-        'Refine and scale'
-      ],
-      businessValue: 'Accelerates hiring while reducing unconscious bias in candidate selection'
-    },
-    {
-      id: 'uc-004',
-      name: 'Intelligent Meeting Assistant',
-      department: 'All',
-      category: 'Productivity',
-      maturity: 'Quick Win',
-      description: 'Auto-transcribe meetings, generate summaries, and track action items',
-      impact: 'Medium',
-      effort: 'Low',
-      timeSavings: '1-2 hours/week per person',
-      costSavings: '$180K annually',
-      employeesImpacted: 156,
-      roiTimeframe: '1 month',
-      toolsNeeded: ['Meeting transcription service', 'Calendar integration'],
-      skills: ['Meeting setup', 'Summary review'],
-      successMetrics: ['Note-taking time -90%', 'Action item tracking +100%', 'Follow-up rate +40%'],
-      implementationSteps: [
-        'Set up transcription service',
-        'Create summary templates',
-        'Train teams on usage',
-        'Integrate with project tools',
-        'Monitor and optimize'
-      ],
-      businessValue: 'Ensures no meeting insights are lost while freeing attendees to focus on discussion'
-    },
-    {
-      id: 'uc-005',
-      name: 'Predictive Customer Analytics',
-      department: 'Marketing',
-      category: 'Analytics',
-      maturity: 'Advanced',
-      description: 'Predict customer behavior, churn risk, and personalize marketing campaigns',
-      impact: 'High',
-      effort: 'High',
-      timeSavings: '4-6 hours/week per analyst',
-      costSavings: '$250K annually',
-      employeesImpacted: 15,
-      roiTimeframe: '8 months',
-      toolsNeeded: ['ML platform', 'Customer data platform', 'Analytics tools'],
-      skills: ['Data science', 'ML model management', 'Business intelligence'],
-      successMetrics: ['Prediction accuracy 85%+', 'Campaign ROI +35%', 'Churn reduction -20%'],
-      implementationSteps: [
-        'Consolidate customer data sources',
-        'Build predictive models',
-        'Create dashboard interfaces',
-        'Train marketing team',
-        'Implement feedback loops'
-      ],
-      businessValue: 'Enables data-driven marketing decisions with predictive insights for competitive advantage'
-    },
-    {
-      id: 'uc-006',
-      name: 'Automated Report Generation',
-      department: 'Operations',
-      category: 'Reporting',
-      maturity: 'Moderate',
-      description: 'Generate daily, weekly, and monthly operational reports with AI insights',
-      impact: 'Medium',
-      effort: 'Medium',
-      timeSavings: '5-8 hours/week per team',
-      costSavings: '$95K annually',
-      employeesImpacted: 24,
-      roiTimeframe: '5 months',
-      toolsNeeded: ['BI platform', 'Data connectors', 'Report automation'],
-      skills: ['Report design', 'Data visualization', 'Automated insights'],
-      successMetrics: ['Report generation time -85%', 'Data accuracy +99%', 'Insight depth +200%'],
-      implementationSteps: [
-        'Map existing report requirements',
-        'Set up automated data pipelines',
-        'Design interactive dashboards',
-        'Add AI-generated insights',
-        'Deploy and train users'
-      ],
-      businessValue: 'Provides real-time operational visibility with AI-generated insights for proactive decision-making'
-    }
-  ]
+  const [isLoading, setIsLoading] = useState(true)
+  const [useCases, setUseCases] = useState<UseCase[]>([])
+  const [stats, setStats] = useState<UseCaseStats>({
+    totalUseCases: 0,
+    quickWins: 0,
+    totalSavings: 0,
+    avgROI: '0x',
+    processesAnalyzed: 0,
+    employeesImpacted: 0,
+    avgTimeSavings: 0
+  })
 
-  const departmentStats = [
-    { dept: 'Sales', useCases: 8, quickWins: 3, avgROI: '3.2x', topUseCase: 'Email Management' },
-    { dept: 'Finance', useCases: 6, quickWins: 2, avgROI: '4.1x', topUseCase: 'Invoice Processing' },
-    { dept: 'HR', useCases: 5, quickWins: 1, avgROI: '2.8x', topUseCase: 'Resume Screening' },
-    { dept: 'Marketing', useCases: 7, quickWins: 2, avgROI: '3.5x', topUseCase: 'Content Generation' },
-    { dept: 'Operations', useCases: 4, quickWins: 2, avgROI: '3.8x', topUseCase: 'Process Automation' },
-    { dept: 'IT', useCases: 3, quickWins: 1, avgROI: '2.9x', topUseCase: 'Automated Monitoring' }
-  ]
+  useEffect(() => {
+    loadUseCaseData()
+  }, [user])
+
+  const loadUseCaseData = async () => {
+    try {
+      setIsLoading(true)
+      
+      // Get dashboard metrics to align with overview data
+      const dashboardMetrics = await dashboardDataService.calculateDashboardMetrics(user || undefined)
+      
+      // Generate AI use cases from actual assessment workflows
+      const generatedUseCases = await generateUseCasesFromAssessments()
+      setUseCases(generatedUseCases)
+      
+      // Calculate comprehensive stats from real workflow data
+      const totalSavings = generatedUseCases.reduce((sum, uc) => {
+        const savings = parseInt(uc.costSavings.replace(/[^0-9]/g, ''))
+        return sum + (savings || 0)
+      }, 0)
+      
+      const quickWins = generatedUseCases.filter(uc => uc.maturity === 'Quick Win').length
+      const totalEmployeesImpacted = generatedUseCases.reduce((sum, uc) => sum + uc.employeesImpacted, 0)
+      const avgTimeSavings = generatedUseCases.length > 0 
+        ? generatedUseCases.reduce((sum, uc) => {
+            const timeSavings = parseFloat(uc.timeSavings.split('-')[0]) || 0
+            return sum + timeSavings
+          }, 0) / generatedUseCases.length
+        : 0
+      
+      // Get total processes analyzed from dashboard metrics
+      const processesAnalyzed = dashboardMetrics?.workflowInsights?.totalProcesses || generatedUseCases.length
+      
+      setStats({
+        totalUseCases: generatedUseCases.length,
+        quickWins,
+        totalSavings,
+        avgROI: calculateAverageROI(generatedUseCases),
+        processesAnalyzed,
+        employeesImpacted: totalEmployeesImpacted,
+        avgTimeSavings: Math.round(avgTimeSavings * 10) / 10
+      })
+      
+    } catch (error) {
+      console.error('Error loading use case data:', error)
+      // Set fallback data if there's an error
+      setUseCases([])
+      setStats({ 
+        totalUseCases: 0, 
+        quickWins: 0, 
+        totalSavings: 0, 
+        avgROI: '0x', 
+        processesAnalyzed: 0, 
+        employeesImpacted: 0, 
+        avgTimeSavings: 0 
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const calculateAverageROI = (useCases: UseCase[]): string => {
+    if (useCases.length === 0) return '0x'
+    
+    const totalROI = useCases.reduce((sum, uc) => {
+      const savings = parseInt(uc.costSavings.replace(/[^0-9]/g, ''))
+      const employees = uc.employeesImpacted
+      const costPerEmployee = 75000 // Average employee cost
+      const investment = employees * costPerEmployee * 0.1 // 10% of employee cost for implementation
+      return sum + (investment > 0 ? savings / investment : 0)
+    }, 0)
+    
+    return `${(totalROI / useCases.length).toFixed(1)}x`
+  }
+
+  const generateUseCasesFromAssessments = async (): Promise<UseCase[]> => {
+    try {
+      // Get assessment submissions to analyze actual workflows
+      const submissions = await dashboardDataService.getRecentSubmissions(100, user || undefined)
+      
+      // Extract actual processes and workflows from assessment responses
+      const workflowData = extractWorkflowsFromAssessments(submissions)
+      
+      // Generate AI use cases for each identified workflow
+      return workflowData.map((workflow, index) => ({
+        id: `workflow-${index + 1}`,
+        name: `AI-Enhanced ${workflow.processName}`,
+        department: workflow.department,
+        category: categorizeProcess(workflow.processName),
+        maturity: determineMaturity(workflow),
+        description: `Apply AI to ${workflow.processName.toLowerCase()} - identified from ${workflow.userCount} employee responses`,
+        impact: workflow.painLevel > 3 ? 'High' as const : 'Medium' as const,
+        effort: workflow.complexity > 3 ? 'High' as const : 'Medium' as const,
+        timeSavings: `${workflow.estimatedTimeSavings} hours/week per person`,
+        costSavings: `$${Math.round(workflow.estimatedTimeSavings * workflow.userCount * 52 * 50 / 1000)}K annually`,
+        employeesImpacted: workflow.userCount,
+        roiTimeframe: workflow.complexity > 3 ? '6 months' : '3 months',
+        toolsNeeded: suggestToolsForProcess(workflow.processName),
+        skills: suggestSkillsForProcess(workflow.processName),
+        successMetrics: generateMetricsForProcess(workflow),
+        implementationSteps: generateStepsForProcess(workflow),
+        businessValue: workflow.businessImpact
+      }))
+      
+    } catch (error) {
+      console.error('Error generating real use cases from assessments:', error)
+      return []
+    }
+  }
+
+  const extractWorkflowsFromAssessments = (submissions: any[]) => {
+    const workflows: { [key: string]: any } = {}
+    
+    submissions.forEach(submission => {
+      if (!submission.responses) return
+      
+      // Extract processes from workflow mapping questions
+      const processes = submission.responses['primary_work_processes'] || []
+      const department = submission.responses['profile-department'] || 'Unknown'
+      const timeSpent = submission.responses['time_spent_on_processes'] || {}
+      const painPoints = submission.responses['biggest_process_challenges'] || []
+      
+      if (Array.isArray(processes)) {
+        processes.forEach((process: string) => {
+          if (!workflows[process]) {
+            workflows[process] = {
+              processName: process,
+              department,
+              userCount: 0,
+              totalTimeSpent: 0,
+              painPoints: new Set(),
+              complexity: 1,
+              painLevel: 1
+            }
+          }
+          
+          workflows[process].userCount++
+          workflows[process].totalTimeSpent += timeSpent[process] || 5 // default 5 hours
+          
+          if (Array.isArray(painPoints)) {
+            painPoints.forEach((pain: string) => workflows[process].painPoints.add(pain))
+          }
+        })
+      }
+    })
+    
+    // Convert to array and calculate metrics
+    return Object.values(workflows).map((workflow: any) => ({
+      ...workflow,
+      estimatedTimeSavings: Math.min(workflow.totalTimeSpent / workflow.userCount * 0.4, 15), // 40% time savings, max 15h
+      painLevel: workflow.painPoints.size, // More pain points = higher pain level
+      complexity: workflow.processName.includes('analysis') || workflow.processName.includes('review') ? 4 : 2,
+      businessImpact: `Streamline ${workflow.processName.toLowerCase()} for ${workflow.userCount} employees`,
+      painPoints: Array.from(workflow.painPoints)
+    })).filter(w => w.userCount >= 2) // Only include workflows used by multiple people
+      .sort((a, b) => (b.userCount * b.painLevel) - (a.userCount * a.painLevel)) // Sort by impact
+      .slice(0, 8) // Top 8 most impactful workflows
+  }
+
+  const categorizeProcess = (processName: string): string => {
+    const name = processName.toLowerCase()
+    if (name.includes('email') || name.includes('communication')) return 'Communication'
+    if (name.includes('document') || name.includes('report')) return 'Document Processing'
+    if (name.includes('data') || name.includes('analysis')) return 'Analytics'
+    if (name.includes('customer') || name.includes('support')) return 'Customer Service'
+    if (name.includes('meeting') || name.includes('schedule')) return 'Productivity'
+    return 'Workflow Automation'
+  }
+
+  const determineMaturity = (workflow: any): 'Quick Win' | 'Moderate' | 'Advanced' => {
+    if (workflow.complexity <= 2 && workflow.userCount >= 10) return 'Quick Win'
+    if (workflow.complexity <= 3) return 'Moderate'
+    return 'Advanced'
+  }
+
+  const suggestToolsForProcess = (processName: string): string[] => {
+    const name = processName.toLowerCase()
+    if (name.includes('email')) return ['Email AI platform', 'Automation tools']
+    if (name.includes('document')) return ['Document AI', 'OCR platform']
+    if (name.includes('data') || name.includes('analysis')) return ['Analytics platform', 'Data visualization']
+    if (name.includes('meeting')) return ['Meeting transcription', 'Calendar integration']
+    return ['Workflow automation', 'AI platform']
+  }
+
+  const suggestSkillsForProcess = (processName: string): string[] => {
+    const name = processName.toLowerCase()
+    if (name.includes('data') || name.includes('analysis')) return ['Data analysis', 'AI insights']
+    if (name.includes('document')) return ['Document automation', 'Template creation']
+    return ['AI prompting', 'Workflow setup']
+  }
+
+  const generateMetricsForProcess = (workflow: any): string[] => {
+    return [
+      `Process time -${Math.min(40 + workflow.painLevel * 10, 80)}%`,
+      `User satisfaction +${Math.min(20 + workflow.userCount * 2, 60)}%`,
+      `Error reduction -${Math.min(30 + workflow.complexity * 10, 70)}%`
+    ]
+  }
+
+  const generateStepsForProcess = (workflow: any): string[] => {
+    return [
+      `Map current ${workflow.processName.toLowerCase()} workflow`,
+      'Identify automation opportunities',
+      'Configure AI tools for process',
+      'Train affected team members',
+      'Deploy and monitor results'
+    ]
+  }
+
+  // Generate dynamic data based on real use cases
+  const departmentStats = useCases.reduce((acc: any[], useCase) => {
+    const existing = acc.find(d => d.dept === useCase.department)
+    if (existing) {
+      existing.useCases++
+      if (useCase.maturity === 'Quick Win') existing.quickWins++
+    } else {
+      acc.push({
+        dept: useCase.department,
+        useCases: 1,
+        quickWins: useCase.maturity === 'Quick Win' ? 1 : 0,
+        avgROI: '3.2x',
+        topUseCase: useCase.name
+      })
+    }
+    return acc
+  }, [])
 
   const categories = [
-    { name: 'Communication', count: 12, avgImpact: 'High', icon: MessageSquare },
-    { name: 'Document Processing', count: 8, avgImpact: 'High', icon: FileText },
-    { name: 'Analytics', count: 6, avgImpact: 'Medium', icon: BarChart3 },
-    { name: 'Productivity', count: 15, avgImpact: 'Medium', icon: Zap },
-    { name: 'Security', count: 4, avgImpact: 'High', icon: Shield },
-    { name: 'Customer Service', count: 9, avgImpact: 'High', icon: Users }
-  ]
+    { name: 'Communication', count: useCases.filter(uc => uc.category === 'Communication').length, avgImpact: 'High', icon: MessageSquare },
+    { name: 'Document Processing', count: useCases.filter(uc => uc.category === 'Document Processing').length, avgImpact: 'High', icon: FileText },
+    { name: 'Analytics', count: useCases.filter(uc => uc.category === 'Analytics').length, avgImpact: 'Medium', icon: BarChart3 },
+    { name: 'Productivity', count: useCases.filter(uc => uc.category === 'Productivity').length, avgImpact: 'Medium', icon: Zap },
+    { name: 'Security', count: useCases.filter(uc => uc.category === 'Security').length, avgImpact: 'High', icon: Shield },
+    { name: 'Customer Service', count: useCases.filter(uc => uc.category === 'Customer Service').length, avgImpact: 'High', icon: Users }
+  ].filter(cat => cat.count > 0)
 
   const filteredUseCases = useCases.filter(useCase => {
     const deptMatch = selectedDepartment === 'all' || useCase.department === selectedDepartment || useCase.department === 'All'
@@ -219,43 +328,61 @@ export function AIUseCases() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="p-8 space-y-8">
+        <div className="border-b border-gray-200 pb-6">
+          <h1 className="text-3xl font-bold text-gray-900">AI Use Cases</h1>
+          <p className="text-gray-600 mt-2">Loading use cases from your assessment data...</p>
+        </div>
+        
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading use case analysis...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="p-8 space-y-8">
       <div className="border-b border-gray-200 pb-6">
         <h1 className="text-3xl font-bold text-gray-900">AI Use Cases</h1>
         <p className="text-gray-600 mt-2">
-          Comprehensive library of AI applications tailored to your organization's workflows and priorities
+          AI opportunities for your team's actual workflows and processes, identified from employee assessment responses
         </p>
       </div>
 
-      {/* Quick Stats */}
+      {/* Quick Stats - Real workflow analysis metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <CardContent className="text-center py-6">
-            <Lightbulb className="w-8 h-8 text-yellow-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-gray-900">33</div>
-            <p className="text-sm text-gray-600">Total Use Cases</p>
+            <BarChart3 className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-gray-900">{stats.processesAnalyzed}</div>
+            <p className="text-sm text-gray-600">Workflows Analyzed</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="text-center py-6">
-            <Star className="w-8 h-8 text-green-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-gray-900">11</div>
-            <p className="text-sm text-gray-600">Quick Wins</p>
+            <Users className="w-8 h-8 text-green-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-gray-900">{stats.employeesImpacted}</div>
+            <p className="text-sm text-gray-600">Employees Impacted</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="text-center py-6">
-            <DollarSign className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-gray-900">$785K</div>
+            <Clock className="w-8 h-8 text-purple-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-gray-900">{stats.avgTimeSavings}h</div>
+            <p className="text-sm text-gray-600">Avg Time Savings/Week</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="text-center py-6">
+            <DollarSign className="w-8 h-8 text-orange-600 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-gray-900">${Math.round(stats.totalSavings/1000)}K</div>
             <p className="text-sm text-gray-600">Annual Savings Potential</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="text-center py-6">
-            <TrendingUp className="w-8 h-8 text-purple-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-gray-900">3.4x</div>
-            <p className="text-sm text-gray-600">Average ROI</p>
           </CardContent>
         </Card>
       </div>

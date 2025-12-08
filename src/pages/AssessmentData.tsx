@@ -229,7 +229,6 @@ export function AssessmentData() {
                 <tr className="border-b border-gray-200">
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Name</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Department</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">Role</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Score</th>
                   <th className="text-left py-3 px-4 font-medium text-gray-900">Completion Date</th>
                   <th className="w-8"></th>
@@ -249,7 +248,6 @@ export function AssessmentData() {
                       </div>
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700">{participant.department}</td>
-                    <td className="py-3 px-4 text-sm text-gray-700">{participant.role}</td>
                     <td className="py-3 px-4">
                       <span className={`font-medium ${
                         (participant.overallScore || 0) >= 85 ? 'text-green-600' : 
