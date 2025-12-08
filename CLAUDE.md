@@ -13,7 +13,7 @@
 
 - **Frontend**: React 18 + TypeScript + Vite
 - **Database**: Supabase PostgreSQL with Row Level Security
-- **Authentication**: Dual system (Admin: email/password, Assessment: email/access code)
+- **Authentication**: Triple system (Superadmin: email/password, Admin: email/password, Assessment: email/access code)
 - **Deployment**: Vercel + Supabase (production-ready for 1000+ concurrent users)
 - **Styling**: Tailwind CSS with custom enterprise design system
 - **Icons**: Lucide React
@@ -27,13 +27,16 @@ src/
 ├── components/          # Reusable UI components
 │   ├── ui/             # Base components (Card, Badge, MetricCard, etc.)
 │   ├── assessment/     # Assessment questionnaire components
+│   ├── superadmin/     # Superadmin dashboard components
 │   ├── Sidebar.tsx     # Main navigation sidebar
 │   ├── AssessmentAccessPage.tsx  # Assessment login interface
 │   ├── AssessmentNavBar.tsx      # Assessment navigation
-│   └── LoginPage.tsx   # Admin login interface
+│   ├── LoginPage.tsx   # Admin login interface
+│   └── SuperadminLoginPage.tsx # Superadmin login interface
 ├── contexts/           # React Context providers
 │   ├── AuthContext.tsx # Admin authentication state
-│   └── AssessmentContext.tsx # Assessment session state
+│   ├── AssessmentContext.tsx # Assessment session state
+│   └── SuperadminContext.tsx # Superadmin authentication state
 ├── pages/              # Dashboard pages by category
 │   ├── overview/       # Executive, maturity, risk, roadmap
 │   ├── capabilities/   # AI pillars, skills, departments, personas
@@ -44,7 +47,9 @@ src/
 │   ├── assessmentAuth.ts # Assessment authentication service
 │   ├── assessmentScoring.ts # Real assessment scoring engine
 │   ├── workflowIntelligence.ts # Workflow automation analysis
-│   ├── dashboardDataService.ts # Real dashboard metrics
+│   ├── dashboardDataService.ts # Real dashboard metrics with scoping
+│   ├── superadminAuth.ts # Superadmin authentication & CRUD operations
+│   ├── adminDataScoping.ts # Multi-tenancy and permission scoping
 │   └── utils.ts        # Formatters and helpers
 ├── types/              # TypeScript type definitions
 └── main.tsx           # Application entry point
@@ -79,7 +84,7 @@ The dashboard implements a secure authentication system that protects all admin 
 - **Login Required**: All dashboard routes are protected and require authentication
 - **Demo Accounts**: Pre-configured test accounts for different user roles
 - **Session Management**: User state persisted in localStorage for development
-- **Role-Based Access**: Support for admin, executive, and manager roles
+- **Role-Based Access**: Simplified two-tier system (superadmin and admin)
 
 ### Database Configuration
 
@@ -91,37 +96,42 @@ VITE_SUPABASE_ANON_KEY=your-anon-key-here
 
 ### Demo Admin Accounts
 ```
+Superadmin (System Administrator):
+- Email: superadmin@airplatform.com
+- Password: superadmin123
+
 Platform Admin:
 - Email: admin@airplatform.com
 - Password: admin123
 
 Executive:
 - Email: cto@company.com  
-- Password: executive123
-
-Department Manager:
-- Email: manager@company.com
-- Password: manager123
+- Password: admin123
 ```
 
 ### Authentication Architecture
+- **SuperadminContext** (`src/contexts/SuperadminContext.tsx`): System administrator authentication
 - **AuthContext** (`src/contexts/AuthContext.tsx`): Admin authentication with Supabase integration
 - **AssessmentContext** (`src/contexts/AssessmentContext.tsx`): Session-based assessment state
+- **superadminAuth.ts** (`src/lib/superadminAuth.ts`): Superadmin authentication & CRUD operations
 - **assessmentAuth.ts** (`src/lib/assessmentAuth.ts`): Standalone assessment authentication service
+- **SuperadminLoginPage** (`src/components/SuperadminLoginPage.tsx`): System admin login interface
 - **LoginPage** (`src/components/LoginPage.tsx`): Enterprise admin login interface
 - **AssessmentAccessPage** (`src/components/AssessmentAccessPage.tsx`): Assessment access interface
 - **ProtectedRoute** (`src/components/ProtectedRoute.tsx`): Route guard component
 
 ### Security Features
 - **Real Database Authentication**: Supabase with Row Level Security policies
-- **Dual Authentication Systems**: Separate flows for admin and assessment users
+- **Multi-Tier Authentication**: Separate flows for superadmin, admin, and assessment users
 - **Session-Based Assessment**: No pre-registration required for employees
 - **Protected Routes**: Automatic redirect to appropriate login
 - **Secure Data Storage**: Real-time persistence with proper access controls
+- **Data Scoping**: Multi-tenancy with admin permission-based data filtering
+- **bcrypt Password Hashing**: Production-ready password security
 
-## Dual Portal Architecture
+## Triple Portal Architecture
 
-The platform supports two distinct access modes with assessment as the primary user flow:
+The platform supports three distinct access modes with assessment as the primary user flow:
 
 ### 1. Assessment Portal (Default - `/` root route)
 - **Users**: Any employee with company access code
@@ -135,12 +145,21 @@ The platform supports two distinct access modes with assessment as the primary u
 - **Authentication**: Email/password with enterprise accounts
 - **Purpose**: View aggregated assessment results, AI readiness insights, workflow analysis
 - **Access**: Via "Admin Dashboard" button in assessment interface
+- **Data Scoping**: Only sees data from authorized cohorts/companies
+
+### 3. Superadmin Dashboard (`/superadmin`)
+- **Users**: System administrators, platform operators
+- **Authentication**: Email/password with superadmin credentials
+- **Purpose**: Create companies, cohorts, admin users, system management
+- **Access**: Via "Superadmin" button in assessment interface or direct URL
+- **Full Access**: Complete system visibility and CRUD operations
 
 ### Routing & Navigation
 - **Assessment First**: Root URL (`/`) defaults to assessment portal
 - **Admin Access**: Available via button in assessment interface or direct `/admin` URL
+- **Superadmin Access**: Available via button in assessment interface or direct `/superadmin` URL
 - **Separate Contexts**: Independent authentication systems for each portal
-- **Session Management**: Isolated session handling for admin vs assessment users
+- **Session Management**: Isolated session handling for superadmin vs admin vs assessment users
 - **Easy Navigation**: Users can switch between portals seamlessly
 
 ### Session-Based Assessment System
@@ -227,29 +246,35 @@ danger: '#ef4444',     // High-risk items and criticals
 - **Real Assessment Scoring Engine** - Dimension-agnostic scoring with actual calculated results
 - **Database-Driven Templates** - Assessment configurations loaded from `assessment_templates` table with dynamic section titles
 - **Session-Based Assessment Authentication** - No pre-registration required, automatic session creation
-- **Dual Portal Architecture** - Assessment portal (default) and admin dashboard
+- **Triple Portal Architecture** - Assessment portal (default), admin dashboard, and superadmin dashboard
 - **Real-Time Data Persistence** - Assessment responses saved directly to database
 - **Scalable Architecture** - Ready for 1000+ concurrent users (Vercel + Supabase)
 - **Assessment Access Interface** - Two-column layout with benefits, eLearning access, and form
 - **Enhanced Assessment Questionnaire** - 40+ questions across AI readiness + workflow mapping
 - **Workflow Intelligence Engine** - Real automation potential calculations from assessment data
 - **Process Automation Analysis** - Infers automation % and ROI from employee responses
-- **Real Dashboard Metrics** - Calculated from actual assessment data instead of mock data
+- **Real Dashboard Metrics** - Calculated from actual assessment data with proper scoping
 - **Multiple Submissions Support** - Users can retake assessments to track learning progress over time
 - **Comprehensive Assessment Results** - Full tabbed interface with real calculated scores and insights
 - **Progress Tracking** - Compare results between assessments for users with multiple submissions
 - **Unique Shareable URLs** - Assessment results accessible via unique URLs (format: `/a/{results_id}`)
 - **Fresh Assessment Starts** - Each assessment begins with blank form, regardless of previous completions
 - **Personalized Recommendations** - Dynamic insights based on actual dimension performance
-- **Admin Dashboard** - Complete sidebar navigation and page routing
+- **Admin Dashboard** - Complete sidebar navigation with data scoping by permissions
+- **Superadmin Dashboard** - Full system management with CRUD operations on all entities
+- **Multi-Tenancy Support** - Data scoping ensures admins only see authorized cohorts/companies
+- **Workshop Support** - Cross-company cohorts without company association
 - **Executive Summary** (`pages/overview/ExecutiveSummary.tsx`) - Real AI metrics, workflow insights, automation opportunities
+- **Company Management** - Create, view, delete companies via superadmin interface
+- **Cohort Management** - Create, view, delete assessment cohorts (company or workshop)
+- **Admin User Management** - Create, view, delete admin users with granular permissions
 - **Company Maturity** - 5-pillar radar charts with real calculated scores
 - **Risk & Compliance** - Real risk exposure calculated from security awareness responses
 - **Workflow Automation Opportunities** - Generated from actual process mapping and tool availability
 - **Department Breakdown** - Real maturity scores by department from assessment data
 - **ROI Projections** - Calculated time savings and cost benefits per process
 - **Enterprise Styling** - Professional design system with Tailwind CSS
-- **Demo Accounts** - Test accounts for both assessment and admin portals
+- **Demo Accounts** - Test accounts for assessment, admin, and superadmin portals
 - **Assessment Navigation** - Back/exit buttons with proper routing
 
 ### 🚧 Placeholder Pages (Ready for Development)
@@ -273,10 +298,11 @@ danger: '#ef4444',     // High-risk items and criticals
 **Core Tables:**
 - **companies** - Organization data and settings
 - **assessment_templates** - Assessment configurations with JSON template data
-- **cohorts** - Assessment batches with access codes (e.g., AIR-2024-Q1)
+- **cohorts** - Assessment batches with access codes (company-specific or workshop)
 - **assessment_submissions** - Complete assessment submissions with responses (one row per assessment)
 - **assessment_results** - Calculated scores, dimension analysis, and recommendations linked to submissions
-- **admin_users** - Dashboard user accounts with role-based access
+- **admin_users** - Dashboard user accounts with simplified role-based access (admin/superadmin)
+- **admin_cohort_access** - Granular permissions linking admin users to specific cohorts
 
 **Key Design Decisions:**
 - **One-shot assessment storage** - Complete assessment stored in single row with JSON responses
@@ -287,6 +313,9 @@ danger: '#ef4444',     // High-risk items and criticals
 - **Session-based assessment** - No pre-registration required
 - **Row Level Security** - Database-level access control for multi-tenancy
 - **Progress tracking** - Historical submissions enable learning progress comparison
+- **Flexible cohort association** - Cohorts can be company-specific OR workshop (NULL company_id)
+- **Granular admin permissions** - Company-wide OR cohort-specific access via admin_cohort_access table
+- **Simplified role model** - Only admin and superadmin roles (removed executive/manager complexity)
 
 ### TypeScript Interfaces (`types/index.ts`)
 
@@ -377,7 +406,19 @@ The application is fully production-ready with:
 
 ## Recent Major Updates ✨
 
-### Workflow Intelligence System (Latest)
+### Superadmin Dashboard & Multi-Tenancy (Latest)
+- **Complete Superadmin Interface**: Full system management dashboard with company, cohort, and user CRUD operations
+- **Multi-Tenancy Implementation**: Data scoping ensures admins only see authorized cohorts/companies
+- **Workshop Support**: Cross-company assessment cohorts without company association
+- **Simplified Role Model**: Streamlined to admin/superadmin only (removed executive/manager roles)
+- **Real CRUD Operations**: All superadmin actions connected to live Supabase database
+- **Granular Permissions**: Admin users can have company-wide OR specific cohort access
+- **bcrypt Authentication**: Production-ready password hashing for all admin users
+- **Relationship Disambiguation**: Fixed Supabase foreign key ambiguity issues
+- **Data Scoping Service**: AdminDataScopingService ensures proper permission enforcement
+- **System Overview**: Real-time platform metrics and health monitoring in superadmin dashboard
+
+### Workflow Intelligence System
 - **Enhanced Assessment Template**: Added workflow mapping questions while preserving AI dimension scoring
 - **Real Dashboard Data**: Admin dashboard now uses calculated metrics from actual assessment submissions
 - **Workflow Intelligence Engine**: Analyzes process types, bottlenecks, tool availability to calculate automation potential

@@ -85,6 +85,7 @@ export function AssessmentAccessPage() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50">
       <AssessmentNavBar 
         showAdminButton={true}
+        showSuperadminButton={true}
         subtitle="Enterprise AI Due Diligence & Transformation Platform"
       />
       

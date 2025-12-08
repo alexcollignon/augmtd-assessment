@@ -4,6 +4,8 @@ import { MetricCard } from '@/components/ui/MetricCard'
 import { CircularProgress } from '@/components/ui/CircularProgress'
 import { Badge } from '@/components/ui/Badge'
 import { dashboardDataService, DashboardMetrics } from '@/lib/dashboardDataService'
+import { useAuth } from '@/contexts/AuthContext'
+import { adminDataScopingService } from '@/lib/adminDataScoping'
 import { 
   Brain, 
   Shield, 
@@ -23,13 +25,16 @@ interface ExecutiveSummaryProps {
 }
 
 export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
+  const { user } = useAuth()
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const loadMetrics = async () => {
       try {
-        const data = await dashboardDataService.calculateDashboardMetrics()
+        // Get admin user with permissions for data scoping
+        const adminUser = user ? await adminDataScopingService.getAdminUserWithPermissions(user.email) : null
+        const data = await dashboardDataService.calculateDashboardMetrics(adminUser || undefined)
         setMetrics(data)
       } catch (error) {
         console.error('Failed to load dashboard metrics:', error)
@@ -39,7 +44,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
     }
     
     loadMetrics()
-  }, [])
+  }, [user])
 
   if (isLoading) {
     return (

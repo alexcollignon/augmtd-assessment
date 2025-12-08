@@ -5,9 +5,12 @@ import { ProtectedAssessment } from './components/ProtectedAssessment'
 import { Assessment } from './components/assessment/Assessment'
 import { AuthProvider } from './contexts/AuthContext'
 import { AssessmentProvider } from './contexts/AssessmentContext'
+import { SuperadminProvider, useSuperadmin } from './contexts/SuperadminContext'
 import { getAppMode, handleNavigation, AppMode, getAssessmentIdFromUrl } from './router'
 import { AssessmentAccessPage } from './components/AssessmentAccessPage'
 import { UniqueAssessmentView } from './components/UniqueAssessmentView'
+import { SuperadminLoginPage } from './components/SuperadminLoginPage'
+import { SuperadminDashboard } from './components/superadmin/SuperadminDashboard'
 
 // Page Components
 import { ExecutiveSummary } from './pages/overview/ExecutiveSummary'
@@ -100,6 +103,14 @@ function App() {
     )
   }
 
+  if (appMode === 'superadmin') {
+    return (
+      <SuperadminProvider>
+        <SuperadminApp />
+      </SuperadminProvider>
+    )
+  }
+
   if (appMode === 'admin') {
     return (
       <AuthProvider>
@@ -112,6 +123,16 @@ function App() {
 
   // Default home/landing page
   return <AssessmentAccessPage />
+}
+
+function SuperadminApp() {
+  const { isAuthenticated } = useSuperadmin()
+  
+  if (!isAuthenticated) {
+    return <SuperadminLoginPage />
+  }
+  
+  return <SuperadminDashboard />
 }
 
 export default App

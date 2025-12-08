@@ -77,10 +77,11 @@ export type Database = {
       cohorts: {
         Row: {
           id: string
-          company_id: string
+          company_id: string | null
           template_id: string
           name: string
-          access_code_prefix: string
+          access_code: string
+          description: string | null
           start_date: string | null
           end_date: string | null
           status: string
@@ -88,10 +89,11 @@ export type Database = {
         }
         Insert: {
           id?: string
-          company_id: string
+          company_id?: string | null
           template_id: string
           name: string
-          access_code_prefix: string
+          access_code: string
+          description?: string | null
           start_date?: string | null
           end_date?: string | null
           status?: string
@@ -99,10 +101,11 @@ export type Database = {
         }
         Update: {
           id?: string
-          company_id?: string
+          company_id?: string | null
           template_id?: string
           name?: string
-          access_code_prefix?: string
+          access_code?: string
+          description?: string | null
           start_date?: string | null
           end_date?: string | null
           status?: string
@@ -249,6 +252,29 @@ export type Database = {
           password_hash?: string
           is_active?: boolean
           last_login_at?: string | null
+          created_at?: string
+        }
+      }
+      admin_cohort_access: {
+        Row: {
+          id: string
+          admin_user_id: string
+          cohort_id: string
+          granted_by: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          admin_user_id: string
+          cohort_id: string
+          granted_by?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          admin_user_id?: string
+          cohort_id?: string
+          granted_by?: string | null
           created_at?: string
         }
       }

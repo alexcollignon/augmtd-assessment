@@ -3,6 +3,7 @@ import { createWorkflowIntelligenceEngine, aggregateWorkflowInsights, WorkflowIn
 import { createScoringEngine } from './assessmentScoring'
 import { defaultAssessmentTemplate } from '@/data/assessmentTemplates'
 import { AssessmentResponse } from '@/types'
+import { adminDataScopingService, AdminUser } from './adminDataScoping'
 
 export interface DashboardMetrics {
   employeesAssessed: number
@@ -38,7 +39,13 @@ export interface DashboardMetrics {
 
 export class DashboardDataService {
   
-  async getRecentSubmissions(limit: number = 100) {
+  async getRecentSubmissions(limit: number = 100, adminUser?: AdminUser) {
+    if (adminUser) {
+      // Use scoped data for admin users
+      return adminDataScopingService.getAccessibleSubmissions(adminUser, limit)
+    }
+    
+    // Superadmin or system-wide access
     const { data, error } = await supabase
       .from('assessment_submissions')
       .select(`
@@ -60,9 +67,9 @@ export class DashboardDataService {
     return data || []
   }
 
-  async calculateDashboardMetrics(): Promise<DashboardMetrics> {
+  async calculateDashboardMetrics(adminUser?: AdminUser): Promise<DashboardMetrics> {
     try {
-      const submissions = await this.getRecentSubmissions(500) // Get more for better analytics
+      const submissions = await this.getRecentSubmissions(500, adminUser) // Get more for better analytics
       
       if (submissions.length === 0) {
         return this.getDefaultMetrics()
