@@ -42,6 +42,9 @@ src/
 ├── lib/                # Utility functions and services
 │   ├── supabase.ts     # Database configuration
 │   ├── assessmentAuth.ts # Assessment authentication service
+│   ├── assessmentScoring.ts # Real assessment scoring engine
+│   ├── workflowIntelligence.ts # Workflow automation analysis
+│   ├── dashboardDataService.ts # Real dashboard metrics
 │   └── utils.ts        # Formatters and helpers
 ├── types/              # TypeScript type definitions
 └── main.tsx           # Application entry point
@@ -221,23 +224,30 @@ danger: '#ef4444',     // High-risk items and criticals
 
 ### ✅ Fully Functional Features
 - **Production Database Integration** - Supabase PostgreSQL with Row Level Security
+- **Real Assessment Scoring Engine** - Dimension-agnostic scoring with actual calculated results
+- **Database-Driven Templates** - Assessment configurations loaded from `assessment_templates` table with dynamic section titles
 - **Session-Based Assessment Authentication** - No pre-registration required, automatic session creation
 - **Dual Portal Architecture** - Assessment portal (default) and admin dashboard
 - **Real-Time Data Persistence** - Assessment responses saved directly to database
 - **Scalable Architecture** - Ready for 1000+ concurrent users (Vercel + Supabase)
 - **Assessment Access Interface** - Two-column layout with benefits, eLearning access, and form
-- **Assessment Questionnaire** - Full implementation with progress tracking and response saving
+- **Enhanced Assessment Questionnaire** - 40+ questions across AI readiness + workflow mapping
+- **Workflow Intelligence Engine** - Real automation potential calculations from assessment data
+- **Process Automation Analysis** - Infers automation % and ROI from employee responses
+- **Real Dashboard Metrics** - Calculated from actual assessment data instead of mock data
 - **Multiple Submissions Support** - Users can retake assessments to track learning progress over time
-- **Comprehensive Assessment Results** - Full tabbed interface with Overview, Deep Dive, Tools & Use Cases, Progress, Learning Path
+- **Comprehensive Assessment Results** - Full tabbed interface with real calculated scores and insights
 - **Progress Tracking** - Compare results between assessments for users with multiple submissions
 - **Unique Shareable URLs** - Assessment results accessible via unique URLs (format: `/a/{results_id}`)
 - **Fresh Assessment Starts** - Each assessment begins with blank form, regardless of previous completions
+- **Personalized Recommendations** - Dynamic insights based on actual dimension performance
 - **Admin Dashboard** - Complete sidebar navigation and page routing
-- **Executive Summary** (`pages/overview/ExecutiveSummary.tsx`) - AI health scoring, KPIs, opportunities
-- **Company Maturity** - 6-pillar radar charts and gap analysis
-- **Risk & Compliance** - Security heatmaps and governance tracking
-- **Workflow Insights** (`pages/operations/WorkflowInsights.tsx`) - Process analysis with automation indicators
-- **Opportunity Map** - Value/effort matrix for prioritization
+- **Executive Summary** (`pages/overview/ExecutiveSummary.tsx`) - Real AI metrics, workflow insights, automation opportunities
+- **Company Maturity** - 5-pillar radar charts with real calculated scores
+- **Risk & Compliance** - Real risk exposure calculated from security awareness responses
+- **Workflow Automation Opportunities** - Generated from actual process mapping and tool availability
+- **Department Breakdown** - Real maturity scores by department from assessment data
+- **ROI Projections** - Calculated time savings and cost benefits per process
 - **Enterprise Styling** - Professional design system with Tailwind CSS
 - **Demo Accounts** - Test accounts for both assessment and admin portals
 - **Assessment Navigation** - Back/exit buttons with proper routing
@@ -291,6 +301,8 @@ danger: '#ef4444',     // High-risk items and criticals
 - **DepartmentMaturity**: Cross-departmental comparison data
 - **SkillData**: Employee proficiency and gap analysis
 - **RiskItem**: Risk categorization and severity
+- **WorkflowInsights**: Automation potential, ROI projections, and process bottlenecks
+- **DashboardMetrics**: Real calculated metrics from assessment submissions
 
 ## Development Guidelines
 
@@ -322,9 +334,12 @@ danger: '#ef4444',     // High-risk items and criticals
 - **Decision-Making**: Prioritize clarity and business alignment over raw data
 
 ### Operational Intelligence
-- **Workflow Analysis**: Inferred business processes with automation indicators
-- **ROI Modeling**: Time/cost savings with payback period calculations
-- **Opportunity Mapping**: Value vs effort prioritization matrix
+- **Workflow Intelligence Engine**: Real automation potential calculations from assessment responses
+- **Process Bottleneck Analysis**: Identifies highest-impact automation opportunities
+- **ROI Modeling**: Calculated time/cost savings with payback period projections
+- **Tool-Process Matching**: Recommends specific AI tools for specific workflows
+- **Department Automation Scoring**: Real automation potential by department
+- **Opportunity Mapping**: Value vs effort prioritization matrix based on real data
 
 ### Enterprise Standards
 - **Security Conscious**: No hardcoded sensitive data
@@ -343,14 +358,17 @@ The application is fully production-ready with:
 
 ### Setup Instructions
 
-1. **Apply Database Schema**: Run `allow-multiple-submissions.sql` for the latest schema with multiple submissions support
-2. **Environment Variables**: Configure `.env.local` with Supabase credentials
-3. **Deploy to Vercel**: Connect GitHub repo with environment variables
-4. **Test Access**: Use access code `AIR-2024-Q1` with any email
-5. **Test Features**:
-   - Complete assessment → Get unique URL `/a/{results_id}`
-   - Share unique URL to view full tabbed results
-   - Retake assessment → See progress tracking in results
+1. **Apply Database Schema**: Run `supabase-schema.sql` for initial database setup
+2. **Apply Latest Updates**: Run `allow-multiple-submissions.sql` for multiple submissions support  
+3. **Update Assessment Template**: Run `complete-assessment-template.sql` for full scoring system
+4. **Environment Variables**: Configure `.env.local` with Supabase credentials
+5. **Deploy to Vercel**: Connect GitHub repo with environment variables
+6. **Test Access**: Use access code `AIR-2024-Q1` with any email
+7. **Test Features**:
+   - Complete assessment → Get real calculated scores
+   - Get unique URL `/a/{results_id}` with personalized results
+   - Share unique URL to view full tabbed results  
+   - Retake assessment → See progress tracking and improvement
 
 ### Cost Estimate (Monthly)
 - **Supabase Pro**: $25/month (500+ connections)
@@ -359,33 +377,163 @@ The application is fully production-ready with:
 
 ## Recent Major Updates ✨
 
-### Multiple Submissions & Progress Tracking (Latest)
-- **Fresh Assessment Guarantee**: Each assessment starts blank, regardless of previous completions
-- **Multiple Submissions**: Users can retake assessments, each creates new submission with submission_number
-- **Progress Tracking**: "Impact & Progress" tab shows improvement over time for users with multiple submissions
-- **Unique Shareable URLs**: Assessment results accessible via `/a/{results_id}` format
-- **Full Results Interface**: Unique URLs show complete tabbed assessment results (not simplified view)
-- **Automatic Redirection**: Assessment completion automatically redirects to unique URL
+### Workflow Intelligence System (Latest)
+- **Enhanced Assessment Template**: Added workflow mapping questions while preserving AI dimension scoring
+- **Real Dashboard Data**: Admin dashboard now uses calculated metrics from actual assessment submissions
+- **Workflow Intelligence Engine**: Analyzes process types, bottlenecks, tool availability to calculate automation potential
+- **ROI Calculation Engine**: Generates specific time savings and cost projections per process
+- **Dynamic Section Titles**: Assessment sections load titles dynamically from database template
+- **Process Automation Analysis**: Maps employee responses to specific automation opportunities with feasibility scoring
+- **Department Insights**: Real automation potential and maturity scores calculated per department
+- **Tool Recommendation Engine**: Matches available AI tools to process automation opportunities
+
+### Real Assessment Scoring System
+- **Database-Driven Templates**: Assessment templates loaded from `assessment_templates` table with JSONB structure
+- **Comprehensive Scoring Engine**: Dimension-agnostic scoring engine supports any assessment type
+- **Real Calculated Results**: Replaced hardcoded random scores with actual response-based calculations
+- **Enhanced Question Set**: 40+ questions across AI readiness + workflow mapping with proper scoring
+- **Dynamic Recommendations**: Personalized insights based on actual performance in each dimension
+- **Flexible Architecture**: Engine adapts to any dimension configuration (AI readiness, customer service, leadership, etc.)
+
+### Assessment Template Architecture
+- **Dimension-Based Scoring**: Assessment organized around configurable dimensions with weights
+- **Question Mapping**: Each question maps to specific dimensions via `scoring.dimension` property
+- **Weighted Calculations**: Overall scores calculated from dimension-specific weighted averages
+- **Template Flexibility**: Same scoring engine works with completely different assessment types
+- **Fallback System**: Graceful fallback to default template if database template incomplete
 
 ### Database Schema Evolution
-- **Simplified Storage**: One row per assessment with JSON responses (not per-question rows)
-- **Assessment Results Integration**: Results linked to submissions for unique URL access
-- **Progress Analytics**: Historical comparison enabled by multiple submissions per user
-- **Optimized Queries**: Step-by-step database loading for better error handling
+- **assessment_templates Table**: Stores complete assessment structure in JSONB `template_data` column
+- **Dimension Configuration**: Flexible dimension definitions with ID, name, description, maxScore, weight
+- **Question Scoring**: Individual questions reference dimensions and provide scoring value mappings
+- **Multiple Assessment Types**: Single codebase supports unlimited assessment configurations
+- **Real-Time Loading**: Templates loaded dynamically from database during authentication
+
+## Assessment Scoring Engine ⚙️
+
+### Architecture Overview
+The platform features a **dimension-agnostic scoring engine** that can power any type of assessment:
+
+```typescript
+// Engine adapts to any assessment configuration
+const templateDimensions = [
+  { id: "communication", name: "Communication Skills", weight: 1 },
+  { id: "leadership", name: "Leadership Ability", weight: 1.5 }
+]
+
+// Questions map to dimensions
+"scoring": {
+  "dimension": "communication",
+  "weight": 2,
+  "valueMapping": { "poor": 1, "excellent": 5 }
+}
+```
+
+### Supported Assessment Types
+- **AI Readiness**: 5 dimensions (prompting, tools, ethics, thinking, co-intelligence)
+- **Leadership Assessment**: Vision, team building, decision making
+- **Customer Service**: Communication, problem solving, empathy  
+- **Technical Skills**: Programming, architecture, debugging
+- **Any Custom Configuration**: Engine adapts automatically
+
+### Scoring Features
+- **Weighted Calculations**: Dimensions can have different importance levels
+- **Question Mapping**: Each question contributes to specific dimension scores
+- **Value Mapping**: Different response options have configured score values
+- **Aggregated Results**: Overall score calculated from dimension averages
+- **Personalized Insights**: Recommendations based on performance patterns
+
+### Template Structure
+```json
+{
+  "dimensions": [
+    {
+      "id": "promptingProficiency",
+      "name": "Prompting Proficiency", 
+      "description": "Ability to effectively communicate with AI systems",
+      "maxScore": 100,
+      "weight": 1
+    },
+    {
+      "id": "coIntelligence",
+      "name": "Co-Intelligence",
+      "description": "Human-AI collaboration and workflow integration", 
+      "maxScore": 100,
+      "weight": 1.5
+    }
+  ],
+  "strategic": {
+    "title": "AI Company Strategy & Workflows",
+    "questions": [
+      {
+        "id": "primary_work_processes",
+        "text": "Which processes are you involved with?",
+        "type": "multi_select",
+        "tags": ["workflow_mapping"],
+        "scoring": {
+          "dimension": "coIntelligence",
+          "weight": 2
+        }
+      }
+    ]
+  }
+}
+```
+
+## Workflow Intelligence Engine Architecture
+
+### Core Components
+
+**WorkflowIntelligenceEngine** (`src/lib/workflowIntelligence.ts`):
+- **calculateAutomationPotential()**: Combines process types, technical skills, tool availability
+- **calculateROIProjections()**: Generates time/cost savings projections per process
+- **identifyProcessBottlenecks()**: Maps bottlenecks to automation opportunities
+- **generateWorkflowOpportunities()**: Ranks opportunities by ROI and feasibility
+
+**DashboardDataService** (`src/lib/dashboardDataService.ts`):
+- **calculateDashboardMetrics()**: Aggregates real data from assessment submissions
+- **calculatePillarScores()**: Real AI dimension scores from assessment responses
+- **calculateWorkflowMetrics()**: Automation potential and estimated savings
+- **calculateRiskExposure()**: Security risk from awareness responses
+
+### Data Flow
+```
+Assessment Responses → Workflow Engine → Automation Analysis → Dashboard Metrics
+     ↓                      ↓                   ↓                    ↓
+ AI Dimensions        Process Mapping      ROI Calculations    Executive KPIs
+ Tool Usage          Bottlenecks          Time Savings         Opportunities
+ Department           Technical Skills     Cost Projections    Risk Exposure
+```
+
+### Calculation Examples
+
+**Automation Potential** = Base Process Automation × Technical Multiplier × Tool Availability × Current Level
+- Customer Support + Basic User + Microsoft Copilot + Manual Processes = 45% automation potential
+- Invoice Processing + Advanced + Any Tool + Some Automation = 78% automation potential
+
+**ROI Projections** = Process Hours × Time Savings % × 52 weeks × $75/hour
+- Document Processing: 8 hrs/week × 70% savings × 52 × $75 = $21,840/year
+- Customer Onboarding: 12 hrs/week × 65% savings × 52 × $75 = $30,420/year
 
 ## Next Steps for Enhancement
 
-1. **Assessment Results Analytics**: Dashboard views of aggregated assessment data
-2. **AI Report Generation**: OpenAI integration for personalized insights
-3. **eLearning Platform**: Build out AI training platform with use cases and PowerPrompts
-4. **Export Functionality**: PDF reports and CSV exports for executives  
-5. **Mobile Optimization**: Tablet-friendly responsive design
-6. **Advanced Analytics**: Real-time cohort analytics and progress tracking
-7. **Custom Branding**: Company logos and color scheme customization
+1. **Enhanced Workflow Components**: Build slider_group and other advanced question types
+2. **Multiple Assessment Types**: Deploy leadership, customer service, technical assessments using same engine
+3. **AI Report Generation**: OpenAI integration for personalized insights from real workflow data
+4. **Advanced Process Mapping**: Visual workflow diagrams with automation annotations
+5. **Predictive Analytics**: Machine learning models for automation ROI prediction
+6. **Export Functionality**: PDF reports and CSV exports with real calculated data
+7. **Mobile Optimization**: Tablet-friendly responsive design for assessments
+8. **Real-Time Monitoring**: Live dashboard updates as new assessments complete
+9. **Custom Branding**: Company logos and color scheme customization
+10. **Template Builder**: Visual interface for creating new assessment types and workflow mappings
 
 ## Support & Documentation
 
 - **Design Brief**: Full requirements available in project documentation
 - **Component Library**: Reusable UI components in `src/components/ui/`
+- **Workflow Intelligence**: Business logic in `src/lib/workflowIntelligence.ts`
+- **Dashboard Service**: Real data aggregation in `src/lib/dashboardDataService.ts`
+- **Scoring Engine**: Assessment calculations in `src/lib/assessmentScoring.ts`
 - **Utility Functions**: Formatters and helpers in `src/lib/utils.ts`
 - **Type Definitions**: Complete data models in `src/types/index.ts`

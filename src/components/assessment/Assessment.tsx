@@ -3,35 +3,35 @@ import { useAssessment } from '@/contexts/AssessmentContext'
 import { AssessmentSection } from './AssessmentSection'
 import { AssessmentResults } from './AssessmentResults'
 import { AssessmentNavBar } from '../AssessmentNavBar'
-import { Card, CardContent } from '@/components/ui/Card'
-import { User, Building2, Target, Brain, FileCheck } from 'lucide-react'
+import { User, Target, Brain, FileCheck } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-const sectionConfig = [
-  { 
-    id: 'profile', 
-    title: 'Professional Profile', 
+// Section configuration with icons and default descriptions
+const sectionIconsAndDescriptions = {
+  profile: { 
     icon: User, 
     description: 'Tell us about your role and background'
   },
-  { 
-    id: 'strategic', 
-    title: 'AI Company Strategy', 
+  strategic: { 
     icon: Target, 
-    description: 'How your organization approaches AI'
+    description: 'Your organization and workflow analysis'
   },
-  { 
-    id: 'competence', 
-    title: 'AI Fluency Screener', 
+  competence: { 
     icon: Brain, 
     description: 'Your AI skills and experience'
   }
-]
+}
 
 export function Assessment() {
   const { assessmentTemplate, getCurrentSection, setCurrentSection, participant, completeAssessment } = useAssessment()
   const [currentSectionId, setCurrentSectionId] = useState('profile')
   const [showResults, setShowResults] = useState(false)
+  const [sectionConfig, setSectionConfig] = useState<Array<{
+    id: string
+    title: string
+    icon: any
+    description: string
+  }>>([])
 
   useEffect(() => {
     const savedSection = getCurrentSection()
@@ -40,12 +40,51 @@ export function Assessment() {
     }
   }, [getCurrentSection])
 
-  if (!assessmentTemplate || !participant) {
+  // Build section config from assessment template
+  useEffect(() => {
+    if (assessmentTemplate) {
+      const sections = []
+      
+      // Profile section
+      if (assessmentTemplate.profile) {
+        sections.push({
+          id: 'profile',
+          title: assessmentTemplate.profile.title || 'Professional Profile',
+          icon: sectionIconsAndDescriptions.profile.icon,
+          description: sectionIconsAndDescriptions.profile.description
+        })
+      }
+      
+      // Strategic section
+      if (assessmentTemplate.strategic) {
+        sections.push({
+          id: 'strategic',
+          title: assessmentTemplate.strategic.title || 'AI Strategy & Workflows',
+          icon: sectionIconsAndDescriptions.strategic.icon,
+          description: sectionIconsAndDescriptions.strategic.description
+        })
+      }
+      
+      // Competence section
+      if (assessmentTemplate.competence) {
+        sections.push({
+          id: 'competence',
+          title: assessmentTemplate.competence.title || 'AI Fluency Screener',
+          icon: sectionIconsAndDescriptions.competence.icon,
+          description: sectionIconsAndDescriptions.competence.description
+        })
+      }
+      
+      setSectionConfig(sections)
+    }
+  }, [assessmentTemplate])
+
+  if (!assessmentTemplate || !participant || sectionConfig.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading assessment...</p>
+          <p className="text-gray-600">Loading assessment template...</p>
         </div>
       </div>
     )

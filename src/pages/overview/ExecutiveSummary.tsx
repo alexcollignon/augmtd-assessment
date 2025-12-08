@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { MetricCard } from '@/components/ui/MetricCard'
 import { CircularProgress } from '@/components/ui/CircularProgress'
 import { Badge } from '@/components/ui/Badge'
+import { dashboardDataService, DashboardMetrics } from '@/lib/dashboardDataService'
 import { 
   Brain, 
   Shield, 
@@ -22,17 +23,56 @@ interface ExecutiveSummaryProps {
 }
 
 export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
-  const aiMaturityScore = 58
-  const maturityLevel = 3
-  
-  
-  const opportunities = [
-    { name: 'Customer Service Chatbot', productivityGain: '75% faster response times', feasibility: 'High', process: 'Customer Onboarding Process' },
-    { name: 'Invoice Data Extraction & Validation', productivityGain: '70% processing acceleration', feasibility: 'Medium', process: 'Invoice Processing Workflow' },
-    { name: 'Resume Screening & Ranking AI', productivityGain: '80% screening efficiency', feasibility: 'High', process: 'Employee Recruitment Process' },
-    { name: 'Predictive Equipment Maintenance', productivityGain: '60% downtime reduction', feasibility: 'Medium', process: 'Operations Maintenance Workflow' },
-    { name: 'Content Generation Assistant', productivityGain: '65% content creation speed', feasibility: 'High', process: 'Marketing Campaign Creation' }
-  ]
+  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const loadMetrics = async () => {
+      try {
+        const data = await dashboardDataService.calculateDashboardMetrics()
+        setMetrics(data)
+      } catch (error) {
+        console.error('Failed to load dashboard metrics:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    loadMetrics()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="p-8 space-y-8">
+        <div className="border-b border-gray-200 pb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Executive Summary</h1>
+          <p className="text-gray-600 mt-2">
+            Loading AI readiness insights and workflow analysis...
+          </p>
+        </div>
+        <div className="animate-pulse space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-gray-200 h-32 rounded-lg"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!metrics) {
+    return (
+      <div className="p-8">
+        <div className="text-center text-gray-500">
+          Unable to load dashboard metrics. Please try again later.
+        </div>
+      </div>
+    )
+  }
+
+  const aiMaturityScore = metrics.aiMaturityScore
+  const maturityLevel = Math.ceil(aiMaturityScore / 20) // Convert 0-100 to 1-5 scale
 
   return (
     <div className="p-8 space-y-8">
@@ -50,8 +90,8 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
           <CardContent className="text-center py-5">
             <Users className="w-6 h-6 text-blue-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">Employees Assessed</p>
-            <div className="text-3xl font-bold text-gray-900">1,247</div>
-            <p className="text-xs text-gray-500 mt-1">Across 6 departments</p>
+            <div className="text-3xl font-bold text-gray-900">{metrics.employeesAssessed.toLocaleString()}</div>
+            <p className="text-xs text-gray-500 mt-1">Across {metrics.departmentMaturity.length} departments</p>
             <button 
               onClick={() => onNavigate?.('assessment-data')}
               className="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
@@ -64,8 +104,8 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
           <CardContent className="text-center py-5">
             <TrendingUp className="w-6 h-6 text-green-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">Avg. Skill Level</p>
-            <div className="text-3xl font-bold text-gray-900">68%</div>
-            <p className="text-xs text-gray-500 mt-1">Across all domains</p>
+            <div className="text-3xl font-bold text-gray-900">{metrics.averageSkillLevel}%</div>
+            <p className="text-xs text-gray-500 mt-1">Across all AI dimensions</p>
             <button 
               onClick={() => onNavigate?.('people-skills')}
               className="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
@@ -78,8 +118,8 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
           <CardContent className="text-center py-5">
             <Brain className="w-6 h-6 text-purple-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">Automatable Work</p>
-            <div className="text-3xl font-bold text-gray-900">32%</div>
-            <p className="text-xs text-gray-500 mt-1">Of processes can be automated</p>
+            <div className="text-3xl font-bold text-gray-900">{metrics.automatableWork}%</div>
+            <p className="text-xs text-gray-500 mt-1">Of work can be automated</p>
             <button 
               onClick={() => onNavigate?.('ai-transformation')}
               className="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
@@ -92,8 +132,8 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
           <CardContent className="text-center py-5">
             <AlertTriangle className="w-6 h-6 text-orange-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">Risk Exposure</p>
-            <div className="text-3xl font-bold text-orange-600">18%</div>
-            <p className="text-xs text-gray-500 mt-1">Shadow AI & compliance</p>
+            <div className="text-3xl font-bold text-orange-600">{metrics.riskExposure}%</div>
+            <p className="text-xs text-gray-500 mt-1">AI risk exposure</p>
             <button 
               onClick={() => onNavigate?.('risk-compliance')}
               className="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
@@ -147,7 +187,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                       <MessageSquare className="w-8 h-8 text-gray-600" />
                     </div>
                     <div className="mb-2">
-                      <CircularProgress value={62} size="sm" />
+                      <CircularProgress value={metrics.pillarScores.prompting} size="sm" />
                     </div>
                     <p className="text-sm font-medium text-gray-900">Prompting</p>
                     <p className="text-xs text-gray-500 mt-1">AI conversation & prompt skills</p>
@@ -158,7 +198,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                       <Wrench className="w-8 h-8 text-gray-600" />
                     </div>
                     <div className="mb-2">
-                      <CircularProgress value={58} size="sm" />
+                      <CircularProgress value={metrics.pillarScores.tools} size="sm" />
                     </div>
                     <p className="text-sm font-medium text-gray-900">Tools</p>
                     <p className="text-xs text-gray-500 mt-1">AI platform proficiency</p>
@@ -169,7 +209,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                       <Shield className="w-8 h-8 text-gray-600" />
                     </div>
                     <div className="mb-2">
-                      <CircularProgress value={71} size="sm" />
+                      <CircularProgress value={metrics.pillarScores.ethics} size="sm" />
                     </div>
                     <p className="text-sm font-medium text-gray-900">Responsible Use</p>
                     <p className="text-xs text-gray-500 mt-1">Ethics & governance</p>
@@ -184,7 +224,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                         <Brain className="w-8 h-8 text-gray-600" />
                       </div>
                       <div className="mb-2">
-                        <CircularProgress value={45} size="sm" />
+                        <CircularProgress value={metrics.pillarScores.thinking} size="sm" />
                       </div>
                       <p className="text-sm font-medium text-gray-900">AI Thinking</p>
                       <p className="text-xs text-gray-500 mt-1">Strategic thinking & analysis</p>
@@ -195,7 +235,7 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                         <Users className="w-8 h-8 text-gray-600" />
                       </div>
                       <div className="mb-2">
-                        <CircularProgress value={52} size="sm" />
+                        <CircularProgress value={metrics.pillarScores.coIntelligence} size="sm" />
                       </div>
                       <p className="text-sm font-medium text-gray-900">Co-Intelligence</p>
                       <p className="text-xs text-gray-500 mt-1">Human-AI collaboration</p>
@@ -213,12 +253,12 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
       {/* Top AI Opportunities */}
       <Card>
         <CardHeader>
-          <CardTitle>Top 5 AI Use Case Opportunities</CardTitle>
-          <p className="text-sm text-gray-600">Based on workflow analysis and process automation potential</p>
+          <CardTitle>Top AI Automation Opportunities</CardTitle>
+          <p className="text-sm text-gray-600">Based on real workflow analysis from {metrics.employeesAssessed} employee assessments</p>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {opportunities.map((opportunity, index) => (
+            {metrics.topOpportunities.map((opportunity, index) => (
               <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center">
                   <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-4 text-sm font-semibold text-blue-600">
@@ -227,11 +267,14 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
                   <div>
                     <h4 className="font-medium text-gray-900">{opportunity.name}</h4>
                     <p className="text-sm text-gray-600">Process: {opportunity.process}</p>
-                    <p className="text-sm text-gray-500">Estimated Productivity Gains: {opportunity.productivityGain}</p>
+                    <p className="text-sm text-gray-500">Estimated Impact: {opportunity.productivityGain}</p>
+                    {opportunity.department && (
+                      <p className="text-xs text-gray-400">Department: {opportunity.department}</p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Badge variant={opportunity.feasibility === 'High' ? 'success' : 'warning'}>
+                  <Badge variant={opportunity.feasibility === 'High' ? 'success' : opportunity.feasibility === 'Medium' ? 'warning' : 'danger'}>
                     {opportunity.feasibility} Feasibility
                   </Badge>
                   <Clock className="w-4 h-4 text-gray-400" />
@@ -239,6 +282,18 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
               </div>
             ))}
           </div>
+          
+          {metrics.workflowInsights.estimatedSavings > 0 && (
+            <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+              <div className="flex items-center space-x-2 text-green-800">
+                <DollarSign className="w-5 h-5" />
+                <span className="font-semibold">Estimated Annual Savings: ${metrics.workflowInsights.estimatedSavings.toLocaleString()}</span>
+              </div>
+              <p className="text-sm text-green-600 mt-1">
+                Based on {metrics.automatableWork}% automation potential across {metrics.workflowInsights.totalProcesses} identified processes
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
