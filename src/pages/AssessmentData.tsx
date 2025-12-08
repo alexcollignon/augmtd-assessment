@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts'
+import { useAuth } from '@/contexts/AuthContext'
+import { dashboardDataService, AssessmentCohort, ParticipantData } from '@/lib/dashboardDataService'
 import { 
   FileText, 
   Users, 
@@ -19,214 +21,53 @@ import {
 } from 'lucide-react'
 
 export function AssessmentData() {
+  const { user } = useAuth()
   const [selectedCohort, setSelectedCohort] = useState('all')
   const [selectedDepartment, setSelectedDepartment] = useState('all')
   const [selectedScoreRange, setSelectedScoreRange] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedParticipant, setSelectedParticipant] = useState<any>(null)
+  const [selectedParticipant, setSelectedParticipant] = useState<ParticipantData | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  
-  const cohortData = [
-    {
-      id: 'cohort-2024-q1',
-      name: 'Q1 2024 Leadership Assessment',
-      startDate: '2024-01-15',
-      endDate: '2024-03-30',
-      totalInvited: 156,
-      completed: 142,
-      inProgress: 8,
-      notStarted: 6,
-      completionRate: 91,
-      departments: ['Executive', 'Management', 'Department Heads']
-    },
-    {
-      id: 'cohort-2024-q2',
-      name: 'Q2 2024 Full Workforce Assessment',
-      startDate: '2024-04-01',
-      endDate: '2024-06-30',
-      totalInvited: 1247,
-      completed: 1089,
-      inProgress: 94,
-      notStarted: 64,
-      completionRate: 87,
-      departments: ['All Departments']
-    },
-    {
-      id: 'cohort-2024-pilot',
-      name: 'Engineering Pilot Program',
-      startDate: '2024-03-01',
-      endDate: '2024-03-31',
-      totalInvited: 45,
-      completed: 45,
-      inProgress: 0,
-      notStarted: 0,
-      completionRate: 100,
-      departments: ['Engineering']
-    }
-  ]
+  const [isLoading, setIsLoading] = useState(true)
+  const [cohortData, setCohortData] = useState<AssessmentCohort[]>([])
+  const [participants, setParticipants] = useState<ParticipantData[]>([])
 
-  const participantData = [
-    {
-      name: 'Sarah Johnson',
-      email: 'sarah.j@company.com',
-      department: 'Marketing',
-      role: 'Marketing Manager',
-      completionDate: '2024-05-15',
-      score: 84,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 92, tools: 85, responsibleUse: 78, aiThinking: 81, coIntelligence: 86 }
-    },
-    {
-      name: 'Mike Chen',
-      email: 'mike.c@company.com', 
-      department: 'Engineering',
-      role: 'Senior Developer',
-      completionDate: '2024-05-12',
-      score: 92,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 89, tools: 96, responsibleUse: 85, aiThinking: 94, coIntelligence: 91 }
-    },
-    {
-      name: 'Jennifer Walsh',
-      email: 'jennifer.w@company.com',
-      department: 'HR',
-      role: 'HR Business Partner',
-      completionDate: '2024-05-18',
-      score: 76,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 74, tools: 69, responsibleUse: 88, aiThinking: 71, coIntelligence: 78 }
-    },
-    {
-      name: 'Alex Rodriguez',
-      email: 'alex.r@company.com',
-      department: 'Engineering',
-      role: 'Software Engineer',
-      completionDate: '2024-05-14',
-      score: 88,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 85, tools: 93, responsibleUse: 82, aiThinking: 90, coIntelligence: 87 }
-    },
-    {
-      name: 'Emma Wilson',
-      email: 'emma.w@company.com',
-      department: 'Marketing',
-      role: 'Content Specialist',
-      completionDate: '2024-05-16',
-      score: 79,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 88, tools: 76, responsibleUse: 75, aiThinking: 72, coIntelligence: 84 }
-    },
-    {
-      name: 'Robert Johnson',
-      email: 'robert.j@company.com',
-      department: 'Finance',
-      role: 'Senior Analyst',
-      completionDate: '2024-05-13',
-      score: 82,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 78, tools: 81, responsibleUse: 91, aiThinking: 87, coIntelligence: 83 }
-    },
-    {
-      name: 'Maria Garcia',
-      email: 'maria.g@company.com',
-      department: 'Operations',
-      role: 'Operations Manager',
-      completionDate: '2024-05-17',
-      score: 73,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 71, tools: 75, responsibleUse: 76, aiThinking: 68, coIntelligence: 75 }
-    },
-    {
-      name: 'James Miller',
-      email: 'james.m@company.com',
-      department: 'Sales',
-      role: 'Sales Director',
-      completionDate: '2024-05-11',
-      score: 71,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 68, tools: 72, responsibleUse: 74, aiThinking: 65, coIntelligence: 76 }
-    },
-    {
-      name: 'Lisa Rodriguez',
-      email: 'lisa.r@company.com',
-      department: 'Sales',
-      role: 'Account Executive',
-      completionDate: '2024-05-19',
-      score: 69,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 65, tools: 70, responsibleUse: 72, aiThinking: 64, coIntelligence: 74 }
-    },
-    {
-      name: 'David Kim',
-      email: 'david.k@company.com',
-      department: 'Finance',
-      role: 'Financial Analyst',
-      completionDate: '2024-05-20',
-      score: 85,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 82, tools: 87, responsibleUse: 89, aiThinking: 83, coIntelligence: 84 }
-    },
-    {
-      name: 'Amanda Foster',
-      email: 'amanda.f@company.com',
-      department: 'Engineering',
-      role: 'Product Engineer',
-      completionDate: '2024-05-21',
-      score: 90,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 87, tools: 94, responsibleUse: 86, aiThinking: 92, coIntelligence: 91 }
-    },
-    {
-      name: 'Carlos Mendez',
-      email: 'carlos.m@company.com',
-      department: 'Marketing',
-      role: 'Digital Marketer',
-      completionDate: '2024-05-22',
-      score: 81,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 89, tools: 78, responsibleUse: 79, aiThinking: 76, coIntelligence: 83 }
-    },
-    {
-      name: 'Rachel Green',
-      email: 'rachel.g@company.com',
-      department: 'HR',
-      role: 'Talent Specialist',
-      completionDate: '2024-05-23',
-      score: 77,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 76, tools: 71, responsibleUse: 85, aiThinking: 73, coIntelligence: 80 }
-    },
-    {
-      name: 'Kevin Walsh',
-      email: 'kevin.w@company.com',
-      department: 'Operations',
-      role: 'Process Analyst',
-      completionDate: '2024-05-24',
-      score: 75,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 72, tools: 77, responsibleUse: 78, aiThinking: 70, coIntelligence: 78 }
-    },
-    {
-      name: 'Diana Liu',
-      email: 'diana.l@company.com',
-      department: 'Engineering',
-      role: 'Frontend Developer',
-      completionDate: '2024-05-25',
-      score: 86,
-      cohort: 'Q2 2024 Full Workforce',
-      skillScores: { prompting: 84, tools: 91, responsibleUse: 81, aiThinking: 88, coIntelligence: 86 }
-    }
-  ]
+  useEffect(() => {
+    loadAssessmentData()
+  }, [user])
 
-  const departmentStats = [
-    { dept: 'Engineering', invited: 156, completed: 145, rate: 93 },
-    { dept: 'Marketing', invited: 89, completed: 84, rate: 94 },
-    { dept: 'Sales', invited: 234, completed: 198, rate: 85 },
-    { dept: 'Finance', invited: 67, completed: 58, rate: 87 },
-    { dept: 'HR', invited: 45, completed: 42, rate: 93 },
-    { dept: 'Operations', invited: 123, completed: 101, rate: 82 }
-  ]
+  useEffect(() => {
+    loadParticipants()
+  }, [selectedCohort, selectedDepartment, selectedScoreRange, searchTerm, user])
+
+  const loadAssessmentData = async () => {
+    try {
+      setIsLoading(true)
+      const cohorts = await dashboardDataService.getAssessmentCohorts(user || undefined)
+      setCohortData(cohorts)
+    } catch (error) {
+      console.error('Error loading assessment data:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const loadParticipants = async () => {
+    try {
+      const filters = {
+        cohort: selectedCohort,
+        department: selectedDepartment,
+        scoreRange: selectedScoreRange,
+        searchTerm: searchTerm.trim()
+      }
+      
+      const participantData = await dashboardDataService.getFilteredParticipants(filters, user || undefined)
+      setParticipants(participantData)
+    } catch (error) {
+      console.error('Error loading participants:', error)
+    }
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -239,24 +80,25 @@ export function AssessmentData() {
 
   const departments = ['Marketing', 'Engineering', 'Sales', 'Finance', 'HR', 'Operations']
 
-  const filteredParticipants = participantData.filter(participant => {
+  const filteredParticipants = participants.filter(participant => {
     const departmentMatch = selectedDepartment === 'all' || participant.department === selectedDepartment
     const searchMatch = searchTerm === '' || 
-      participant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (participant.name || participant.email).toLowerCase().includes(searchTerm.toLowerCase()) ||
       participant.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       participant.role.toLowerCase().includes(searchTerm.toLowerCase())
     
     let scoreMatch = true
     if (selectedScoreRange !== 'all') {
+      const score = participant.overallScore || 0
       switch (selectedScoreRange) {
         case 'high':
-          scoreMatch = participant.score >= 85
+          scoreMatch = score >= 85
           break
         case 'medium':
-          scoreMatch = participant.score >= 70 && participant.score < 85
+          scoreMatch = score >= 70 && score < 85
           break
         case 'low':
-          scoreMatch = participant.score < 70
+          scoreMatch = score < 70
           break
       }
     }
@@ -402,7 +244,7 @@ export function AssessmentData() {
                   >
                     <td className="py-3 px-4">
                       <div>
-                        <div className="font-medium text-gray-900">{participant.name}</div>
+                        <div className="font-medium text-gray-900">{participant.name || participant.email}</div>
                         <div className="text-sm text-gray-500">{participant.email}</div>
                       </div>
                     </td>
@@ -410,14 +252,14 @@ export function AssessmentData() {
                     <td className="py-3 px-4 text-sm text-gray-700">{participant.role}</td>
                     <td className="py-3 px-4">
                       <span className={`font-medium ${
-                        participant.score >= 85 ? 'text-green-600' : 
-                        participant.score >= 70 ? 'text-yellow-600' : 'text-red-600'
+                        (participant.overallScore || 0) >= 85 ? 'text-green-600' : 
+                        (participant.overallScore || 0) >= 70 ? 'text-yellow-600' : 'text-red-600'
                       }`}>
-                        {participant.score}%
+                        {Math.round(participant.overallScore || 0)}%
                       </span>
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700">
-                      {participant.completionDate}
+                      {participant.completedDate}
                     </td>
                     <td className="py-3 px-4 text-right">
                       <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 transition-colors" />
@@ -504,7 +346,7 @@ export function AssessmentData() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">{selectedParticipant.name}</h3>
+                  <h3 className="text-xl font-bold text-gray-900">{selectedParticipant.name || selectedParticipant.email}</h3>
                   <p className="text-gray-600">{selectedParticipant.role} • {selectedParticipant.department}</p>
                   <p className="text-sm text-gray-500">{selectedParticipant.email}</p>
                 </div>
@@ -522,8 +364,8 @@ export function AssessmentData() {
                 {/* Overall Score */}
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <h4 className="font-medium text-gray-900 mb-2">Overall AI Readiness</h4>
-                  <div className="text-3xl font-bold text-blue-600 mb-1">{selectedParticipant.score}%</div>
-                  <p className="text-sm text-gray-600">Completed on {selectedParticipant.completionDate}</p>
+                  <div className="text-3xl font-bold text-blue-600 mb-1">{Math.round(selectedParticipant.overallScore || 0)}%</div>
+                  <p className="text-sm text-gray-600">Completed on {selectedParticipant.completedDate}</p>
                 </div>
                 
                 {/* Skills Breakdown */}
@@ -531,11 +373,11 @@ export function AssessmentData() {
                   <h4 className="font-medium text-gray-900 mb-3">Skills Breakdown</h4>
                   <div className="space-y-2">
                     {[
-                      { name: 'Prompting', score: selectedParticipant.skillScores.prompting },
-                      { name: 'Tools', score: selectedParticipant.skillScores.tools },
-                      { name: 'Responsible Use', score: selectedParticipant.skillScores.responsibleUse },
-                      { name: 'AI Thinking', score: selectedParticipant.skillScores.aiThinking },
-                      { name: 'Co-Intelligence', score: selectedParticipant.skillScores.coIntelligence }
+                      { name: 'Prompting', score: selectedParticipant.dimensionScores?.promptingProficiency || 0 },
+                      { name: 'Tools', score: selectedParticipant.dimensionScores?.toolProficiency || 0 },
+                      { name: 'Responsible Use', score: selectedParticipant.dimensionScores?.responsibleUsage || 0 },
+                      { name: 'AI Thinking', score: selectedParticipant.dimensionScores?.criticalThinking || 0 },
+                      { name: 'Co-Intelligence', score: selectedParticipant.dimensionScores?.coIntelligence || 0 }
                     ].map((skill, index) => (
                       <div key={index} className="flex items-center justify-between">
                         <span className="text-sm text-gray-700">{skill.name}</span>
@@ -565,23 +407,23 @@ export function AssessmentData() {
                     <RadarChart data={[
                       {
                         pillar: 'Prompting',
-                        score: selectedParticipant.skillScores.prompting
+                        score: selectedParticipant.dimensionScores?.promptingProficiency || 0
                       },
                       {
                         pillar: 'Tools',
-                        score: selectedParticipant.skillScores.tools
+                        score: selectedParticipant.dimensionScores?.toolProficiency || 0
                       },
                       {
                         pillar: 'Responsible Use',
-                        score: selectedParticipant.skillScores.responsibleUse
+                        score: selectedParticipant.dimensionScores?.responsibleUsage || 0
                       },
                       {
                         pillar: 'AI Thinking',
-                        score: selectedParticipant.skillScores.aiThinking
+                        score: selectedParticipant.dimensionScores?.criticalThinking || 0
                       },
                       {
                         pillar: 'Co-Intelligence',
-                        score: selectedParticipant.skillScores.coIntelligence
+                        score: selectedParticipant.dimensionScores?.coIntelligence || 0
                       }
                     ]}>
                       <PolarGrid gridType="polygon" radialLines={true} />

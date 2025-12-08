@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { CircularProgress } from '@/components/ui/CircularProgress'
+import { useAuth } from '@/contexts/AuthContext'
+import { dashboardDataService, SecurityHeatmap, ShadowAITool, DepartmentRisk } from '@/lib/dashboardDataService'
 import { 
   Shield, 
   AlertTriangle, 
   Eye, 
   FileText,
   ArrowDown,
-  Settings
+  Settings,
+  TrendingUp,
+  Users
 } from 'lucide-react'
 
 interface RiskComplianceProps {
@@ -16,25 +20,43 @@ interface RiskComplianceProps {
 }
 
 export function RiskCompliance({ onNavigate }: RiskComplianceProps) {
-  const overallRiskScore = 68
-  
-  const securityHeatmap = [
-    { department: 'Operations', score: 45, level: 'High Risk' },
-    { department: 'Sales', score: 58, level: 'Medium Risk' },
-    { department: 'Marketing', score: 62, level: 'Medium Risk' },
-    { department: 'HR', score: 74, level: 'Low Risk' },
-    { department: 'Engineering', score: 85, level: 'Low Risk' },
-    { department: 'Finance', score: 91, level: 'Low Risk' },
-  ]
+  const { user } = useAuth()
+  const [isLoading, setIsLoading] = useState(true)
+  const [overallRiskScore, setOverallRiskScore] = useState(68)
+  const [securityHeatmap, setSecurityHeatmap] = useState<SecurityHeatmap[]>([])
+  const [shadowAITools, setShadowAITools] = useState<ShadowAITool[]>([])
+  const [departmentRisks, setDepartmentRisks] = useState<DepartmentRisk[]>([])
 
-  // Shadow AI tools data (synced from Settings)
-  const shadowAITools = [
-    { tool: 'ChatGPT', usage: 'High', risk: 'Medium', users: 127, approved: false },
-    { tool: 'Claude', usage: 'Medium', risk: 'Low', users: 43, approved: true },
-    { tool: 'GitHub Copilot', usage: 'High', risk: 'Low', users: 89, approved: true },
-    { tool: 'Grammarly AI', usage: 'Medium', risk: 'Low', users: 156, approved: true },
-    { tool: 'Midjourney', usage: 'Low', risk: 'High', users: 12, approved: false },
-  ]
+  useEffect(() => {
+    loadRiskData()
+  }, [user])
+
+  const loadRiskData = async () => {
+    try {
+      setIsLoading(true)
+      
+      const [heatmapData, toolsData, risksData] = await Promise.all([
+        dashboardDataService.calculateSecurityHeatmap(user || undefined),
+        dashboardDataService.getDetectedAITools(user || undefined),
+        dashboardDataService.calculateRiskExposureByDepartment(user || undefined)
+      ])
+
+      setSecurityHeatmap(heatmapData)
+      setShadowAITools(toolsData)
+      setDepartmentRisks(risksData)
+      
+      // Calculate overall risk score from department data
+      if (risksData.length > 0) {
+        const avgRisk = risksData.reduce((sum, dept) => sum + dept.exposureLevel, 0) / risksData.length
+        setOverallRiskScore(Math.round(100 - avgRisk)) // Invert so higher score = lower risk
+      }
+
+    } catch (error) {
+      console.error('Error loading risk data:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
 
   const getRiskColor = (score: number) => {
@@ -59,9 +81,29 @@ export function RiskCompliance({ onNavigate }: RiskComplianceProps) {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="p-8 space-y-8">
+        <div className="border-b border-gray-200 pb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Risk & Compliance</h1>
+          <p className="text-gray-600 mt-2">AI risk assessment and Shadow AI monitoring</p>
+        </div>
+        
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading risk analysis...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const approvedTools = shadowAITools.filter(tool => tool.approved)
   const unauthorizedTools = shadowAITools.filter(tool => !tool.approved)
   const totalUnauthorizedUsers = unauthorizedTools.reduce((sum, tool) => sum + tool.users, 0)
+  const highRiskDepartments = securityHeatmap.filter(dept => dept.level === 'High Risk')
+  const totalAssessedEmployees = securityHeatmap.reduce((sum, dept) => sum + dept.count, 0)
 
   return (
     <div className="p-8 space-y-8">
@@ -82,8 +124,8 @@ export function RiskCompliance({ onNavigate }: RiskComplianceProps) {
             <h2 className="text-2xl font-bold text-gray-900 mb-2">AI Risk Score</h2>
             <p className="text-gray-600 mb-4">Overall AI risk posture</p>
             <div className="flex items-center justify-center text-gray-400 mt-6 pt-4 border-t border-gray-200">
-              <ArrowDown className="w-4 h-4 mr-1" />
-              <span className="text-xs">Based on departments and tools</span>
+              <Users className="w-4 h-4 mr-1" />
+              <span className="text-xs">Based on {totalAssessedEmployees} assessments</span>
             </div>
           </CardContent>
         </Card>
@@ -92,13 +134,18 @@ export function RiskCompliance({ onNavigate }: RiskComplianceProps) {
           <CardContent className="text-center py-5">
             <AlertTriangle className="w-6 h-6 text-danger-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">High-Risk Departments</p>
-            <div className="text-3xl font-bold text-gray-900">2</div>
-            <p className="text-xs text-gray-500 mt-1">Operations, Sales</p>
+            <div className="text-3xl font-bold text-gray-900">{highRiskDepartments.length}</div>
+            <p className="text-xs text-gray-500 mt-1">
+              {highRiskDepartments.length > 0 
+                ? highRiskDepartments.slice(0, 2).map(d => d.department).join(', ')
+                : 'None identified'
+              }
+            </p>
           </CardContent>
         </Card>
         <Card className="flex items-center justify-center">
           <CardContent className="text-center py-5">
-            <FileText className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+            <Shield className="w-6 h-6 text-blue-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">Approved Tools</p>
             <div className="text-3xl font-bold text-gray-900">{approvedTools.length}</div>
             <p className="text-xs text-gray-500 mt-1">of {shadowAITools.length} detected tools</p>

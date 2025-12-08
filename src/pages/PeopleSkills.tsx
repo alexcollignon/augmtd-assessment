@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { CircularProgress } from '@/components/ui/CircularProgress'
+import { useAuth } from '@/contexts/AuthContext'
+import { dashboardDataService, RoleData, SkillHeatmapData, EmployeePersona } from '@/lib/dashboardDataService'
 import { 
   Users, 
   TrendingUp,
@@ -26,6 +28,7 @@ import {
 } from 'lucide-react'
 
 export function PeopleSkills() {
+  const { user } = useAuth()
   const [selectedRole, setSelectedRole] = useState('all')
   const [skillDistributionView, setSkillDistributionView] = useState<'heatmap' | 'detail'>('heatmap')
   const [selectedDistributionDept, setSelectedDistributionDept] = useState('Company Wide')
@@ -36,15 +39,45 @@ export function PeopleSkills() {
   const [hoveredPoint, setHoveredPoint] = useState<any>(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [activeTab, setActiveTab] = useState('skills')
-  
-  const roleData = {
-    'Software Engineer': { count: 45, avgSkill: 89, topSkills: ['Tools', 'AI Thinking', 'Co-Intelligence'] },
-    'Marketing Specialist': { count: 28, avgSkill: 84, topSkills: ['Prompting', 'Tools', 'Co-Intelligence'] },
-    'Sales Representative': { count: 32, avgSkill: 71, topSkills: ['Prompting', 'Tools', 'Co-Intelligence'] },
-    'Financial Analyst': { count: 18, avgSkill: 79, topSkills: ['AI Thinking', 'Tools', 'Responsible Use'] },
-    'Project Manager': { count: 24, avgSkill: 73, topSkills: ['Co-Intelligence', 'Tools', 'AI Thinking'] },
-    'HR Specialist': { count: 16, avgSkill: 68, topSkills: ['Responsible Use', 'Tools', 'Co-Intelligence'] }
+  const [isLoading, setIsLoading] = useState(true)
+  const [roleData, setRoleData] = useState<RoleData[]>([])
+  const [skillsHeatmap, setSkillsHeatmap] = useState<SkillHeatmapData[]>([])
+  const [employeePersonas, setEmployeePersonas] = useState<EmployeePersona[]>([])
+
+  useEffect(() => {
+    loadPeopleSkillsData()
+  }, [user])
+
+  const loadPeopleSkillsData = async () => {
+    try {
+      setIsLoading(true)
+      
+      const [roles, heatmap, personas] = await Promise.all([
+        dashboardDataService.calculateRoleData(user || undefined),
+        dashboardDataService.generateSkillsHeatmap(user || undefined),
+        dashboardDataService.generateEmployeePersonas(user || undefined)
+      ])
+
+      setRoleData(roles)
+      setSkillsHeatmap(heatmap)
+      setEmployeePersonas(personas)
+
+    } catch (error) {
+      console.error('Error loading people skills data:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
+
+  // Convert roleData array to object for backward compatibility
+  const roleDataLookup = roleData.reduce((acc, role) => {
+    acc[role.role] = {
+      count: role.count,
+      avgSkill: role.avgSkill,
+      topSkills: role.topSkills
+    }
+    return acc
+  }, {} as Record<string, { count: number, avgSkill: number, topSkills: string[] }>)
 
   const skillCategories = [
     {
@@ -367,6 +400,24 @@ export function PeopleSkills() {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="p-8 space-y-8">
+        <div className="border-b border-gray-200 pb-6">
+          <h1 className="text-3xl font-bold text-gray-900">People & Skills</h1>
+          <p className="text-gray-600 mt-2">Employee AI capabilities, personas, and development progress across the organization</p>
+        </div>
+        
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading people analytics...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="p-8 space-y-8">
       <div className="border-b border-gray-200 pb-6">
@@ -381,21 +432,27 @@ export function PeopleSkills() {
         <Card>
           <CardContent className="text-center py-6">
             <Users className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-gray-900">1,247</div>
+            <div className="text-2xl font-bold text-gray-900">{skillsHeatmap.length}</div>
             <p className="text-sm text-gray-600">Employees Assessed</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="text-center py-6">
             <Brain className="w-8 h-8 text-purple-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-gray-900">74%</div>
+            <div className="text-2xl font-bold text-gray-900">
+              {skillsHeatmap.length > 0 
+                ? Math.round(skillsHeatmap.reduce((sum, emp) => sum + emp.overall, 0) / skillsHeatmap.length)
+                : 0}%
+            </div>
             <p className="text-sm text-gray-600">Average AI Skill Level</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="text-center py-6">
             <Star className="w-8 h-8 text-yellow-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-gray-900">89</div>
+            <div className="text-2xl font-bold text-gray-900">
+              {employeePersonas.find(p => p.name === 'AI Champions')?.count || 0}
+            </div>
             <p className="text-sm text-gray-600">AI Champions</p>
           </CardContent>
         </Card>

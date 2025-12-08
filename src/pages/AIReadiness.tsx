@@ -1,22 +1,41 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts'
+import { useAuth } from '@/contexts/AuthContext'
+import { dashboardDataService, AIMaturityData, DepartmentAIScores } from '@/lib/dashboardDataService'
 
 export function AIReadiness() {
+  const { user } = useAuth()
   const [selectedDepartment, setSelectedDepartment] = useState('all')
   const [showDepartments, setShowDepartments] = useState(false)
-  
-  const departments = ['Engineering', 'Sales', 'Marketing', 'Finance', 'HR', 'Operations']
-  // Department-specific scores (balanced middle-range scores)
-  const departmentScores = {
-    Engineering: { prompting: 72, tools: 68, responsibleUse: 58, aiThinking: 65, coIntelligence: 61 },
-    Sales: { prompting: 48, tools: 52, responsibleUse: 45, aiThinking: 42, coIntelligence: 50 },
-    Marketing: { prompting: 68, tools: 62, responsibleUse: 55, aiThinking: 48, coIntelligence: 53 },
-    Finance: { prompting: 52, tools: 58, responsibleUse: 75, aiThinking: 70, coIntelligence: 55 },
-    HR: { prompting: 45, tools: 50, responsibleUse: 72, aiThinking: 48, coIntelligence: 46 },
-    Operations: { prompting: 55, tools: 60, responsibleUse: 68, aiThinking: 52, coIntelligence: 74 },
+  const [isLoading, setIsLoading] = useState(true)
+  const [maturityData, setMaturityData] = useState<AIMaturityData[]>([])
+  const [departmentScores, setDepartmentScores] = useState<DepartmentAIScores[]>([])
+
+  useEffect(() => {
+    loadAIReadinessData()
+  }, [user])
+
+  const loadAIReadinessData = async () => {
+    try {
+      setIsLoading(true)
+      
+      const [maturity, departments] = await Promise.all([
+        dashboardDataService.calculateAIMaturityData(user || undefined),
+        dashboardDataService.calculateDepartmentAIScores(user || undefined)
+      ])
+
+      setMaturityData(maturity)
+      setDepartmentScores(departments)
+
+    } catch (error) {
+      console.error('Error loading AI readiness data:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
+  const departments = departmentScores.map(d => d.department)
 
   const getPillarKey = (pillar: string) => {
     // AI skill pillars
@@ -30,53 +49,23 @@ export function AIReadiness() {
     }
   }
 
-  const maturityData = [
-    { 
-      pillar: 'Strategy Alignment', 
-      current: 68, 
-      target: 85,
-      gap: 17,
-      impact: 'Strong foundation with room for strategic refinement',
-      effort: 'Medium (2-3 months)',
-      priority: 1
-    },
-    { 
-      pillar: 'Team Ownership', 
-      current: 72, 
-      target: 90,
-      gap: 18,
-      impact: 'Good ownership levels, focus on expanding accountability',
-      effort: 'Low (1-2 months)',
-      priority: 2
-    },
-    { 
-      pillar: 'Infrastructure', 
-      current: 75, 
-      target: 90,
-      gap: 15,
-      impact: 'Solid infrastructure foundation ready for scaling',
-      effort: 'Medium (3-4 months)',
-      priority: 5
-    },
-    { 
-      pillar: 'Culture', 
-      current: 70, 
-      target: 85,
-      gap: 15,
-      impact: 'Positive AI culture with opportunities for deeper adoption',
-      effort: 'Medium (3-4 months)',
-      priority: 4
-    },
-    { 
-      pillar: 'Task Automation', 
-      current: 58, 
-      target: 80,
-      gap: 22,
-      impact: 'Good progress in automation with room for expansion',
-      effort: 'Medium (3-4 months)',
-      priority: 3
-    },
-  ]
+  if (isLoading) {
+    return (
+      <div className="p-8 space-y-8">
+        <div className="border-b border-gray-200 pb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Company AI Maturity</h1>
+          <p className="text-gray-600 mt-2">AI readiness assessment across organizational dimensions</p>
+        </div>
+        
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading maturity analysis...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const radarData = maturityData.map(item => ({
     pillar: item.pillar,
@@ -273,8 +262,17 @@ export function AIReadiness() {
               
               {/* Department Positions (when enabled) */}
               {showDepartments && departments.filter(d => d !== 'all').map((dept, index) => {
-                const deptScores = departmentScores[dept as keyof typeof departmentScores]
-                const avgScore = Object.values(deptScores).reduce((a, b) => a + b, 0) / Object.values(deptScores).length
+                const deptData = departmentScores.find(d => d.department === dept)
+                if (!deptData) return null
+                
+                const scores = [
+                  deptData.prompting,
+                  deptData.tools,
+                  deptData.responsibleUse,
+                  deptData.aiThinking,
+                  deptData.coIntelligence
+                ]
+                const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length
                 const implementationSpeed = 50 + (index * 15) - 30 // Spread departments across X axis
                 
                 return (
