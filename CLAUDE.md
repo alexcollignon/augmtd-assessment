@@ -556,18 +556,123 @@ Assessment Responses → Workflow Engine → Automation Analysis → Dashboard M
 - Document Processing: 8 hrs/week × 70% savings × 52 × $75 = $21,840/year
 - Customer Onboarding: 12 hrs/week × 65% savings × 52 × $75 = $30,420/year
 
+## Dashboard Data Integration Status & Roadmap
+
+### ✅ **Currently Working with Real Database Data**
+- **ExecutiveSummary** (`src/pages/overview/ExecutiveSummary.tsx`) - Uses `dashboardDataService.calculateDashboardMetrics()` with proper admin scoping
+
+### 📊 **Rich UI Built, Needs Database Integration** (Priority 1-2)
+
+#### **Priority 1: Core Dashboard Pages** (High Impact)
+
+**1. RiskCompliance** (`src/pages/overview/RiskCompliance.tsx:19-37`)
+- **Current**: Hardcoded security heatmap, Shadow AI tools list
+- **Needs**: 
+  ```typescript
+  async calculateSecurityHeatmap(adminUser?: AdminUser): Promise<SecurityHeatmap[]>
+  async getDetectedAITools(adminUser?: AdminUser): Promise<ShadowAITool[]>
+  async calculateRiskExposureByDepartment(adminUser?: AdminUser): Promise<DepartmentRisk[]>
+  ```
+- **Data Sources**: Security awareness from assessment responses, AI tool usage patterns
+
+**2. AssessmentData** (`src/pages/AssessmentData.tsx:30-220`)
+- **Current**: Hardcoded participant data with rich filtering/pagination UI
+- **Needs**: 
+  ```typescript
+  async getFilteredParticipants(filters: ParticipantFilters, adminUser?: AdminUser): Promise<ParticipantData[]>
+  async getCohortStatistics(adminUser?: AdminUser): Promise<CohortStats[]>
+  async getDepartmentCompletionRates(adminUser?: AdminUser): Promise<DepartmentStats[]>
+  ```
+- **Data Sources**: `assessment_submissions` + `assessment_results` tables with admin scoping
+
+**3. AIReadiness/Company Maturity** (`src/pages/AIReadiness.tsx:10-18`)
+- **Current**: Hardcoded department scores, radar charts, maturity levels
+- **Needs**: 
+  ```typescript
+  async calculateDepartmentMaturityScores(adminUser?: AdminUser): Promise<DepartmentMaturity[]>
+  async getMaturityRadarData(adminUser?: AdminUser): Promise<RadarData[]>
+  async calculateIndustryBenchmarks(): Promise<BenchmarkData[]>
+  ```
+- **Data Sources**: Dimension scores from assessment results grouped by department
+
+**4. PeopleSkills** (`src/pages/PeopleSkills.tsx:40-347`)
+- **Current**: Complex multi-tab UI with hardcoded personas, skills heatmap, progress tracking
+- **Needs**: 
+  ```typescript
+  async calculateSkillsHeatmap(adminUser?: AdminUser): Promise<SkillsHeatmap>
+  async generateEmployeePersonas(adminUser?: AdminUser): Promise<PersonaProfile[]>
+  async getProgressData(adminUser?: AdminUser): Promise<ProgressData[]>
+  async getEmployeeFeedback(adminUser?: AdminUser): Promise<FeedbackInsights[]>
+  ```
+- **Data Sources**: Skills breakdown from dimension scores, persona generation from score ranges
+
+#### **Priority 2: Assessment Management** (Medium Impact)
+
+**5. Settings** (`src/pages/Settings.tsx:46-50`)
+- **Current**: Hardcoded AI tool approvals, department management
+- **Needs**: Connect to real company configuration and tool detection data
+
+### 🚧 **Placeholder Pages** (Need Full Implementation)
+
+#### **Capabilities Section** (All use `PlaceholderPage`)
+- `AIPillars.tsx` - Six-pillar AI maturity framework analysis
+- `SkillsProficiency.tsx` - Employee AI skill assessment and training recommendations  
+- `DepartmentMaturity.tsx` - AI maturity assessment by department with comparative analysis
+- `PersonaInsights.tsx` - Role-based AI readiness analysis and personalized recommendations
+- `ProgressTime.tsx` - Progress tracking and time-based analytics
+
+#### **Operations Section** (Mixed - 1 implemented, rest placeholder)
+- ✅ `OpportunityMap.tsx` - **IMPLEMENTED** with hardcoded data (Value vs effort matrix)
+- 🚧 `AutomationOpportunities.tsx` - Placeholder
+- 🚧 `InefficiencyHeatmap.tsx` - Placeholder  
+- 🚧 `TimeCostSavings.tsx` - Placeholder
+- 🚧 `AdoptionPatterns.tsx` - Placeholder
+- 🚧 `InvestmentEconomics.tsx` - Placeholder
+
+#### **Assessment Section** (All use `PlaceholderPage`)
+- `CohortOverview.tsx` - Assessment completion rates and participant analytics
+- `AssessmentExplorer.tsx` - Searchable and filterable assessment data with analytics  
+- `IndividualResponses.tsx` - Individual response viewer and analysis
+- `Exports.tsx` - CSV/PDF export functionality
+
+### 🛠 **Implementation Requirements**
+
+#### **Data Service Extensions Needed**
+1. **Extend DashboardDataService** (`src/lib/dashboardDataService.ts`) with methods listed above
+2. **Create Specialized Services**:
+   - `src/lib/riskAnalysisService.ts` - Risk & compliance calculations
+   - `src/lib/peopleAnalyticsService.ts` - Personas, skills, progress tracking
+   - `src/lib/assessmentExplorerService.ts` - Assessment search & filtering
+   - `src/lib/exportService.ts` - CSV/PDF generation
+
+#### **Database Query Requirements**
+- All new services must use `adminDataScopingService.getAccessibleSubmissions(adminUser)` for proper multi-tenancy
+- Add comprehensive TypeScript interfaces in `src/types/index.ts`
+- Follow existing error handling and loading state patterns
+- Include proper database indexing for performance
+
+#### **Implementation Order Recommendation**
+1. **RiskCompliance** - Extends existing real data patterns
+2. **AssessmentData** - High user value, simpler database queries
+3. **AIReadiness** - Complex but builds on dimension calculations  
+4. **PeopleSkills** - Most complex, requires all previous patterns
+5. **Assessment Management & Operations** - Lower priority features
+
+### 📈 **Current Dashboard Status**: 1 page fully integrated, 4 pages with rich UI ready for data connection, 15+ pages need full implementation
+
 ## Next Steps for Enhancement
 
-1. **Enhanced Workflow Components**: Build slider_group and other advanced question types
-2. **Multiple Assessment Types**: Deploy leadership, customer service, technical assessments using same engine
-3. **AI Report Generation**: OpenAI integration for personalized insights from real workflow data
-4. **Advanced Process Mapping**: Visual workflow diagrams with automation annotations
-5. **Predictive Analytics**: Machine learning models for automation ROI prediction
-6. **Export Functionality**: PDF reports and CSV exports with real calculated data
-7. **Mobile Optimization**: Tablet-friendly responsive design for assessments
-8. **Real-Time Monitoring**: Live dashboard updates as new assessments complete
-9. **Custom Branding**: Company logos and color scheme customization
-10. **Template Builder**: Visual interface for creating new assessment types and workflow mappings
+1. **Complete Priority 1 Database Integrations** - Connect RiskCompliance, AssessmentData, AIReadiness, PeopleSkills to real data
+2. **Enhanced Workflow Components**: Build slider_group and other advanced question types
+3. **Multiple Assessment Types**: Deploy leadership, customer service, technical assessments using same engine
+4. **AI Report Generation**: OpenAI integration for personalized insights from real workflow data
+5. **Advanced Process Mapping**: Visual workflow diagrams with automation annotations
+6. **Predictive Analytics**: Machine learning models for automation ROI prediction
+7. **Export Functionality**: PDF reports and CSV exports with real calculated data
+8. **Mobile Optimization**: Tablet-friendly responsive design for assessments
+9. **Real-Time Monitoring**: Live dashboard updates as new assessments complete
+10. **Custom Branding**: Company logos and color scheme customization
+11. **Template Builder**: Visual interface for creating new assessment types and workflow mappings
 
 ## Support & Documentation
 

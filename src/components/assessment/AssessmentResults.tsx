@@ -30,7 +30,9 @@ import {
   RotateCcw,
   Target,
   Lightbulb,
-  Crosshair
+  Crosshair,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -323,6 +325,26 @@ export function AssessmentResults() {
     }
   }
 
+  // Navigation functions for tabs
+  const currentTabIndex = tabConfig.findIndex(tab => tab.id === activeTab)
+  
+  const handlePreviousTab = () => {
+    if (currentTabIndex > 0) {
+      setActiveTab(tabConfig[currentTabIndex - 1].id)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  const handleNextTab = () => {
+    if (currentTabIndex < tabConfig.length - 1) {
+      setActiveTab(tabConfig[currentTabIndex + 1].id)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  const isFirstTab = currentTabIndex === 0
+  const isLastTab = currentTabIndex === tabConfig.length - 1
+
   if (isLoading || !result || !participant) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex items-center justify-center">
@@ -378,7 +400,10 @@ export function AssessmentResults() {
         {/* Tab Navigation */}
         <div className="mb-8">
           <div className="border-b border-gray-200">
-            <nav className="-mb-px grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            <nav className={cn(
+              "-mb-px grid gap-2",
+              hasMultipleAssessments ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-5" : "grid-cols-2 md:grid-cols-4"
+            )}>
               {tabConfig.map((tab) => {
                 const IconComponent = tab.icon
                 return (
@@ -767,6 +792,48 @@ export function AssessmentResults() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Navigation Footer */}
+        <div className="flex justify-between items-center py-6 border-t border-gray-200 bg-white/70 backdrop-blur-sm sticky bottom-0 mx-[-1.5rem] px-6 mt-8">
+          <Button
+            onClick={handlePreviousTab}
+            disabled={isFirstTab}
+            className={cn(
+              "flex items-center space-x-2",
+              isFirstTab 
+                ? "opacity-40 cursor-not-allowed" 
+                : "hover:bg-gray-100 text-gray-700"
+            )}
+            variant="outline"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span>Previous</span>
+            {!isFirstTab && (
+              <span className="hidden md:inline text-sm text-gray-500">
+                ({tabConfig[currentTabIndex - 1]?.label})
+              </span>
+            )}
+          </Button>
+
+          <Button
+            onClick={handleNextTab}
+            disabled={isLastTab}
+            className={cn(
+              "flex items-center space-x-2",
+              isLastTab 
+                ? "opacity-40 cursor-not-allowed" 
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            )}
+          >
+            <span>Next</span>
+            {!isLastTab && (
+              <span className="hidden md:inline text-sm opacity-90">
+                ({tabConfig[currentTabIndex + 1]?.label})
+              </span>
+            )}
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
     </div>
   )

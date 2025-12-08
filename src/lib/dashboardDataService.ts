@@ -95,7 +95,7 @@ export class DashboardDataService {
       const riskExposure = this.calculateRiskExposure(submissions)
       
       // Get top opportunities from workflow analysis
-      const topOpportunities = this.generateTopOpportunities(workflowInsights)
+      const topOpportunities = this.generateTopOpportunities()
       
       // Calculate department maturity
       const departmentMaturity = this.calculateDepartmentMaturity(submissions)
@@ -236,7 +236,7 @@ export class DashboardDataService {
     return totalFactors > 0 ? Math.round((riskFactors / totalFactors) * 100) : 15
   }
 
-  private generateTopOpportunities(workflowInsights: { topOpportunities: any[] }): DashboardMetrics['topOpportunities'] {
+  private generateTopOpportunities(): DashboardMetrics['topOpportunities'] {
     const opportunityTemplates = [
       {
         name: 'Customer Service Chatbot',
@@ -270,18 +270,7 @@ export class DashboardDataService {
       }
     ]
 
-    // Use workflow insights if available, otherwise use templates
-    if (workflowInsights.topOpportunities.length > 0) {
-      return workflowInsights.topOpportunities.map(opp => ({
-        name: opp.name,
-        process: opp.process,
-        productivityGain: `${opp.automationPotential}% efficiency gain`,
-        feasibility: opp.implementationComplexity === 'low' ? 'High' : 
-                   opp.implementationComplexity === 'medium' ? 'Medium' : 'Low',
-        department: opp.department
-      }))
-    }
-
+    // For now, use templates (workflow insights integration will be added later)
     return opportunityTemplates.map(opp => ({
       ...opp,
       department: 'Multiple'

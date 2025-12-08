@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { supabase } from '@/lib/supabase'
+import bcrypt from 'bcryptjs'
 
 interface User {
   id: string
@@ -90,13 +91,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return false
       }
 
-      // For demo purposes, compare with simple password
-      // In production, you'd use bcrypt.compare(password, adminUser.password_hash)
-      const validPassword = (
-        (password === 'admin123' && adminUser.email === 'admin@airplatform.com') ||
-        (password === 'executive123' && adminUser.email === 'cto@company.com') ||
-        (password === 'manager123' && adminUser.email === 'manager@company.com')
-      )
+      let validPassword = false
+
+      // Check if this is a demo account (hardcoded passwords)
+      const demoAccounts = [
+        { email: 'admin@airplatform.com', password: 'admin123' },
+        { email: 'cto@company.com', password: 'executive123' },
+        { email: 'manager@company.com', password: 'manager123' }
+      ]
+
+      const demoAccount = demoAccounts.find(acc => acc.email === adminUser.email)
+      
+      if (demoAccount) {
+        // Demo account - use hardcoded password
+        validPassword = password === demoAccount.password
+      } else {
+        // Real account - use bcrypt to verify hashed password
+        if (adminUser.password_hash) {
+          validPassword = await bcrypt.compare(password, adminUser.password_hash)
+        }
+      }
       
       if (validPassword) {
         const userData: User = {
