@@ -35,21 +35,18 @@ export function RiskCompliance({ onNavigate }: RiskComplianceProps) {
     try {
       setIsLoading(true)
       
-      const [heatmapData, toolsData, risksData] = await Promise.all([
+      const [dashboardMetrics, heatmapData, toolsData, risksData] = await Promise.all([
+        dashboardDataService.calculateDashboardMetrics(user || undefined),
         dashboardDataService.calculateSecurityHeatmap(user || undefined),
         dashboardDataService.getDetectedAITools(user || undefined),
         dashboardDataService.calculateRiskExposureByDepartment(user || undefined)
       ])
 
+      // Use the same risk exposure calculation as overview page
+      setOverallRiskScore(dashboardMetrics.riskExposure)
       setSecurityHeatmap(heatmapData)
       setShadowAITools(toolsData)
       setDepartmentRisks(risksData)
-      
-      // Calculate overall risk score from department data
-      if (risksData.length > 0) {
-        const avgRisk = risksData.reduce((sum, dept) => sum + dept.exposureLevel, 0) / risksData.length
-        setOverallRiskScore(Math.round(100 - avgRisk)) // Invert so higher score = lower risk
-      }
 
     } catch (error) {
       console.error('Error loading risk data:', error)
@@ -60,9 +57,9 @@ export function RiskCompliance({ onNavigate }: RiskComplianceProps) {
 
 
   const getRiskColor = (score: number) => {
-    if (score >= 75) return 'success'
-    if (score >= 50) return 'warning'
-    return 'danger'
+    if (score <= 25) return 'success'  // Low risk (0-25%)
+    if (score <= 50) return 'warning'  // Medium risk (26-50%)
+    return 'danger'                    // High risk (51%+)
   }
 
   const getUsageColor = (usage: string) => {
@@ -121,8 +118,8 @@ export function RiskCompliance({ onNavigate }: RiskComplianceProps) {
             <div className="mb-6">
               <CircularProgress value={overallRiskScore} size="lg" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">AI Risk Score</h2>
-            <p className="text-gray-600 mb-4">Overall AI risk posture</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">AI Risk Exposure</h2>
+            <p className="text-gray-600 mb-4">Percentage of AI security risk</p>
             <div className="flex items-center justify-center text-gray-400 mt-6 pt-4 border-t border-gray-200">
               <Users className="w-4 h-4 mr-1" />
               <span className="text-xs">Based on {totalAssessedEmployees} assessments</span>

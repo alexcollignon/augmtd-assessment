@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { useAuth } from '@/contexts/AuthContext'
+import { settingsService, AITool, Department } from '@/lib/settingsService'
+import { adminDataScopingService } from '@/lib/adminDataScoping'
 import { 
   Settings as SettingsIcon,
   Search,
@@ -12,7 +15,8 @@ import {
   Edit2,
   Trash2,
   Save,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from 'lucide-react'
 
 interface SettingsProps {
@@ -20,36 +24,72 @@ interface SettingsProps {
 }
 
 export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState(initialTab)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
+  const [isLoading, setIsLoading] = useState(true)
+  const [companyId, setCompanyId] = useState<string | null>(null)
 
   useEffect(() => {
     setActiveTab(initialTab)
   }, [initialTab])
 
+  useEffect(() => {
+    loadSettingsData()
+  }, [user])
+
   // Department Management State
-  const [departments, setDepartments] = useState([
-    { id: 1, name: 'Engineering' },
-    { id: 2, name: 'Marketing' },
-    { id: 3, name: 'Finance' },
-    { id: 4, name: 'Operations' },
-    { id: 5, name: 'HR' },
-    { id: 6, name: 'Sales' },
-  ])
-  const [editingDepartment, setEditingDepartment] = useState(null)
+  const [departments, setDepartments] = useState<Department[]>([])
+  const [editingDepartment, setEditingDepartment] = useState<number | null>(null)
   const [newDepartmentName, setNewDepartmentName] = useState('')
   const [isAddingDepartment, setIsAddingDepartment] = useState(false)
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState<Record<string | number, string>>({})
 
   // AI Tool Management State
-  const [toolApprovals, setToolApprovals] = useState([
-    { tool: 'ChatGPT', usage: 'High', risk: 'Medium', users: 127, approved: false, detected: true },
-    { tool: 'Claude', usage: 'Medium', risk: 'Low', users: 43, approved: true, detected: true },
-    { tool: 'GitHub Copilot', usage: 'High', risk: 'Low', users: 89, approved: true, detected: true },
-    { tool: 'Grammarly AI', usage: 'Medium', risk: 'Low', users: 156, approved: true, detected: true },
-    { tool: 'Midjourney', usage: 'Low', risk: 'High', users: 12, approved: false, detected: true },
-  ])
+  const [toolApprovals, setToolApprovals] = useState<AITool[]>([])
+
+  // Load settings data from Supabase
+  const loadSettingsData = async () => {
+    try {
+      setIsLoading(true)
+      
+      // Get user's company access
+      let userCompanyId: string | null = null
+      if (user) {
+        const adminUser = await adminDataScopingService.getAdminUserWithPermissions(user.email)
+        if (adminUser) {
+          // For company users, use their direct company_id
+          if (adminUser.company_id) {
+            userCompanyId = adminUser.company_id
+            console.log('Company user found, company_id:', userCompanyId)
+          } else {
+            // For cohort-only users, we could get company access from cohorts
+            // For now, allow operations without company scoping for cohort users
+            console.log('Cohort user found (no direct company), operating without company scoping')
+          }
+        } else {
+          console.log('No admin user found for email:', user.email)
+        }
+      }
+      
+      setCompanyId(userCompanyId)
+
+      // Load departments and AI tools
+      const [departmentsData, aiToolsData] = await Promise.all([
+        settingsService.getDepartments(userCompanyId || undefined),
+        settingsService.getAITools(userCompanyId || undefined)
+      ])
+
+      setDepartments(departmentsData)
+      setToolApprovals(aiToolsData)
+
+    } catch (error) {
+      console.error('Error loading settings data:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   // Categorized AI tools
   const aiToolCategories = {
@@ -85,26 +125,64 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
     ]
   }
 
-  const handleToolApproval = (toolName: string) => {
-    setToolApprovals(prev => 
-      prev.map(tool => 
-        tool.tool === toolName 
-          ? { ...tool, approved: !tool.approved }
-          : tool
-      )
-    )
+  const handleToolApproval = async (toolName: string) => {
+    try {
+      const existingTool = toolApprovals.find(tool => tool.tool_name === toolName)
+      if (!existingTool) return
+
+      const updatedTool = await settingsService.toggleAIToolApproval(existingTool.id)
+      if (updatedTool) {
+        setToolApprovals(prev => 
+          prev.map(tool => 
+            tool.id === updatedTool.id ? updatedTool : tool
+          )
+        )
+      }
+    } catch (error) {
+      console.error('Error toggling tool approval:', error)
+    }
   }
 
-  const addToolToApprovedList = (toolName: string) => {
-    if (!toolApprovals.find(tool => tool.tool === toolName)) {
-      setToolApprovals(prev => [...prev, {
-        tool: toolName,
-        usage: 'Low', 
-        risk: 'Low',
-        users: 0,
-        approved: true,
-        detected: false
-      }])
+  const addToolToApprovedList = async (toolName: string) => {
+    try {
+      if (!toolApprovals.find(tool => tool.tool_name === toolName)) {
+        // Determine category for the tool
+        let category = 'Other'
+        for (const [categoryName, tools] of Object.entries(aiToolCategories)) {
+          if (tools.includes(toolName)) {
+            category = categoryName
+            break
+          }
+        }
+
+        const newTool = await settingsService.createAITool({
+          tool_name: toolName,
+          category: category,
+          usage_level: 'Low',
+          risk_level: 'Low',
+          user_count: 0,
+          approved: true,
+          detected: false,
+          company_id: companyId || undefined
+        })
+
+        if (newTool) {
+          setToolApprovals(prev => [...prev, newTool])
+        }
+      }
+    } catch (error) {
+      console.error('Error adding tool to approved list:', error)
+    }
+  }
+
+  const removeToolFromList = async (toolId: number) => {
+    try {
+      const success = await settingsService.deleteAITool(toolId)
+      if (success) {
+        setToolApprovals(prev => prev.filter(tool => tool.id !== toolId))
+      }
+    } catch (error) {
+      console.error('Error removing tool:', error)
     }
   }
 
@@ -144,7 +222,7 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
   }
 
   // Department Management Functions
-  const validateDepartmentName = (name) => {
+  const validateDepartmentName = (name: string): string | null => {
     const trimmed = name.trim()
     if (!trimmed) {
       return 'Department name is required'
@@ -161,41 +239,64 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
     return null
   }
 
-  const handleAddDepartment = () => {
+  const handleAddDepartment = async () => {
     const error = validateDepartmentName(newDepartmentName)
     if (error) {
       setErrors({ add: error })
       return
     }
     
-    const newDept = {
-      id: Math.max(...departments.map(d => d.id)) + 1,
-      name: newDepartmentName.trim()
+    try {
+      const newDept = await settingsService.createDepartment({
+        name: newDepartmentName.trim(),
+        company_id: companyId || undefined
+      })
+
+      if (newDept) {
+        setDepartments([...departments, newDept])
+        setNewDepartmentName('')
+        setIsAddingDepartment(false)
+        setErrors({})
+      }
+    } catch (error) {
+      console.error('Error adding department:', error)
+      setErrors({ add: 'Failed to add department. Please try again.' })
     }
-    
-    setDepartments([...departments, newDept])
-    setNewDepartmentName('')
-    setIsAddingDepartment(false)
-    setErrors({})
   }
 
-  const handleEditDepartment = (id, newName) => {
+  const handleEditDepartment = async (id: number, newName: string) => {
     const error = validateDepartmentName(newName)
     if (error) {
       setErrors({ [id]: error })
       return
     }
 
-    setDepartments(departments.map(dept => 
-      dept.id === id ? { ...dept, name: newName.trim() } : dept
-    ))
-    setEditingDepartment(null)
-    setErrors({})
+    try {
+      const updatedDept = await settingsService.updateDepartment(id, { name: newName.trim() })
+      if (updatedDept) {
+        setDepartments(departments.map(dept => 
+          dept.id === id ? updatedDept : dept
+        ))
+        setEditingDepartment(null)
+        setErrors({})
+      }
+    } catch (error) {
+      console.error('Error updating department:', error)
+      setErrors({ [id]: 'Failed to update department. Please try again.' })
+    }
   }
 
-  const handleDeleteDepartment = (id) => {
-    setDepartments(departments.filter(dept => dept.id !== id))
-    setErrors({})
+  const handleDeleteDepartment = async (id: number) => {
+    try {
+      const success = await settingsService.deleteDepartment(id)
+      if (success) {
+        setDepartments(departments.filter(dept => dept.id !== id))
+        setErrors({})
+      }
+    } catch (error) {
+      console.error('Error deleting department:', error)
+      // You could add a toast notification here
+    }
   }
 
   const tabs = [
@@ -353,7 +454,7 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
                 </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {tools.map((tool) => {
-                    const existingTool = toolApprovals.find(existing => existing.tool === tool)
+                    const existingTool = toolApprovals.find(existing => existing.tool_name === tool)
                     const isApproved = existingTool?.approved || false
                     const isDetected = existingTool?.detected || false
                     
@@ -367,7 +468,7 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
                               handleToolApproval(tool)
                             } else {
                               // Pre-approved tool - remove it
-                              setToolApprovals(prev => prev.filter(t => t.tool !== tool))
+                              removeToolFromList(existingTool.id)
                             }
                           } else {
                             // Tool doesn't exist - add as approved
@@ -400,9 +501,9 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
                                 ) : (
                                   <X className="w-4 h-4 text-red-600" />
                                 )}
-                                {isDetected && existingTool.users > 0 && (
+                                {isDetected && existingTool.user_count > 0 && (
                                   <span className="text-xs text-gray-500">
-                                    {existingTool.users} users
+                                    {existingTool.user_count} users
                                   </span>
                                 )}
                               </>
@@ -440,7 +541,15 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
   )
 
   // Department Row Component
-  const DepartmentRow = ({ department, editingDepartment, setEditingDepartment, onEdit, onDelete, errors, setErrors }) => {
+  const DepartmentRow = ({ department, editingDepartment, setEditingDepartment, onEdit, onDelete, errors, setErrors }: {
+    department: Department
+    editingDepartment: number | null
+    setEditingDepartment: (id: number | null) => void
+    onEdit: (id: number, newName: string) => void
+    onDelete: (id: number) => void
+    errors: Record<string | number, string>
+    setErrors: (errors: Record<string | number, string>) => void
+  }) => {
     const [editName, setEditName] = useState(department.name)
     const isEditing = editingDepartment === department.id
     const hasError = errors[department.id]
@@ -540,6 +649,26 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
             {hasError}
           </div>
         )}
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className="p-8 space-y-8">
+        <div className="border-b border-gray-200 pb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
+          <p className="text-gray-600 mt-2">
+            Manage your AI governance settings and organizational preferences
+          </p>
+        </div>
+        
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 border-4 border-blue-600 animate-spin mx-auto mb-4" />
+            <p className="text-gray-600">Loading settings...</p>
+          </div>
+        </div>
       </div>
     )
   }
