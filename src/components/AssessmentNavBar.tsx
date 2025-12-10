@@ -54,7 +54,7 @@ export function AssessmentNavBar({
                 className="flex items-center px-4 py-2 text-sm text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg transition-all"
               >
                 <Settings className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Intelligence Platform for Organizational Transformation</span>
+                <span className="hidden sm:inline">Admin</span>
                 <span className="sm:hidden">Admin</span>
               </button>
             )}

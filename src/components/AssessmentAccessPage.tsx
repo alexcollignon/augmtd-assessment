@@ -65,19 +65,11 @@ export function AssessmentAccessPage() {
   const demoParticipants = [
     { 
       email: 'test@company.com', 
-      accessCode: 'AIR-2024-Q1'
+      accessCode: 'AIR2025'
     },
     { 
       email: 'employee@company.com', 
-      accessCode: 'AIR-2024-Q1'
-    },
-    { 
-      email: 'user@company.com', 
-      accessCode: 'AIR-2024-Q1'
-    },
-    { 
-      email: 'demo@company.com', 
-      accessCode: 'AIR-2024-Q1'
+      accessCode: 'AIR2025'
     }
   ]
 
