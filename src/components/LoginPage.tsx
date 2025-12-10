@@ -53,8 +53,8 @@ export function LoginPage() {
               <Brain className="w-8 h-8 text-white" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold">AIR Admin Dashboard</h1>
-          <p className="text-navy-300 mt-2">Administrative Access Portal</p>
+          <h1 className="text-3xl font-bold">AUGMTD Intelligence Platform</h1>
+          <p className="text-navy-300 mt-2">Intelligence Platform Portal</p>
         </div>
 
         {/* Login Form */}

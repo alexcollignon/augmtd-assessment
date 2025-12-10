@@ -21,8 +21,8 @@ export function AIRLogo({ className, size = 'md', variant = 'full' }: AIRLogoPro
   return (
     <div className={cn('flex items-center', className)}>
       <img 
-        src="/air-logo.png" 
-        alt="AIR - AI Readiness Platform"
+        src="/images/augmtd-logo.png" 
+        alt="AUGMTD - AI Readiness Platform"
         className={cn(height, width, 'object-contain')}
         onError={(e) => {
           // Fallback if logo doesn't load
@@ -31,7 +31,7 @@ export function AIRLogo({ className, size = 'md', variant = 'full' }: AIRLogoPro
         }}
       />
       {variant === 'icon-only' && (
-        <span className="sr-only">AIR - AI Readiness Platform</span>
+        <span className="sr-only">AUGMTD - AI Readiness Platform</span>
       )}
     </div>
   )
