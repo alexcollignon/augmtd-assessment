@@ -127,14 +127,16 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
 
   const handleToolApproval = async (toolName: string) => {
     try {
-      const existingTool = toolApprovals.find(tool => tool.tool_name === toolName)
-      if (!existingTool) return
+      if (!companyId) {
+        console.error('Company ID not available for tool approval')
+        return
+      }
 
-      const updatedTool = await settingsService.toggleAIToolApproval(existingTool.id)
+      const updatedTool = await settingsService.toggleAIToolApprovalByName(toolName, companyId)
       if (updatedTool) {
         setToolApprovals(prev => 
           prev.map(tool => 
-            tool.id === updatedTool.id ? updatedTool : tool
+            tool.tool_name === updatedTool.tool_name ? updatedTool : tool
           )
         )
       }
@@ -177,7 +179,19 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
 
   const removeToolFromList = async (toolId: number) => {
     try {
-      const success = await settingsService.deleteAITool(toolId)
+      if (!companyId) {
+        console.error('Company ID not available for tool removal')
+        return
+      }
+
+      // Find tool by ID to get its name
+      const toolToRemove = toolApprovals.find(tool => tool.id === toolId)
+      if (!toolToRemove) {
+        console.error('Tool not found for removal')
+        return
+      }
+
+      const success = await settingsService.deleteAIToolByName(toolToRemove.tool_name, companyId)
       if (success) {
         setToolApprovals(prev => prev.filter(tool => tool.id !== toolId))
       }
@@ -288,7 +302,19 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
 
   const handleDeleteDepartment = async (id: number) => {
     try {
-      const success = await settingsService.deleteDepartment(id)
+      if (!companyId) {
+        console.error('Company ID not available for department deletion')
+        return
+      }
+
+      // Find department by ID to get its name
+      const deptToDelete = departments.find(dept => dept.id === id)
+      if (!deptToDelete) {
+        console.error('Department not found for deletion')
+        return
+      }
+
+      const success = await settingsService.deleteDepartmentByName(deptToDelete.name, companyId)
       if (success) {
         setDepartments(departments.filter(dept => dept.id !== id))
         setErrors({})

@@ -4,6 +4,7 @@ import { createScoringEngine } from './assessmentScoring'
 import { defaultAssessmentTemplate } from '@/data/assessmentTemplates'
 import { AssessmentResponse } from '@/types'
 import { adminDataScopingService, AdminUser } from './adminDataScoping'
+import { settingsService } from './settingsService'
 
 export interface DashboardMetrics {
   employeesAssessed: number
@@ -480,40 +481,288 @@ export class DashboardDataService {
     }
   }
 
+  // Helper method to get approved tools from company settings
+  private async getApprovedToolsFromSettings(companyId?: string): Promise<string[]> {
+    try {
+      if (!companyId) {
+        console.warn('No company ID provided for approved tools lookup')
+        return []
+      }
+
+      const companySettings = await settingsService.getCompanySettings(companyId)
+      if (!companySettings || !companySettings.ai_tools) {
+        return []
+      }
+
+      // Get approved tools and convert names to assessment format
+      const approvedTools = companySettings.ai_tools
+        .filter(tool => tool.approved)
+        .map(tool => this.convertSettingsToolNameToAssessmentFormat(tool.tool_name))
+
+      return approvedTools
+    } catch (error) {
+      console.error('Error fetching approved tools from settings:', error)
+      return []
+    }
+  }
+
+  // Helper method to convert tool names between settings and assessment formats
+  private convertSettingsToolNameToAssessmentFormat(settingsName: string): string {
+    // Use the same normalization logic as assessment responses
+    return this.normalizeToolName(settingsName)
+  }
+
+  // Helper method to normalize tool names from assessment responses
+  private normalizeToolName(toolName: string): string {
+    if (!toolName) return ''
+    
+    // Clean the tool name
+    let cleaned = toolName.toLowerCase().trim()
+    
+    // Remove common company prefixes
+    const companyPrefixes = [
+      'microsoft ', 'google ', 'openai ', 'anthropic ', 'meta ', 'facebook ',
+      'adobe ', 'salesforce ', 'ibm ', 'amazon ', 'aws ', 'oracle ',
+      'github ', 'atlassian ', 'slack ', 'notion ', 'figma ', 'canva '
+    ]
+    
+    companyPrefixes.forEach(prefix => {
+      if (cleaned.startsWith(prefix)) {
+        cleaned = cleaned.substring(prefix.length)
+      }
+    })
+    
+    // Remove common suffixes
+    const suffixes = [' ai', ' artificial intelligence', ' assistant', ' bot', ' chatbot']
+    suffixes.forEach(suffix => {
+      if (cleaned.endsWith(suffix)) {
+        cleaned = cleaned.substring(0, cleaned.length - suffix.length)
+      }
+    })
+    
+    // Handle specific tool core names and variations
+    const coreToolMappings: { [key: string]: string } = {
+      // ChatGPT variations
+      'chatgpt': 'chatgpt',
+      'chat gpt': 'chatgpt', 
+      'gpt': 'chatgpt',
+      'openai chatgpt': 'chatgpt',
+      'gpt-4': 'chatgpt',
+      'gpt-3': 'chatgpt',
+      
+      // Claude variations
+      'claude': 'claude',
+      'anthropic claude': 'claude',
+      'claude ai': 'claude',
+      
+      // Copilot variations
+      'copilot': 'microsoft_copilot',
+      'microsoft copilot': 'microsoft_copilot',
+      'github copilot': 'github_copilot',
+      'copilot ai': 'microsoft_copilot',
+      
+      // Gemini variations
+      'gemini': 'gemini',
+      'google gemini': 'gemini',
+      'bard': 'gemini',
+      'google bard': 'gemini',
+      
+      // Image generation tools
+      'midjourney': 'midjourney',
+      'mid journey': 'midjourney',
+      'dalle': 'dalle',
+      'dall-e': 'dalle',
+      'dall·e': 'dalle',
+      'openai dalle': 'dalle',
+      
+      // Writing tools
+      'grammarly': 'grammarly_ai',
+      'grammarly ai': 'grammarly_ai',
+      'jasper': 'jasper',
+      'jasper ai': 'jasper',
+      'copy.ai': 'copy_ai',
+      'copyai': 'copy_ai',
+      
+      // Search tools
+      'perplexity': 'perplexity',
+      'perplexity ai': 'perplexity',
+      
+      // Productivity tools
+      'notion ai': 'notion_ai',
+      'notion': 'notion_ai',
+      'slack ai': 'slack_ai',
+      
+      // Design tools
+      'canva ai': 'canva_ai',
+      'canva': 'canva_ai',
+      'figma ai': 'figma_ai',
+      
+      // Other common tools
+      'character.ai': 'character_ai',
+      'character ai': 'character_ai',
+      'replika': 'replika',
+      'stable diffusion': 'stable_diffusion',
+      'hugging face': 'hugging_face'
+    }
+    
+    // Check direct mappings first
+    if (coreToolMappings[cleaned]) {
+      return coreToolMappings[cleaned]
+    }
+    
+    // Try fuzzy matching for partial matches
+    for (const [pattern, normalized] of Object.entries(coreToolMappings)) {
+      if (cleaned.includes(pattern) || pattern.includes(cleaned)) {
+        // Only match if the core word is present
+        const coreWords = pattern.split(' ')
+        const hasCore = coreWords.some(word => 
+          cleaned.includes(word) && word.length > 2 // Avoid matching very short words
+        )
+        if (hasCore) {
+          return normalized
+        }
+      }
+    }
+    
+    // If no specific mapping found, create a normalized version
+    return cleaned
+      .replace(/[^a-z0-9]/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_|_$/g, '')
+  }
+
+  // Helper method to convert assessment format back to display format
+  private convertAssessmentToolNameToDisplayFormat(assessmentName: string): string {
+    const toolNameMapping: { [key: string]: string } = {
+      // Core AI tools
+      'chatgpt': 'ChatGPT',
+      'claude': 'Claude',
+      'microsoft_copilot': 'Microsoft Copilot',
+      'github_copilot': 'GitHub Copilot',
+      'gemini': 'Google Gemini',
+      'dalle': 'DALL·E',
+      'perplexity': 'Perplexity',
+      'midjourney': 'Midjourney',
+      
+      // Writing & content tools
+      'grammarly_ai': 'Grammarly AI',
+      'jasper': 'Jasper AI',
+      'copy_ai': 'Copy.ai',
+      'notion_ai': 'Notion AI',
+      
+      // Design tools
+      'canva_ai': 'Canva AI',
+      'figma_ai': 'Figma AI',
+      
+      // Productivity tools
+      'slack_ai': 'Slack AI',
+      
+      // Other tools
+      'character_ai': 'Character.AI',
+      'replika': 'Replika',
+      'stable_diffusion': 'Stable Diffusion',
+      'hugging_face': 'Hugging Face'
+    }
+
+    // Use mapping if available, otherwise create readable format
+    if (toolNameMapping[assessmentName]) {
+      return toolNameMapping[assessmentName]
+    }
+
+    // Convert underscore-separated names to Title Case
+    return assessmentName
+      .split('_')
+      .map(word => {
+        // Handle special cases
+        if (word.toLowerCase() === 'ai') return 'AI'
+        if (word.toLowerCase() === 'gpt') return 'GPT'
+        if (word.toLowerCase() === 'api') return 'API'
+        
+        // Normal title case
+        return word.charAt(0).toUpperCase() + word.slice(1)
+      })
+      .join(' ')
+  }
+
   async getDetectedAITools(adminUser?: AdminUser): Promise<ShadowAITool[]> {
     try {
       const submissions = await this.getRecentSubmissions(500, adminUser)
       const toolUsageMap: { [key: string]: { users: Set<string>, approved: boolean } } = {}
 
-      // Tool approval mapping (could come from settings in future)
-      const approvedTools = ['claude', 'microsoft_copilot', 'grammarly_ai']
+      // Get approved tools from company settings instead of hardcoded list
+      const companyId = adminUser?.company_id || undefined
+      const approvedToolsFromSettings = await this.getApprovedToolsFromSettings(companyId)
+      
+      console.log('Approved tools from settings:', approvedToolsFromSettings)
+      console.log('Processing', submissions.length, 'assessment submissions...')
+      
+      // If no company settings exist yet, tools will be considered unauthorized by default
+      // This encourages proper governance setup in the Settings page
 
-      submissions.forEach(submission => {
-        const toolsUsed = submission.responses?.['strategic-ai_tools_used']
+      submissions.forEach((submission, index) => {
+        // Debug: Log first few submissions to understand data structure
+        if (index < 3) {
+          console.log(`Submission ${index + 1} for ${submission.email}:`)
+          console.log('Available response keys:', Object.keys(submission.responses || {}))
+          console.log('Sample responses:', submission.responses)
+        }
+        
+        // Check both possible question formats for AI tools usage
+        const toolsUsedOptions = [
+          submission.responses?.['competence-tools_used_recently'],
+          submission.responses?.['strategic-ai_tools_used'],
+          submission.responses?.['tooluse-tools_used_recently']
+        ]
+        
         const email = submission.email
         
-        if (Array.isArray(toolsUsed)) {
-          toolsUsed.forEach(tool => {
-            if (!toolUsageMap[tool]) {
-              toolUsageMap[tool] = {
+        // Try each possible format
+        toolsUsedOptions.forEach((toolsUsed, optionIndex) => {
+          if (Array.isArray(toolsUsed)) {
+            if (index < 3) {
+              console.log(`Found tools array in option ${optionIndex}:`, toolsUsed)
+            }
+            toolsUsed.forEach(tool => {
+              // Convert tool name to consistent format for comparison
+              const normalizedTool = this.normalizeToolName(tool)
+              
+              if (index < 3) {
+                console.log(`Tool: "${tool}" -> normalized: "${normalizedTool}" -> approved: ${approvedToolsFromSettings.includes(normalizedTool)}`)
+              }
+              
+              if (!toolUsageMap[normalizedTool]) {
+                toolUsageMap[normalizedTool] = {
+                  users: new Set(),
+                  approved: approvedToolsFromSettings.includes(normalizedTool)
+                }
+              }
+              toolUsageMap[normalizedTool].users.add(email)
+            })
+          } else if (typeof toolsUsed === 'string' && toolsUsed !== 'None' && toolsUsed !== '') {
+            // Handle single string responses
+            const normalizedTool = this.normalizeToolName(toolsUsed)
+            
+            if (index < 3) {
+              console.log(`Found string tool: "${toolsUsed}" -> normalized: "${normalizedTool}"`)
+            }
+            
+            if (!toolUsageMap[normalizedTool]) {
+              toolUsageMap[normalizedTool] = {
                 users: new Set(),
-                approved: approvedTools.includes(tool)
+                approved: approvedToolsFromSettings.includes(normalizedTool)
               }
             }
-            toolUsageMap[tool].users.add(email)
-          })
-        }
+            toolUsageMap[normalizedTool].users.add(email)
+          }
+        })
       })
 
-      const toolNameMapping: { [key: string]: string } = {
-        'chatgpt': 'ChatGPT',
-        'claude': 'Claude',
-        'microsoft_copilot': 'Microsoft Copilot',
-        'grammarly_ai': 'Grammarly AI',
-        'midjourney': 'Midjourney',
-        'github_copilot': 'GitHub Copilot',
-        'perplexity': 'Perplexity'
-      }
+      console.log('Final tool usage map:', Object.keys(toolUsageMap))
+      console.log('Tool usage details:', Object.entries(toolUsageMap).map(([tool, data]) => ({
+        tool,
+        users: data.users.size,
+        approved: data.approved
+      })))
 
       const shadowTools = Object.entries(toolUsageMap)
         .map(([tool, data]) => {
@@ -533,7 +782,7 @@ export class DashboardDataService {
           }
 
           return {
-            tool: toolNameMapping[tool] || tool,
+            tool: this.convertAssessmentToolNameToDisplayFormat(tool),
             usage,
             risk,
             users: userCount,
