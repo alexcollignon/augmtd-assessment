@@ -751,7 +751,7 @@ export function AssessmentResults() {
         </div>
 
         {/* Next Steps */}
-        <Card className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+        <Card className="mb-8 mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
           <CardHeader>
             <CardTitle className="flex items-center space-x-2 text-blue-900">
               <TrendingUp className="w-5 h-5" />

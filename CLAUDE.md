@@ -50,6 +50,7 @@ src/
 │   ├── dashboardDataService.ts # Real dashboard metrics with scoping
 │   ├── superadminAuth.ts # Superadmin authentication & CRUD operations
 │   ├── adminDataScoping.ts # Multi-tenancy and permission scoping
+│   ├── settingsService.ts # Settings management with full CRUD operations
 │   └── utils.ts        # Formatters and helpers
 ├── types/              # TypeScript type definitions
 └── main.tsx           # Application entry point
@@ -273,6 +274,7 @@ danger: '#ef4444',     // High-risk items and criticals
 - **Workflow Automation Opportunities** - Generated from actual process mapping and tool availability
 - **Department Breakdown** - Real maturity scores by department from assessment data
 - **ROI Projections** - Calculated time savings and cost benefits per process
+- **Settings Management** - Complete AI tools and organization CRUD operations with Supabase integration
 - **Enterprise Styling** - Professional design system with Tailwind CSS
 - **Demo Accounts** - Test accounts for assessment, admin, and superadmin portals
 - **Assessment Navigation** - Back/exit buttons with proper routing
@@ -303,6 +305,8 @@ danger: '#ef4444',     // High-risk items and criticals
 - **assessment_results** - Calculated scores, dimension analysis, and recommendations linked to submissions
 - **admin_users** - Dashboard user accounts with simplified role-based access (admin/superadmin)
 - **admin_cohort_access** - Granular permissions linking admin users to specific cohorts
+- **ai_tools** - AI tools management with approval status, usage tracking, risk levels, and company scoping
+- **departments** - Organization departments with company association and validation constraints
 
 **Key Design Decisions:**
 - **One-shot assessment storage** - Complete assessment stored in single row with JSON responses
@@ -449,6 +453,16 @@ The application is fully production-ready with:
 - **Question Scoring**: Individual questions reference dimensions and provide scoring value mappings
 - **Multiple Assessment Types**: Single codebase supports unlimited assessment configurations
 - **Real-Time Loading**: Templates loaded dynamically from database during authentication
+
+### Settings Management System (Latest Implementation)
+- **Complete Supabase Integration**: Full CRUD operations for AI tools and organization management via dedicated `settingsService`
+- **Settings Database Schema**: Added `ai_tools` and `departments` tables with proper UUID foreign key constraints to companies table
+- **Multi-Tenancy Support**: Company-scoped data operations with automatic company_id population for company-level admin users
+- **AI Tools Management**: Complete approval workflow with categorization, usage tracking, risk assessment, and user count analytics
+- **Department Management**: Dynamic organization structure with validation, duplicate prevention, and real-time CRUD operations
+- **Enterprise UI/UX**: Professional tabbed interface with search/filtering, batch operations, and comprehensive validation
+- **Production-Ready Authentication**: Fixed RLS policies and company_id population logic for company vs cohort-based admin users
+- **Error Handling & Validation**: Comprehensive error handling with user-friendly messages and optimistic UI updates
 
 ## Assessment Scoring Engine ⚙️
 
@@ -608,9 +622,10 @@ Assessment Responses → Workflow Engine → Automation Analysis → Dashboard M
 
 #### **Priority 2: Assessment Management** (Medium Impact)
 
-**5. Settings** (`src/pages/Settings.tsx:46-50`)
-- **Current**: Hardcoded AI tool approvals, department management
-- **Needs**: Connect to real company configuration and tool detection data
+**5. Settings** (`src/pages/Settings.tsx`) ✅ **COMPLETED**
+- **Status**: Fully integrated with Supabase database via `settingsService.ts`
+- **Features**: Complete CRUD operations for AI tools and departments with multi-tenancy support
+- **Technical**: Company-scoped data operations, RLS configuration, and comprehensive validation
 
 ### 🚧 **Placeholder Pages** (Need Full Implementation)
 
@@ -681,5 +696,7 @@ Assessment Responses → Workflow Engine → Automation Analysis → Dashboard M
 - **Workflow Intelligence**: Business logic in `src/lib/workflowIntelligence.ts`
 - **Dashboard Service**: Real data aggregation in `src/lib/dashboardDataService.ts`
 - **Scoring Engine**: Assessment calculations in `src/lib/assessmentScoring.ts`
+- **Settings Service**: Complete CRUD operations in `src/lib/settingsService.ts`
+- **Admin Data Scoping**: Multi-tenancy support in `src/lib/adminDataScoping.ts`
 - **Utility Functions**: Formatters and helpers in `src/lib/utils.ts`
 - **Type Definitions**: Complete data models in `src/types/index.ts`
