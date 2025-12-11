@@ -27,9 +27,7 @@ export function LoginPage() {
   }
 
   const demoAccounts = [
-    { email: 'admin@airplatform.com', password: 'admin123', role: 'Platform Admin' },
-    { email: 'cto@company.com', password: 'executive123', role: 'Executive' },
-    { email: 'manager@company.com', password: 'manager123', role: 'Department Manager' }
+    { email: 'admin@airplatform.com', password: 'admin123', role: 'Platform Admin' }
   ]
 
   return (

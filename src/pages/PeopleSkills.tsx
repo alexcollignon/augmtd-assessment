@@ -535,13 +535,18 @@ export function PeopleSkills() {
             <p className="text-sm text-gray-600">Average AI Skill Level</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="text-center py-6">
-            <Star className="w-8 h-8 text-yellow-600 mx-auto mb-3" />
-            <div className="text-2xl font-bold text-gray-900">
-              {employeePersonas.find(p => p.name === 'AI Champions')?.count || 0}
+        <Card className="bg-gray-50 border-gray-200">
+          <CardContent className="text-center py-6 relative">
+            <Star className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+            <div className="text-2xl font-bold text-gray-400">
+              --
             </div>
-            <p className="text-sm text-gray-600">AI Champions</p>
+            <div className="flex items-center justify-center space-x-2">
+              <p className="text-sm text-gray-400">AI Champions</p>
+              <span className="px-2 py-1 bg-gray-300 text-gray-600 text-xs font-medium rounded-full">
+                Coming Soon
+              </span>
+            </div>
           </CardContent>
         </Card>
         <Card>
@@ -562,23 +567,32 @@ export function PeopleSkills() {
         <nav className="flex space-x-8">
           {[
             { id: 'skills', label: 'Skills Analysis', icon: Users },
-            { id: 'personas', label: 'Employee Personas', icon: User },
+            { id: 'personas', label: 'Employee Personas', icon: User, disabled: true },
             { id: 'progress', label: 'Progress & Impact', icon: TrendingUp },
             { id: 'feedback', label: 'Employee Feedback', icon: MessageSquare }
           ].map((tab) => {
             const Icon = tab.icon
+            const isDisabled = tab.disabled
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => !isDisabled && setActiveTab(tab.id)}
+                disabled={isDisabled}
                 className={`flex items-center px-1 py-4 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === tab.id
+                  activeTab === tab.id && !isDisabled
                     ? 'border-blue-600 text-blue-600'
+                    : isDisabled
+                    ? 'border-transparent text-gray-400 cursor-not-allowed'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
                 <Icon className="w-4 h-4 mr-2" />
                 {tab.label}
+                {isDisabled && (
+                  <span className="ml-2 px-2 py-1 bg-gray-200 text-gray-600 text-xs font-medium rounded-full">
+                    Soon
+                  </span>
+                )}
               </button>
             )
           })}

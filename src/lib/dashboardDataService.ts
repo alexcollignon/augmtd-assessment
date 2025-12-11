@@ -90,8 +90,13 @@ export class DashboardDataService {
       // Calculate pillar scores from dimension scores
       const pillarScores = this.calculatePillarScores(submissions)
       
-      // Calculate workflow intelligence metrics
-      const workflowInsights = await this.calculateWorkflowMetrics(submissions)
+      // ONLY use AI analysis - don't fall back to programmatic workflow analysis
+      // This ensures we show CTA until user actually generates AI analysis
+      let automatableWork = await this.getAutomatableWorkFromAIAnalysis(adminUser)
+      
+      if (automatableWork === null || automatableWork <= 0) {
+        automatableWork = 0 // No AI analysis available - triggers CTA
+      }
       
       // Calculate risk exposure based on security awareness
       const riskExposure = this.calculateRiskExposure(submissions)
@@ -101,25 +106,58 @@ export class DashboardDataService {
       
       // Calculate department maturity
       const departmentMaturity = this.calculateDepartmentMaturity(submissions)
+      
+      // Only calculate workflow insights for estimatedSavings if needed
+      const estimatedSavings = automatableWork > 0 
+        ? Math.round(automatableWork * submissions.length * 2000) // Simple calculation
+        : 0
 
       return {
         employeesAssessed,
         averageSkillLevel: Math.round((pillarScores.prompting + pillarScores.tools + pillarScores.ethics + pillarScores.thinking + pillarScores.coIntelligence) / 5),
-        automatableWork: workflowInsights.automationPotential,
+        automatableWork, // Only from AI analysis or 0
         riskExposure,
         aiMaturityScore: averageMaturity,
         pillarScores,
         topOpportunities: topOpportunities.slice(0, 5),
         departmentMaturity,
         workflowInsights: {
-          totalProcesses: this.countUniqueProcesses(submissions),
-          automationPotential: workflowInsights.automationPotential,
-          estimatedSavings: workflowInsights.estimatedSavings
+          totalProcesses: automatableWork > 0 ? this.countUniqueProcesses(submissions) : 0,
+          automationPotential: automatableWork, // Keep consistent
+          estimatedSavings
         }
       }
     } catch (error) {
       console.error('Error calculating dashboard metrics:', error)
       return this.getDefaultMetrics()
+    }
+  }
+
+  // Helper method to get automatable work from AI analysis if available
+  private async getAutomatableWorkFromAIAnalysis(adminUser?: AdminUser): Promise<number | null> {
+    try {
+      // Import here to avoid circular dependencies
+      const { aiAnalysisService } = await import('./aiAnalysisService')
+      const { settingsService } = await import('./settingsService')
+      
+      // Get company ID (for demo, use first available company)
+      const companies = await settingsService.getCompanies()
+      if (companies.length === 0) return null
+      
+      const companyId = companies[0].id
+      
+      // Check if we have AI analysis available
+      const metadata = await aiAnalysisService.getAnalysisMetadata(companyId)
+      
+      if (metadata.totalProcesses > 0 && metadata.avgAutomation > 0) {
+        console.log('📊 Using AI analysis for automatable work:', metadata.avgAutomation + '%')
+        return metadata.avgAutomation
+      }
+      
+      return null // No AI analysis available
+    } catch (error) {
+      console.error('Error fetching AI analysis for automatable work:', error)
+      return null
     }
   }
 
@@ -186,7 +224,7 @@ export class DashboardDataService {
     }
 
     if (allWorkflowInsights.length === 0) {
-      return { automationPotential: 32, estimatedSavings: 250000 }
+      return { automationPotential: 0, estimatedSavings: 0 } // No analysis available - triggers CTA
     }
 
     const aggregated = aggregateWorkflowInsights(allWorkflowInsights)
@@ -1324,7 +1362,7 @@ export class DashboardDataService {
     return {
       employeesAssessed: 0,
       averageSkillLevel: 65,
-      automatableWork: 32,
+      automatableWork: 0, // No analysis available - triggers CTA
       riskExposure: 18,
       aiMaturityScore: 65,
       pillarScores: {

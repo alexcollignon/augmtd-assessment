@@ -95,9 +95,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       // Check if this is a demo account (hardcoded passwords)
       const demoAccounts = [
-        { email: 'admin@airplatform.com', password: 'admin123' },
-        { email: 'cto@company.com', password: 'executive123' },
-        { email: 'manager@company.com', password: 'manager123' }
+        { email: 'admin@airplatform.com', password: 'admin123' }
       ]
 
       const demoAccount = demoAccounts.find(acc => acc.email === adminUser.email)

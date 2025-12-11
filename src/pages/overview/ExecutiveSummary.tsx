@@ -123,8 +123,20 @@ export function ExecutiveSummary({ onNavigate }: ExecutiveSummaryProps) {
           <CardContent className="text-center py-5">
             <Brain className="w-6 h-6 text-purple-600 mx-auto mb-2" />
             <p className="text-sm font-medium text-gray-600 mb-1">Automatable Work</p>
-            <div className="text-3xl font-bold text-gray-900">{metrics.automatableWork}%</div>
-            <p className="text-xs text-gray-500 mt-1">Of work can be automated</p>
+            {metrics.automatableWork > 0 ? (
+              <>
+                <div className="text-3xl font-bold text-gray-900">{metrics.automatableWork}%</div>
+                <p className="text-xs text-gray-500 mt-1">Of work can be automated</p>
+              </>
+            ) : (
+              <>
+                <div className="text-sm font-medium text-blue-600 cursor-pointer hover:text-blue-700"
+                     onClick={() => onNavigate?.('ai-transformation')}>
+                  Generate Analysis →
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Click to analyze automation potential</p>
+              </>
+            )}
             <button 
               onClick={() => onNavigate?.('ai-transformation')}
               className="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium transition-colors"
