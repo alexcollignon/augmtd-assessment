@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { useSuperadmin } from '@/contexts/SuperadminContext'
-import { Shield, AlertTriangle, Eye, EyeOff } from 'lucide-react'
+import { Shield, AlertTriangle, Eye, EyeOff, LogIn } from 'lucide-react'
+import { AIRLogo } from '@/components/ui/AIRLogo'
 
 export function SuperadminLoginPage() {
   const { login, isLoading } = useSuperadmin()
@@ -31,17 +32,23 @@ export function SuperadminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <div className="bg-blue-600 p-3 rounded-full">
-              <Shield className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-red-50 flex items-center justify-center p-4 relative">
+      {/* Geometric Background Pattern */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-red-100/30 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-orange-100/20 rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="w-full max-w-md space-y-6 relative z-10">
+        {/* Header with Logo */}
+        <div className="text-center">
+          <div className="flex justify-center mb-6">
+            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 ring-2 ring-red-100">
+              <AIRLogo size="lg" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">AIR Platform</h1>
-          <p className="text-blue-200">System Administration</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">System Administration</h1>
+          <p className="text-gray-600">Superadmin portal access</p>
         </div>
 
         {/* Login Form */}
