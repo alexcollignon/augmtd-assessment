@@ -36,6 +36,57 @@ interface WorkflowProcess {
   manualStepsList: string[]
 }
 
+// Helper function to format raw process names into human-readable format
+const formatProcessName = (rawName: string): string => {
+  // Common process name mappings for better readability
+  const processMap: { [key: string]: string } = {
+    'primary_work_processes': 'Primary Work Processes',
+    'document_review': 'Document Review & Analysis',
+    'email_management': 'Email Management & Communication',
+    'data_analysis': 'Data Analysis & Reporting',
+    'customer_support': 'Customer Support & Service',
+    'project_management': 'Project Management & Coordination',
+    'content_creation': 'Content Creation & Marketing',
+    'financial_analysis': 'Financial Analysis & Reporting',
+    'hr_processes': 'HR Processes & Administration',
+    'sales_processes': 'Sales Processes & Lead Management',
+    'inventory_management': 'Inventory & Supply Chain Management',
+    'quality_assurance': 'Quality Assurance & Testing',
+    'research_development': 'Research & Development',
+    'compliance_monitoring': 'Compliance & Risk Monitoring',
+    'training_development': 'Training & Development Programs'
+  }
+  
+  // Handle common assessment field patterns
+  let processName = rawName
+  if (processName.includes('-')) {
+    // Remove prefixes like 'strategic-', 'profile-', etc.
+    processName = processName.split('-').slice(1).join('-')
+  }
+  
+  // Check for exact matches in our mapping
+  if (processMap[processName]) {
+    return processMap[processName]
+  }
+  
+  // Convert underscores to spaces and apply title case
+  return processName
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase())
+    .replace(/\bAi\b/g, 'AI') // Fix AI capitalization
+    .replace(/\bIt\b/g, 'IT') // Fix IT capitalization
+    .replace(/\bHr\b/g, 'HR') // Fix HR capitalization
+    .replace(/\bCrm\b/g, 'CRM') // Fix CRM capitalization
+    .replace(/\bErp\b/g, 'ERP') // Fix ERP capitalization
+    .replace(/\bApi\b/g, 'API') // Fix API capitalization
+    .replace(/\bUi\b/g, 'UI') // Fix UI capitalization
+    .replace(/\bUx\b/g, 'UX') // Fix UX capitalization
+    .replace(/\bSeo\b/g, 'SEO') // Fix SEO capitalization
+    .replace(/\bCeo\b/g, 'CEO') // Fix CEO capitalization
+    .replace(/\bCfo\b/g, 'CFO') // Fix CFO capitalization
+    .replace(/\bCto\b/g, 'CTO') // Fix CTO capitalization
+}
+
 export function AITransformationPipeline() {
   const { user } = useAuth()
   const [selectedDepartment, setSelectedDepartment] = useState('all')
@@ -460,7 +511,7 @@ export function AITransformationPipeline() {
                         }`}
                       >
                         <td className="py-3 px-4">
-                          <div className="font-medium text-gray-900">{workflow.process}</div>
+                          <div className="font-medium text-gray-900">{formatProcessName(workflow.process)}</div>
                         </td>
                         <td className="py-3 px-4 text-gray-600">{workflow.department}</td>
                         <td className="py-3 px-4 text-right font-medium">{workflow.employees}</td>
