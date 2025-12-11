@@ -354,7 +354,7 @@ export function AITransformationPipeline() {
                       {Math.round(workflows.reduce((sum, w) => sum + w.automationPercentage, 0) / workflows.length)}%
                     </div>
                     <p className="text-xs text-green-600 mt-1">
-                      ✓ AI-Generated Analysis
+                      ✓ Generated Analysis
                     </p>
                     <p className="text-sm text-gray-600">Avg Automatable Work</p>
                   </>
