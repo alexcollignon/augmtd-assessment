@@ -388,11 +388,11 @@ export function AdminUserManagement() {
         </Card>
       )}
 
-      {/* Admin Users List */}
-      <div className="space-y-4">
-        {adminUsers.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-8">
+      {/* Admin Users Table */}
+      <Card>
+        <CardContent className="p-0">
+          {adminUsers.length === 0 ? (
+            <div className="text-center py-12">
               <UserCheck className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No admin users yet</h3>
               <p className="text-gray-600 mb-4">Create your first admin user to get started</p>
@@ -402,98 +402,106 @@ export function AdminUserManagement() {
               >
                 Add Admin User
               </button>
-            </CardContent>
-          </Card>
-        ) : (
-          adminUsers.map((user) => (
-            <Card key={user.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-purple-50 p-3 rounded-lg">
-                      <UserCheck className="w-6 h-6 text-purple-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{user.name}</h3>
-                        <Badge variant={getRoleBadgeVariant(user.role)}>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 bg-gray-50">
+                    <th className="text-left py-3 px-6 font-medium text-gray-700">User</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">Role</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">Company/Access</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">Status</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-700">Last Login</th>
+                    <th className="text-right py-3 px-6 font-medium text-gray-700">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {adminUsers.map((user) => (
+                    <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <td className="py-4 px-6">
+                        <div>
+                          <div className="font-medium text-gray-900">{user.name}</div>
+                          <div className="text-sm text-gray-600 flex items-center gap-1">
+                            <Mail className="w-3 h-3" />
+                            {user.email}
+                          </div>
+                          {user.department && (
+                            <div className="text-xs text-gray-500 mt-1">{user.department}</div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-4 px-4">
+                        <Badge variant={getRoleBadgeVariant(user.role)} className="text-xs">
                           {user.role}
                         </Badge>
-                        <Badge variant={user.is_active ? 'success' : 'secondary'}>
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="text-sm">
+                          {user.companies ? (
+                            <div className="flex items-center gap-1 text-blue-700">
+                              <Building className="w-3 h-3" />
+                              {user.companies.name}
+                            </div>
+                          ) : user.admin_cohort_access && user.admin_cohort_access.length > 0 ? (
+                            <div className="space-y-1">
+                              {user.admin_cohort_access.slice(0, 2).map((access) => (
+                                <Badge key={access.id} variant="outline" className="text-xs block w-fit">
+                                  {access.cohorts?.name || 'Unknown'}
+                                </Badge>
+                              ))}
+                              {user.admin_cohort_access.length > 2 && (
+                                <div className="text-xs text-gray-500">
+                                  +{user.admin_cohort_access.length - 2} more
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-gray-400 text-xs">No specific access</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-4 px-4">
+                        <Badge variant={user.is_active ? 'success' : 'secondary'} className="text-xs">
                           {user.is_active ? 'Active' : 'Inactive'}
                         </Badge>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm text-gray-600 mb-3">
-                        <div className="flex items-center gap-2">
-                          <Mail className="w-4 h-4" />
-                          <span>{user.email}</span>
+                      </td>
+                      <td className="py-4 px-4">
+                        <div className="text-sm text-gray-600">
+                          {formatDate(user.last_login_at)}
                         </div>
-                        {user.companies && (
-                          <div className="flex items-center gap-2">
-                            <Building className="w-4 h-4" />
-                            <span>{user.companies.name}</span>
-                          </div>
-                        )}
-                        {user.department && (
-                          <div className="flex items-center gap-2">
-                            <span>Dept: {user.department}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex gap-4 text-sm text-gray-600">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          <span>Created {formatDate(user.created_at)}</span>
+                        <div className="text-xs text-gray-500">
+                          Created {formatDate(user.created_at)}
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span>Last login: {formatDate(user.last_login_at)}</span>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-2 justify-end">
+                          <button 
+                            onClick={() => handleToggleUserStatus(user.id, user.is_active)}
+                            className="p-2 text-gray-400 hover:text-blue-600 rounded-md hover:bg-blue-50"
+                            title={user.is_active ? 'Deactivate user' : 'Activate user'}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          {user.role !== 'superadmin' && (
+                            <button 
+                              onClick={() => handleDeleteUser(user.id, user.name)}
+                              className="p-2 text-gray-400 hover:text-red-600 rounded-md hover:bg-red-50"
+                              title="Delete user"
+                            >
+                              <Trash className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
-                      </div>
-
-                      {user.admin_cohort_access && user.admin_cohort_access.length > 0 && (
-                        <div className="mt-3">
-                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                            <Users className="w-4 h-4" />
-                            <span>Cohort Access:</span>
-                          </div>
-                          <div className="flex flex-wrap gap-1">
-                            {user.admin_cohort_access.map((access) => (
-                              <Badge key={access.id} variant="outline" className="text-xs">
-                                {access.cohorts?.name || 'Unknown Cohort'}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => handleToggleUserStatus(user.id, user.is_active)}
-                      className="p-2 text-gray-400 hover:text-blue-600"
-                      title={user.is_active ? 'Deactivate user' : 'Activate user'}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    {user.role !== 'superadmin' && (
-                      <button 
-                        onClick={() => handleDeleteUser(user.id, user.name)}
-                        className="p-2 text-gray-400 hover:text-red-600"
-                        title="Delete user"
-                      >
-                        <Trash className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
