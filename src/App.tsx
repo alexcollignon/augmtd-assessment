@@ -9,7 +9,6 @@ import { SuperadminProvider, useSuperadmin } from './contexts/SuperadminContext'
 import { getAppMode, handleNavigation, AppMode, getAssessmentIdFromUrl, navigateToLogin } from './router'
 import { AssessmentAccessPage } from './components/AssessmentAccessPage'
 import { UniqueAssessmentView } from './components/UniqueAssessmentView'
-import { SuperadminLoginPage } from './components/SuperadminLoginPage'
 import { SuperadminDashboard } from './components/superadmin/SuperadminDashboard'
 import { UnifiedLoginPage } from './components/UnifiedLoginPage'
 

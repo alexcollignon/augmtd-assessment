@@ -1,4 +1,3 @@
-import React from 'react'
 import { AssessmentQuestion as QuestionType } from '@/types'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'

@@ -1,5 +1,4 @@
-import React from 'react'
-import { Settings, LogOut, ArrowLeft, Shield } from 'lucide-react'
+import { Settings, LogOut, ArrowLeft } from 'lucide-react'
 import { AIRLogo } from './ui/AIRLogo'
 import { navigateToLogin, navigateToHome } from '../router'
 

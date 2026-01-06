@@ -21,6 +21,44 @@ export interface AdminCohortAccess {
 export class AdminDataScopingService {
   
   /**
+   * Get cohorts accessible to an admin user (full details)
+   */
+  async getAccessibleCohortsWithDetails(adminUser: AdminUser): Promise<any[]> {
+    try {
+      if (adminUser.company_id) {
+        // Company admin: get all cohorts for their company
+        const { data, error } = await supabase
+          .from('cohorts')
+          .select('*')
+          .eq('company_id', adminUser.company_id)
+
+        if (error) {
+          console.error('Failed to fetch company cohorts:', error)
+          return []
+        }
+
+        return data || []
+      } else {
+        // Non-company admin: get cohorts from explicit grants
+        const { data, error } = await supabase
+          .from('admin_cohort_access')
+          .select('cohorts(*)')
+          .eq('admin_user_id', adminUser.id)
+
+        if (error) {
+          console.error('Failed to fetch admin cohort access:', error)
+          return []
+        }
+
+        return (data || []).map(access => access.cohorts).filter(Boolean)
+      }
+    } catch (error) {
+      console.error('Error fetching accessible cohorts with details:', error)
+      return []
+    }
+  }
+
+  /**
    * Get cohorts accessible to an admin user
    */
   async getAccessibleCohorts(adminUser: AdminUser): Promise<string[]> {

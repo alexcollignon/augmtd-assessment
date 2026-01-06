@@ -263,7 +263,9 @@ export class WorkflowIntelligenceEngine {
             timeSavingsPercentage,
             hoursPerWeek,
             costSavingsAnnual,
-            implementationEffort: profile.complexity,
+            implementationEffort: (profile.complexity === 'low' || profile.complexity === 'medium' || profile.complexity === 'high') 
+              ? profile.complexity as 'low' | 'medium' | 'high' 
+              : 'medium',
             feasibility
           })
         }
@@ -345,7 +347,9 @@ export class WorkflowIntelligenceEngine {
             department,
             automationPotential: Math.round(profile.baseAutomationPotential * 100),
             roiScore: Math.min(100, Math.round(roiData.costSavingsAnnual / 1000)),
-            implementationComplexity: profile.complexity,
+            implementationComplexity: (profile.complexity === 'low' || profile.complexity === 'medium' || profile.complexity === 'high') 
+              ? profile.complexity as 'low' | 'medium' | 'high' 
+              : 'medium',
             prerequisites: this.getPrerequisites(process)
           })
         }

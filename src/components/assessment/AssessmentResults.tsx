@@ -2,25 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { useAssessment } from '@/contexts/AssessmentContext'
 import { createScoringEngine } from '@/lib/assessmentScoring'
 import { defaultAssessmentTemplate } from '@/data/assessmentTemplates'
-import { generateAssessmentUrl } from '@/lib/assessmentResults'
 import { supabase } from '@/lib/supabase'
 import { AssessmentResult } from '@/types'
 import { AssessmentNavBar } from '../AssessmentNavBar'
 import { OverallScoreCard } from './OverallScoreCard'
 import { AIReadinessRadar } from './AIReadinessRadar'
 import { DimensionDeepDive } from './DimensionDeepDive'
-import { CompanyAIMaturity } from './CompanyAIMaturity'
 import { UseCasesAndTools } from './UseCasesAndTools'
 import { PersonalizedResources } from './PersonalizedResources'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { 
-  Download, 
-  Share2, 
   Calendar,
   User,
   Building2,
-  Mail,
   FileText,
   TrendingUp,
   BarChart3,
@@ -170,7 +165,7 @@ const getPersonalizedInsights = (scores: any[], type: 'strengths' | 'weaknesses'
 }
 
 export function AssessmentResults() {
-  const { participant, assessmentTemplate, responses, logout } = useAssessment()
+  const { participant, assessmentTemplate, responses } = useAssessment()
   const [result, setResult] = useState<AssessmentResult | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [showPeerComparison, setShowPeerComparison] = useState(true)
@@ -302,28 +297,6 @@ export function AssessmentResults() {
     }
   ]
 
-  const handleDownloadResults = () => {
-    // TODO: Implement PDF generation
-    alert('PDF download will be available soon!')
-  }
-
-  const handleShareResults = () => {
-    const resultsId = localStorage.getItem('air_assessment_results_id')
-    
-    if (resultsId) {
-      const uniqueUrl = generateAssessmentUrl(resultsId)
-      
-      // Copy to clipboard
-      navigator.clipboard.writeText(uniqueUrl).then(() => {
-        alert(`Your unique assessment URL has been copied to clipboard:\n\n${uniqueUrl}\n\nShare this link to allow others to view your results.`)
-      }).catch(() => {
-        // Fallback for older browsers
-        prompt('Copy this unique assessment URL:', uniqueUrl)
-      })
-    } else {
-      alert('Unable to generate unique URL. Please complete the assessment first.')
-    }
-  }
 
   // Navigation functions for tabs
   const currentTabIndex = tabConfig.findIndex(tab => tab.id === activeTab)
@@ -737,14 +710,9 @@ export function AssessmentResults() {
               <PersonalizedResources 
                 dimensionScores={result.scores}
                 userRole={participant.role}
-                userDepartment={participant.department}
                 userIndustry="Technology & Software"
                 overallScore={result.overallScore}
-                // These would come from assessment responses in real implementation
-                userExperience="6-10 years"
                 userTechnicalBackground="Intermediate"
-                userCurrentUse="Email writing, document analysis"
-                userGoals="Automate repetitive tasks and improve decision-making"
               />
             </div>
           )}

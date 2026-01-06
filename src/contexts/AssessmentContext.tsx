@@ -14,6 +14,8 @@ interface AssessmentSession {
   role?: string
   department?: string
   id?: string
+  assessmentStatus?: 'not_started' | 'in_progress' | 'completed'
+  completionPercentage?: number
 }
 
 interface AssessmentContextType {

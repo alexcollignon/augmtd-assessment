@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/Badge'
 import { useAuth } from '@/contexts/AuthContext'
 import { settingsService, AITool, Department } from '@/lib/settingsService'
 import { adminDataScopingService } from '@/lib/adminDataScoping'
 import { 
-  Settings as SettingsIcon,
   Search,
   Check,
   X,
@@ -205,35 +203,20 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
       return Object.entries(aiToolCategories).map(([category, tools]) => ({
         category,
         tools: searchTerm 
-          ? tools.filter(tool => tool.toLowerCase().includes(searchTerm.toLowerCase()))
+          ? tools.filter((tool: string) => tool.toLowerCase().includes(searchTerm.toLowerCase()))
           : tools
       })).filter(({ tools }) => tools.length > 0)
     } else {
-      const tools = aiToolCategories[selectedCategory] || []
+      const tools = aiToolCategories[selectedCategory as keyof typeof aiToolCategories] || []
       return [{
         category: selectedCategory,
         tools: searchTerm 
-          ? tools.filter(tool => tool.toLowerCase().includes(searchTerm.toLowerCase()))
+          ? tools.filter((tool: string) => tool.toLowerCase().includes(searchTerm.toLowerCase()))
           : tools
       }]
     }
   }
 
-  const getUsageColor = (usage: string) => {
-    switch (usage) {
-      case 'High': return 'danger'
-      case 'Medium': return 'warning'
-      default: return 'success'
-    }
-  }
-
-  const getRiskBadgeColor = (risk: string) => {
-    switch (risk) {
-      case 'High': return 'danger'
-      case 'Medium': return 'warning'
-      default: return 'success'
-    }
-  }
 
   // Department Management Functions
   const validateDepartmentName = (name: string): string | null => {
@@ -479,7 +462,7 @@ export function Settings({ initialTab = 'ai-tools' }: SettingsProps) {
                   </span>
                 </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {tools.map((tool) => {
+                  {tools.map((tool: string) => {
                     const existingTool = toolApprovals.find(existing => existing.tool_name === tool)
                     const isApproved = existingTool?.approved || false
                     const isDetected = existingTool?.detected || false

@@ -1,4 +1,3 @@
-import React from 'react'
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Legend } from 'recharts'
 import { RadarChartData } from '@/types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'

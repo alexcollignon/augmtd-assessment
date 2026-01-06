@@ -1,4 +1,3 @@
-import React from 'react'
 
 export type AppMode = 'home' | 'assessment' | 'admin' | 'superadmin' | 'login'
 

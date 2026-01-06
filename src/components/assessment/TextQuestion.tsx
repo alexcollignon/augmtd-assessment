@@ -1,4 +1,3 @@
-import React from 'react'
 import { AssessmentQuestion as QuestionType } from '@/types'
 import { cn } from '@/lib/utils'
 

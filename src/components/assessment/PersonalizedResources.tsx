@@ -1,4 +1,3 @@
-import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { DimensionScore } from '@/types'
@@ -13,29 +12,20 @@ import {
   ExternalLink,
   Target,
   TrendingUp,
-  Lightbulb,
   Code,
   MessageSquare,
-  Zap,
   Award,
   CheckCircle,
   GraduationCap,
-  ArrowRight,
-  Building2,
-  Rocket,
-  Shield
+  ArrowRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface PersonalizedResourcesProps {
   dimensionScores: DimensionScore[]
   userRole?: string
-  userDepartment?: string
   userIndustry?: string
-  userExperience?: string
   userTechnicalBackground?: string
-  userCurrentUse?: string
-  userGoals?: string
   overallScore: number
 }
 
@@ -65,12 +55,8 @@ interface LearningPath {
 export function PersonalizedResources({ 
   dimensionScores, 
   userRole, 
-  userDepartment, 
   userIndustry,
-  userExperience,
   userTechnicalBackground,
-  userCurrentUse,
-  userGoals,
   overallScore 
 }: PersonalizedResourcesProps) {
 

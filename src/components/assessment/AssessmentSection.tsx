@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { AssessmentSection as SectionType, AssessmentQuestion as QuestionType } from '@/types'
 import { useAssessment } from '@/contexts/AssessmentContext'
 import { AssessmentQuestion } from './AssessmentQuestion'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Card, CardContent } from '@/components/ui/Card'
 import { CheckCircle, AlertCircle, ArrowRight, ArrowLeft } from 'lucide-react'
 import { cn } from '@/lib/utils'
 

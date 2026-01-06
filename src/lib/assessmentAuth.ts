@@ -46,10 +46,13 @@ export async function authenticateAssessment(email: string, accessCode: string):
     }
 
     // 3. Create template object
-    const templateData = cohortData.assessment_templates.template_data
+    const assessmentTemplate = Array.isArray(cohortData.assessment_templates) 
+      ? cohortData.assessment_templates[0] 
+      : cohortData.assessment_templates
+    const templateData = assessmentTemplate?.template_data || {}
     const template: AssessmentTemplate = {
-      id: cohortData.assessment_templates.id,
-      name: cohortData.assessment_templates.name,
+      id: assessmentTemplate?.id || '',
+      name: assessmentTemplate?.name || '',
       companyId: cohortData.company_id,
       ...templateData
     }

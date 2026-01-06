@@ -104,7 +104,7 @@ export class SettingsService {
         settings = data
       }
 
-      return settings
+      return settings!
     } catch (error) {
       console.error('Error in ensureCompanySettings:', error)
       throw error

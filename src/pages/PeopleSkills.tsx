@@ -9,31 +9,22 @@ import {
   TrendingUp,
   TrendingDown, 
   Star, 
-  Award,
-  Target,
-  Clock,
   Brain,
-  BookOpen,
   MessageSquare,
   ArrowRight,
   CheckCircle,
-  AlertCircle,
   BarChart3,
   Grid3x3,
   Building2,
-  ChevronDown,
-  ChevronRight,
   Mail,
   User
 } from 'lucide-react'
 
 export function PeopleSkills() {
   const { user } = useAuth()
-  const [selectedRole, setSelectedRole] = useState('all')
   const [skillDistributionView, setSkillDistributionView] = useState<'heatmap' | 'detail'>('heatmap')
   const [selectedDistributionDept, setSelectedDistributionDept] = useState('Company Wide')
   const [hoveredCell, setHoveredCell] = useState<{row: number, col: number} | null>(null)
-  const [expandedPersona, setExpandedPersona] = useState<string | null>(null)
   const [selectedPersona, setSelectedPersona] = useState('AI Champions')
   const [progressView, setProgressView] = useState<'department' | 'individual'>('department')
   const [hoveredPoint, setHoveredPoint] = useState<any>(null)
@@ -69,46 +60,7 @@ export function PeopleSkills() {
     }
   }
 
-  // Convert roleData array to object for backward compatibility
-  const roleDataLookup = roleData.reduce((acc, role) => {
-    acc[role.role] = {
-      count: role.count,
-      avgSkill: role.avgSkill,
-      topSkills: role.topSkills
-    }
-    return acc
-  }, {} as Record<string, { count: number, avgSkill: number, topSkills: string[] }>)
 
-  // Generate skill categories from real heatmap data
-  const skillCategories = React.useMemo(() => {
-    if (skillsHeatmap.length === 0) return []
-    
-    const skills = ['prompting', 'tools', 'responsibleUse', 'aiThinking', 'coIntelligence']
-    const skillNames = ['Prompting', 'Tools', 'Responsible Use', 'AI Thinking', 'Co-Intelligence']
-    const descriptions = [
-      'Crafting effective prompts and conversing with AI systems',
-      'Proficiency with AI platforms, applications, and integrations', 
-      'Understanding AI ethics, bias awareness, and governance',
-      'Strategic thinking with AI, problem-solving, and analytical reasoning',
-      'Human-AI collaboration and augmented decision-making'
-    ]
-    
-    return skills.map((skill, index) => {
-      const scores = skillsHeatmap.map(emp => Number(emp[skill as keyof typeof emp]) || 0)
-      const avgScore = Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length)
-      const topPerformers = scores.filter(score => score >= 85).length
-      const strugglers = scores.filter(score => score < 65).length
-      
-      return {
-        category: skillNames[index],
-        avgScore,
-        trend: `+${Math.floor(Math.random() * 15) + 3}%`, // Simulated trend based on skill level
-        topPerformers,
-        strugglers,
-        description: descriptions[index]
-      }
-    })
-  }, [skillsHeatmap])
 
   // Helper functions for persona generation
   const getPersonaDescription = (name: string) => {
@@ -928,9 +880,9 @@ export function PeopleSkills() {
                                 <span className="text-sm text-gray-500">{dept.count} people</span>
                               </div>
                               
-                              {'employees' in dept && dept.employees && (
+                              {'employees' in dept && (dept as any).employees && (
                                 <div className="space-y-2">
-                                  {dept.employees.map((employee, empIdx) => (
+                                  {(dept as any).employees.map((employee: any, empIdx: number) => (
                                     <div key={empIdx} className="flex items-center justify-between p-2 bg-gray-50 rounded hover:bg-gray-100 transition-colors">
                                       <div className="flex items-center space-x-2">
                                         <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
@@ -956,10 +908,10 @@ export function PeopleSkills() {
                                     </div>
                                   ))}
                                   
-                                  {'employees' in dept && dept.employees && dept.employees.length < dept.count && (
+                                  {'employees' in dept && (dept as any).employees && (dept as any).employees.length < (dept as any).count && (
                                     <div className="p-2 bg-gray-50 rounded border border-dashed border-gray-300 text-center">
                                       <span className="text-xs text-gray-500">
-                                        +{dept.count - dept.employees.length} more employees
+                                        +{(dept as any).count - (dept as any).employees.length} more employees
                                       </span>
                                     </div>
                                   )}

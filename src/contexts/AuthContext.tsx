@@ -8,7 +8,8 @@ interface User {
   name: string
   role: 'admin' | 'executive' | 'manager'
   department?: string
-  company_id?: string
+  company_id: string | null
+  is_active: boolean
 }
 
 interface AuthContextType {
@@ -61,7 +62,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
             name: data.name,
             role: data.role,
             department: data.department,
-            company_id: data.company_id
+            company_id: data.company_id,
+            is_active: data.is_active
           })
         } else {
           localStorage.removeItem('air_user')
@@ -118,7 +120,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           name: adminUser.name,
           role: adminUser.role,
           department: adminUser.department,
-          company_id: adminUser.company_id
+          company_id: adminUser.company_id,
+          is_active: adminUser.is_active
         }
 
         // Update last login

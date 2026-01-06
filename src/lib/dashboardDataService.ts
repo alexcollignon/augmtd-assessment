@@ -163,20 +163,24 @@ export class DashboardDataService {
 
   private calculatePillarScores(submissions: any[]): DashboardMetrics['pillarScores'] {
     const dimensionTotals = {
-      promptingProficiency: [],
-      toolUse: [],
-      ethics: [],
-      aiThinking: [],
-      coIntelligence: []
+      promptingProficiency: [] as number[],
+      toolUse: [] as number[],
+      ethics: [] as number[],
+      aiThinking: [] as number[],
+      coIntelligence: [] as number[]
     }
 
     submissions.forEach(submission => {
       const dimensionScores = submission.assessment_results?.[0]?.dimension_scores
       if (dimensionScores) {
         Object.keys(dimensionTotals).forEach(dimension => {
-          const score = dimensionScores[dimension.toLowerCase().replace(/[^a-z]/g, '')]
+          const scoreKey = dimension.toLowerCase().replace(/[^a-z]/g, '')
+          const score = dimensionScores[scoreKey]
           if (typeof score === 'number') {
-            dimensionTotals[dimension as keyof typeof dimensionTotals].push(score)
+            const dimensionArray = dimensionTotals[dimension as keyof typeof dimensionTotals]
+            if (Array.isArray(dimensionArray)) {
+              dimensionArray.push(score)
+            }
           }
         })
       }
@@ -211,7 +215,7 @@ export class DashboardDataService {
             assessmentId: submission.cohort_id,
             sectionId,
             questionId,
-            value,
+            value: Array.isArray(value) ? value : (typeof value === 'string' || typeof value === 'number') ? value : String(value || ''),
             timestamp: new Date(submission.submitted_at)
           })
         })
@@ -295,7 +299,7 @@ export class DashboardDataService {
               assessmentId: submission.cohort_id,
               sectionId,
               questionId,
-              value,
+              value: Array.isArray(value) ? value : (typeof value === 'string' || typeof value === 'number') ? value : String(value || ''),
               timestamp: new Date(submission.submitted_at)
             })
           })
@@ -372,11 +376,11 @@ export class DashboardDataService {
       const aggregated = aggregateWorkflowInsights(allWorkflowInsights)
       
       return aggregated.topOpportunities.slice(0, 5).map(opportunity => ({
-        name: opportunity.processType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) + ' Automation',
-        process: opportunity.processType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) + ' Workflow',
+        name: opportunity.name,
+        process: opportunity.process,
         productivityGain: `${opportunity.automationPotential}% automation potential`,
-        feasibility: opportunity.feasibility === 'high' ? 'High' : 
-                   opportunity.feasibility === 'medium' ? 'Medium' : 'Low',
+        feasibility: opportunity.implementationComplexity === 'low' ? 'High' : 
+                   opportunity.implementationComplexity === 'medium' ? 'Medium' : 'Low',
         department: opportunity.department || 'General'
       }))
       
@@ -1219,7 +1223,7 @@ export class DashboardDataService {
   async getAssessmentCohorts(adminUser?: AdminUser): Promise<AssessmentCohort[]> {
     try {
       // Get cohorts based on admin permissions
-      const accessibleCohorts = await this.adminDataScoping.getAccessibleCohorts(adminUser)
+      const accessibleCohorts = await this.adminDataScoping.getAccessibleCohortsWithDetails(adminUser!)
       
       const cohortsWithData = await Promise.all(
         accessibleCohorts.map(async cohort => {
@@ -1230,7 +1234,7 @@ export class DashboardDataService {
             .eq('cohort_id', cohort.id)
 
           const completed = submissions?.length || 0
-          const totalInvited = Math.max(completed, cohort.target_participants || completed + 10)
+          const totalInvited = Math.max(completed, (cohort as any).target_participants || completed + 10)
           const inProgress = 0 // Would need session tracking for this
           const notStarted = totalInvited - completed - inProgress
 

@@ -1,28 +1,17 @@
-import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { CircularProgress } from '@/components/ui/CircularProgress'
 import { 
   Building2, 
-  TrendingUp, 
-  Target, 
   Users, 
-  Briefcase,
   AlertTriangle,
-  CheckCircle,
   Clock,
   DollarSign,
-  Shield,
-  Zap,
-  Brain,
-  Gauge
+  Shield
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface CompanyAIMaturityProps {
-  userScore: number
-  userDepartment?: string
-  userRole?: string
   companyName?: string
 }
 
@@ -36,7 +25,7 @@ interface MaturityLevel {
   riskLevel: 'low' | 'medium' | 'high'
 }
 
-export function CompanyAIMaturity({ userScore, userDepartment, userRole, companyName = "your organization" }: CompanyAIMaturityProps) {
+export function CompanyAIMaturity({ companyName = "your organization" }: CompanyAIMaturityProps) {
   
   // Mock company data - in real implementation, this would come from aggregated assessment results
   const companyMetrics = {
@@ -129,12 +118,6 @@ export function CompanyAIMaturity({ userScore, userDepartment, userRole, company
 
   const maturityLevel = getMaturityLevel(companyMetrics.overallMaturity)
 
-  const getScoreColor = (score: number) => {
-    if (score >= 70) return 'text-green-600'
-    if (score >= 50) return 'text-yellow-600'
-    return 'text-red-600'
-  }
-
   const getRiskColor = (level: string) => {
     switch (level) {
       case 'low': return 'bg-green-100 text-green-800'
@@ -144,13 +127,6 @@ export function CompanyAIMaturity({ userScore, userDepartment, userRole, company
     }
   }
 
-  const topDepartments = Object.entries(companyMetrics.departmentScores)
-    .sort(([,a], [,b]) => b - a)
-    .slice(0, 3)
-
-  const bottomDepartments = Object.entries(companyMetrics.departmentScores)
-    .sort(([,a], [,b]) => a - b)
-    .slice(0, 3)
 
   return (
     <div className="space-y-6">

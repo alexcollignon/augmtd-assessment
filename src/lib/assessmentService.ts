@@ -20,11 +20,14 @@ export async function getAssessmentTemplateForCohort(cohortId: string): Promise<
       return null
     }
 
-    const templateData = data.assessment_templates.template_data
+    const assessmentTemplate = Array.isArray(data.assessment_templates)
+      ? data.assessment_templates[0]
+      : data.assessment_templates
+    const templateData = assessmentTemplate?.template_data || {}
     const template: AssessmentTemplate = {
-      id: data.assessment_templates.id,
-      name: data.assessment_templates.name,
-      companyId: data.assessment_templates.company_id,
+      id: assessmentTemplate?.id || '',
+      name: assessmentTemplate?.name || '',
+      companyId: assessmentTemplate?.company_id || '',
       ...templateData
     }
 
