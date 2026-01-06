@@ -6,11 +6,12 @@ import { Assessment } from './components/assessment/Assessment'
 import { AuthProvider } from './contexts/AuthContext'
 import { AssessmentProvider } from './contexts/AssessmentContext'
 import { SuperadminProvider, useSuperadmin } from './contexts/SuperadminContext'
-import { getAppMode, handleNavigation, AppMode, getAssessmentIdFromUrl } from './router'
+import { getAppMode, handleNavigation, AppMode, getAssessmentIdFromUrl, navigateToLogin } from './router'
 import { AssessmentAccessPage } from './components/AssessmentAccessPage'
 import { UniqueAssessmentView } from './components/UniqueAssessmentView'
 import { SuperadminLoginPage } from './components/SuperadminLoginPage'
 import { SuperadminDashboard } from './components/superadmin/SuperadminDashboard'
+import { UnifiedLoginPage } from './components/UnifiedLoginPage'
 
 // Page Components
 import { ExecutiveSummary } from './pages/overview/ExecutiveSummary'
@@ -103,6 +104,16 @@ function App() {
     )
   }
 
+  if (appMode === 'login') {
+    return (
+      <AuthProvider>
+        <SuperadminProvider>
+          <UnifiedLoginPage />
+        </SuperadminProvider>
+      </AuthProvider>
+    )
+  }
+
   if (appMode === 'superadmin') {
     return (
       <SuperadminProvider>
@@ -126,12 +137,39 @@ function App() {
 }
 
 function SuperadminApp() {
-  const { isAuthenticated } = useSuperadmin()
+  const { isAuthenticated, isLoading, user } = useSuperadmin()
   
-  if (!isAuthenticated) {
-    return <SuperadminLoginPage />
+  console.log('SuperadminApp - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading, 'user:', user)
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading superadmin...</p>
+        </div>
+      </div>
+    )
   }
   
+  if (!isAuthenticated) {
+    // Redirect to unified login page
+    React.useEffect(() => {
+      console.log('Not authenticated, redirecting to login')
+      navigateToLogin()
+    }, [])
+    
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Redirecting to login...</p>
+        </div>
+      </div>
+    )
+  }
+  
+  console.log('Rendering SuperadminDashboard')
   return <SuperadminDashboard />
 }
 

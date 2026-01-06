@@ -78,12 +78,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(true)
     
     try {
-      // Query admin user from database
+      // Query admin user from database (exclude superadmin role)
       const { data: adminUser, error } = await supabase
         .from('admin_users')
         .select('*')
         .eq('email', email.toLowerCase())
         .eq('is_active', true)
+        .neq('role', 'superadmin')
         .single()
 
       if (error || !adminUser) {

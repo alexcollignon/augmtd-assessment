@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/Card'
-import { navigateToAdmin, navigateToAssessment } from '../router'
+import { navigateToAssessment } from '../router'
 import { authenticateAssessment } from '../lib/assessmentAuth'
 import { 
   Brain, 

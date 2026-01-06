@@ -1,7 +1,7 @@
 import React from 'react'
 import { Settings, LogOut, ArrowLeft, Shield } from 'lucide-react'
 import { AIRLogo } from './ui/AIRLogo'
-import { navigateToAdmin, navigateToHome, navigateToSuperadmin } from '../router'
+import { navigateToLogin, navigateToHome } from '../router'
 
 interface AssessmentNavBarProps {
   showAdminButton?: boolean
@@ -48,25 +48,14 @@ export function AssessmentNavBar({
               </button>
             )}
             
-            {showAdminButton && (
+            {(showAdminButton || showSuperadminButton) && (
               <button
-                onClick={navigateToAdmin}
+                onClick={navigateToLogin}
                 className="flex items-center px-4 py-2 text-sm text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-lg transition-all"
               >
                 <Settings className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Admin</span>
-                <span className="sm:hidden">Admin</span>
-              </button>
-            )}
-            
-            {showSuperadminButton && (
-              <button
-                onClick={navigateToSuperadmin}
-                className="flex items-center px-3 py-2 text-sm text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg transition-all"
-              >
-                <Shield className="w-4 h-4 mr-1" />
-                <span className="hidden sm:inline">Superadmin</span>
-                <span className="sm:hidden">Super</span>
+                <span className="hidden sm:inline">Dashboard Login</span>
+                <span className="sm:hidden">Login</span>
               </button>
             )}
             

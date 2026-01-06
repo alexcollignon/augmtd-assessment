@@ -1,11 +1,16 @@
 import React from 'react'
 
-export type AppMode = 'home' | 'assessment' | 'admin' | 'superadmin'
+export type AppMode = 'home' | 'assessment' | 'admin' | 'superadmin' | 'login'
 
 export function getAppMode(): AppMode {
   const path = window.location.pathname
   
-  // Check for superadmin routes first
+  // Check for login route first
+  if (path === '/login') {
+    return 'login'
+  }
+  
+  // Check for superadmin routes
   if (path === '/superadmin' || path.startsWith('/superadmin/')) {
     return 'superadmin'
   }
@@ -60,5 +65,10 @@ export function navigateToHome() {
 
 export function navigateToSuperadmin() {
   window.history.pushState(null, '', '/superadmin')
+  window.location.reload()
+}
+
+export function navigateToLogin() {
+  window.history.pushState(null, '', '/login')
   window.location.reload()
 }
